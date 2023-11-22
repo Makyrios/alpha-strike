@@ -3,6 +3,7 @@ DerivedDataCache
 Intermediate
 Saved
 Platforms
+.clang-format
 .vscode
 .vs
 .vsconfig
