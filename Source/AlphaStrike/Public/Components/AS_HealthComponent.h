@@ -21,6 +21,8 @@ public:
     FORCEINLINE float GetHealth() const { return Health; }
     FORCEINLINE bool IsFullHealth() const { return FMath::IsNearlyEqual(Health, MaxHealth); }
     FORCEINLINE bool IsDead() const { return FMath::IsNearlyEqual(Health, 0.f); }
+    FORCEINLINE bool IsInvincible() const { return bIsInvincible; }
+    void SetInvincible(bool bNewValue, float InvincibilityTime);
 
     void SetHealth(const float NewHealth);
     void SubHealth(const float SubHealth);
@@ -43,6 +45,11 @@ private:
 
     UPROPERTY()
     AActor* OwnerCharacter;
+
+    bool bIsInvincible = false;
+
+    FTimerHandle FlickerHandle;
+    FTimerHandle EndFlickerHandle;
 
 private:
     /*
@@ -67,4 +74,5 @@ private:
     void LogShowHealth();
     void SetHealthForHUD();
     float GetHealthPercent();
+    void VisibilityFlicker();
 };

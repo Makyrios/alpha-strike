@@ -26,6 +26,8 @@ protected:
     UFUNCTION()
     virtual void RespawnPawn(AController* Controller);
 
+    void MakeInvincible(APawn* NewPawn);
+
     virtual bool ReadyToEndMatch_Implementation() override;
     virtual void HandleMatchHasEnded() override;
 
@@ -39,6 +41,13 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")
     float TimeLimit;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")
+    bool bInvincibleOnSpawn = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay", meta = (EditCondition = "bInvincibleOnSpawn"))
+    float InvincibilityTime = 2.f;
+
 
     UPROPERTY(BlueprintReadOnly)
     TArray<APlayerController*> PlayerControllerList;

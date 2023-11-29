@@ -12,6 +12,7 @@
 #include "Saves/AS_PlayerSavedInfo.h"
 #include <UI/Widgets/AS_StartGameWidget.h>
 #include <Controllers/AS_PlayerController.h>
+#include "Components/AS_HealthComponent.h"
 
 bool AAS_BaseGameMode::ReadyToStartMatch_Implementation()
 {
@@ -88,7 +89,6 @@ void AAS_BaseGameMode::BeginPlay()
     }
 }
 
-
 void AAS_BaseGameMode::HandleActorDeath(AController* DeadActor, AController* KillerActor)
 {
     if (!DeadActor || !KillerActor) return;
@@ -125,6 +125,19 @@ void AAS_BaseGameMode::RespawnPawn(AController* Controller)
     {
         Controller->UnPossess();
         Controller->Possess(NewPawn);
+
+        if (bInvincibleOnSpawn)
+        {
+            MakeInvincible(NewPawn);
+        }
+    }
+}
+
+void AAS_BaseGameMode::MakeInvincible(APawn* NewPawn)
+{
+    if (AAS_Character* SpawnedCharacter = Cast<AAS_Character>(NewPawn))
+    {
+        SpawnedCharacter->GetHealthComponent()->SetInvincible(true, InvincibilityTime);
     }
 }
 

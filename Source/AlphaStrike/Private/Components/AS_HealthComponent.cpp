@@ -8,6 +8,7 @@
 #include "GameModes/AS_BaseGameMode.h"
 #include <AI/AS_AICharacter.h>
 #include "UI/HUD/AS_HUD.h"
+#include "Weapons/AS_BaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AS_HealthComponentLog, All, All);
 
@@ -44,10 +45,34 @@ void UAS_HealthComponent::ServerSideBeginPlay()
 void UAS_HealthComponent::OnTakeAnyDamageCallback(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (IsDead()) return;
+    if (IsDead() || bIsInvincible) return;
     SubHealth(Damage);
     CheckIsDead(InstigatedBy);
 }
+
+void UAS_HealthComponent::SetInvincible(bool bNewValue, float InvincibilityTime)
+{
+    bIsInvincible = bNewValue;
+
+    if (!GetWorld()) return;
+
+    if (bIsInvincible)
+    {
+        GetWorld()->GetTimerManager().SetTimer(FlickerHandle, this, &UAS_HealthComponent::VisibilityFlicker, 0.1, true);
+        GetWorld()->GetTimerManager().SetTimer(
+            EndFlickerHandle, [&]() { SetInvincible(false, 0); }, InvincibilityTime, false);
+    }
+    else
+    {
+        GetWorld()->GetTimerManager().ClearTimer(FlickerHandle);
+        GetWorld()->GetTimerManager().ClearTimer(EndFlickerHandle);
+        if (ACharacter* OwnerChar = Cast<ACharacter>(GetOwner()))
+        {
+            OwnerChar->GetMesh()->SetVisibility(true);
+        }
+    }
+}
+
 
 void UAS_HealthComponent::SetHealth(const float NewHealth)
 {
@@ -84,6 +109,7 @@ void UAS_HealthComponent::OnRep_Health()
 {
     LogShowHealth();
 }
+
 
 void UAS_HealthComponent::CheckIsDead(AController* InstigatedBy)
 {
@@ -123,4 +149,13 @@ void UAS_HealthComponent::LogShowHealth()
 float UAS_HealthComponent::GetHealthPercent()
 {
     return Health / MaxHealth;
+}
+
+void UAS_HealthComponent::VisibilityFlicker()
+{
+    if (AAS_Character* OwnerChar = Cast<AAS_Character>(GetOwner()))
+    {
+        OwnerChar->GetMesh()->ToggleVisibility();
+        OwnerChar->GetEquippedWeapon()->GetWeaponMesh()->ToggleVisibility();
+    }
 }
