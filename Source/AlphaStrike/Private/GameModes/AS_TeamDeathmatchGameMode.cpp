@@ -34,10 +34,15 @@ void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
     {
         AController* Controller = World->SpawnActor<AController>(TeamSpawnInfo.ControllerClass);
         GiveTeamToPlayer(Controller, TeamToSpawn);
+
         AActor* SpawnActor = ChoosePlayerStart_Implementation(Controller);
         if (Controller && SpawnActor)
         {
-            APawn* Pawn = World->SpawnActor<APawn>(TeamSpawnInfo.PawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation());
+            FActorSpawnParameters SpawnParameters;
+            SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+            APawn* Pawn = World->SpawnActor<APawn>(
+                TeamSpawnInfo.PawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation(), SpawnParameters);
             if (Pawn)
             {
                 SetBotName(Controller, i);
@@ -69,16 +74,22 @@ AActor* AAS_TeamDeathmatchGameMode::ChoosePlayerStart_Implementation(AController
 
     if (PlayerStarts.IsEmpty() || !TeamPlayerState) return nullptr;
 
-    for (int i = 0; i < PlayerStarts.Num(); ++i)
+    TArray<AAS_PlayerStart*> TeamPlayerStarts;
+    for (auto PlayerStart : PlayerStarts)
     {
-        AAS_PlayerStart* CustomPlayerStart = Cast<AAS_PlayerStart>(PlayerStarts[i]);
-        if (CustomPlayerStart->GetTeam() == TeamPlayerState->GetTeam() && !(CustomPlayerStart->GetIsOccupied()))
+        AAS_PlayerStart* CustomPlayerStart = Cast<AAS_PlayerStart>(PlayerStart);
+        if (CustomPlayerStart->GetTeam() == TeamPlayerState->GetTeam() && !CustomPlayerStart->GetIsOccupied())
         {
-            CustomPlayerStart->SetIsOccupied(true);
-            return CustomPlayerStart;
+            TeamPlayerStarts.AddUnique(CustomPlayerStart);
         }
     }
-    return nullptr;
+
+    if (TeamPlayerStarts.IsEmpty()) return nullptr;
+
+    const int32 RandIndex = FMath::RandRange(0, TeamPlayerStarts.Num() - 1);
+    TeamPlayerStarts[RandIndex]->SetIsOccupied(true);
+
+    return TeamPlayerStarts[RandIndex];
  }
 
 void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AController* KillerActor)
