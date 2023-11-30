@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Components/AS_AmmoComponent.h"
 
 AAS_BaseWeapon::AAS_BaseWeapon()
 {
@@ -13,6 +14,8 @@ AAS_BaseWeapon::AAS_BaseWeapon()
     WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(FName("WeaponMesh"));
     WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     SetRootComponent(WeaponMesh);
+
+    AmmoComponent = CreateDefaultSubobject<UAS_AmmoComponent>(FName("AmmoComponent"));
 
     bReplicates = true;
 }
@@ -31,7 +34,15 @@ void AAS_BaseWeapon::BeginPlay()
 
 void AAS_BaseWeapon::Fire()
 {
-    Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
+    if (AmmoComponent->CanShoot())
+    {
+        AmmoComponent->HandleWeaponFired();
+        Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
+    }
+    else
+    {
+        Reload();
+    }
 }
 
 void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, const FHitResult& HitResult)
@@ -52,6 +63,11 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
     }
 
     Multicast_Fire(HitResult);
+}
+
+void AAS_BaseWeapon::Reload()
+{
+    AmmoComponent->Reload();
 }
 
 void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
@@ -141,6 +157,7 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
             HitStart,                                                                              //
             FRotator::ZeroRotator,                                                                 //
             true                                                                                   //
+            true                                                                                   //
         );
 
         if (BeamSystemComponent)
@@ -148,4 +165,9 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
             BeamSystemComponent->SetVectorParameter(FName("Target"), BeamEnd);
         }
     }
+}
+
+FText AAS_BaseWeapon::GetAmmoInfoAsText()
+{
+    return AmmoComponent->GetAmmoInfoAsText();
 }

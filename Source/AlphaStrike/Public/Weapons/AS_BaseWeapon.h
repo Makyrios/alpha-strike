@@ -10,6 +10,7 @@
 class USkeletalMeshComponent;
 class UAnimSequence;
 class UParticleSystem;
+class UAS_AmmoComponent;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_BaseWeapon : public AActor
@@ -23,6 +24,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
+    virtual void Reload();
+
+    FText GetAmmoInfoAsText();
 
 public:
     FORCEINLINE FName GetMuzzleSocketName() const { return MuzzleSocketName; }
@@ -59,6 +63,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* BeamParticles;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    UAS_AmmoComponent* AmmoComponent;
 
     FHitResult HitTarget;
     FVector HitStart;

@@ -21,6 +21,7 @@ public:
     void SetHealthBarPercent(float Percent);
     void SetShieldBarPercent(float Percent);
     void SetTimeRemaining(float RemainingTimeInSeconds);
+    void SetAmmoInfo(FText NewAmmoInfo);
 
     void Tick(float DeltaTime) override;
     

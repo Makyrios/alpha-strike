@@ -10,6 +10,7 @@
 #include "UI/HUD/AS_HUD.h"
 #include "Kismet/GameplayStatics.h"
 #include "AS_GameInstance.h"
+#include "Weapons/AS_BaseWeapon.h"
 
 void AAS_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -63,6 +64,7 @@ void AAS_PlayerController::SetupInputComponent()
         UEI->BindAction(AimAction, ETriggerEvent::Completed, this, &AAS_PlayerController::StopAim);
         UEI->BindAction(AimAction, ETriggerEvent::Triggered, this, &AAS_PlayerController::ShowCrosshair);
         UEI->BindAction(FireAction, ETriggerEvent::Started, this, &AAS_PlayerController::Shoot);
+        UEI->BindAction(ReloadAction, ETriggerEvent::Started, this, &AAS_PlayerController::Reload);
         UEI->BindAction(ShowStatsTableAction, ETriggerEvent::Started, this, &AAS_PlayerController::ShowStatsTable);
         UEI->BindAction(ShowStatsTableAction, ETriggerEvent::Completed, this, &AAS_PlayerController::HideStatsTable);
         UEI->BindAction(PauseAction, ETriggerEvent::Started, this, &AAS_PlayerController::Pause);
@@ -160,6 +162,29 @@ void AAS_PlayerController::Shoot()
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
     PlayerCharacter->GetCombatComponent()->Fire();
+
+    AHUD* HUD = GetHUD();
+    if (!HUD) return;
+
+    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
+    {
+        CustomHUD->SetAmmoInfo(PlayerCharacter->GetEquippedWeapon()->GetAmmoInfoAsText());
+    }
+}
+
+void AAS_PlayerController::Reload()
+{
+    if (!PlayerCharacter || !PlayerCharacter->GetEquippedWeapon()) return;
+
+    PlayerCharacter->GetEquippedWeapon()->Reload();
+
+     AHUD* HUD = GetHUD();
+    if (!HUD) return;
+
+    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
+    {
+        CustomHUD->SetAmmoInfo(PlayerCharacter->GetEquippedWeapon()->GetAmmoInfoAsText());
+    }
 }
 
 void AAS_PlayerController::ShowStatsTable()

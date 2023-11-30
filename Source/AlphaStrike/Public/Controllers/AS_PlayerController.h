@@ -51,6 +51,7 @@ protected:
     void StopAim();
 
     void Shoot();
+    void Reload();
 
     void ShowStatsTable();
     void HideStatsTable();
@@ -86,6 +87,9 @@ private:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* FireAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* ReloadAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* ShowStatsTableAction;
