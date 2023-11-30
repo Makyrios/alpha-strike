@@ -31,7 +31,9 @@ public:
 
     void SetHealth(const float NewHealth);
     void SubHealth(const float SubHealth);
+    void AddHealth(const float AddHealth);
     void SetShield(const float NewShield);
+    void AddShield(const float AddShield);
 
 public:
     FOnDeadDelegate OnDeadDelegate;
