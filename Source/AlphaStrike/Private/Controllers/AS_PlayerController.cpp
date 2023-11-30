@@ -196,7 +196,7 @@ void AAS_PlayerController::Pause()
     }
 }
 
-void AAS_PlayerController::UnPause() 
+void AAS_PlayerController::UnPause()
 {
     SetInputModeGameOnly();
 }
@@ -221,7 +221,6 @@ void AAS_PlayerController::SetInputModeUIOnly()
     FInputModeUIOnly InputModeUI;
     SetInputMode(InputModeUI);
     SetShowMouseCursor(true);
-}
 }
 
 void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)
@@ -250,5 +249,4 @@ void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
     {
         CustomHUD->ShowStartGameWidget(StartGameDelay);
     }
-    
 }

@@ -263,15 +263,16 @@ void AAS_Character::DrawCrosshair(const FVector& StartLocation, const FVector& E
     {
         SplineMeshComponent->SetStaticMesh(SplineMesh);
         SplineMeshComponent->SetMaterial(0, SplineMaterial);
+        SplineMeshComponent->CastShadow = 0;
     }
 
     SplineMeshComponent->SetStartScale(FVector2D(CrosshairDepth, CrosshairDepth));
     SplineMeshComponent->SetEndScale(FVector2D(CrosshairDepth, CrosshairDepth));
 
-    SplineMeshComponent->SetStartAndEnd(                                             //
-        StartLocation,                                                               //
+    SplineMeshComponent->SetStartAndEnd(                                                //
+        StartLocation,                                                                  //
         CrosshairComponent->GetTangentAtSplinePoint(0, ESplineCoordinateSpace::World),  //
-        EndLocation,                                                                 //
+        EndLocation,                                                                    //
         CrosshairComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::World)   //
     );
 }

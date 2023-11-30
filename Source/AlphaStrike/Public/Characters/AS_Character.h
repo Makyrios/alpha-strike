@@ -75,9 +75,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
     UMaterial* SplineMaterial;
 
-    UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
-    FName CustomTag = FName(TEXT("AS_Character"));
-
 protected:
     virtual void BeginPlay() override;
 
