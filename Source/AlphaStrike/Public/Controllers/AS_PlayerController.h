@@ -19,6 +19,10 @@ class ALPHASTRIKE_API AAS_PlayerController : public APlayerController
 public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+    void Pause();
+    void UnPause();
+    void ExitToMenu();
+
     void CreateStartGameWidget(float StartGameDelay);
 
 protected:
@@ -30,8 +34,8 @@ protected:
 
 protected:
     void Move(const FInputActionValue& Value);
-
     void Look(const FInputActionValue& Value);
+    void ShowCrosshair(const FInputActionValue& Value);
 
     void Jump();
     void StopJump();
@@ -78,4 +82,11 @@ private:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* ShowStatsTableAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* PauseAction;
+
+private:
+    void SetInputModeGameOnly();
+    void SetInputModeUIOnly();
 };

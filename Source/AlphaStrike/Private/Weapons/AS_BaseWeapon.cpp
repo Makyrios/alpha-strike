@@ -22,7 +22,6 @@ void AAS_BaseWeapon::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     UpdateHitTarget();
-    HitTarget.bBlockingHit ? DrawDebugFireTrace(HitStart, HitTarget.ImpactPoint) : DrawDebugFireTrace(HitStart, HitEnd);
 }
 
 void AAS_BaseWeapon::BeginPlay()

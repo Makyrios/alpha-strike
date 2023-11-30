@@ -8,6 +8,8 @@
 #include "Components/AS_CombatComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "UI/HUD/AS_HUD.h"
+#include "Kismet/GameplayStatics.h"
+#include "AS_GameInstance.h"
 
 void AAS_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -59,9 +61,11 @@ void AAS_PlayerController::SetupInputComponent()
         UEI->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AAS_PlayerController::StopCrouch);
         UEI->BindAction(AimAction, ETriggerEvent::Started, this, &AAS_PlayerController::Aim);
         UEI->BindAction(AimAction, ETriggerEvent::Completed, this, &AAS_PlayerController::StopAim);
+        UEI->BindAction(AimAction, ETriggerEvent::Triggered, this, &AAS_PlayerController::ShowCrosshair);
         UEI->BindAction(FireAction, ETriggerEvent::Started, this, &AAS_PlayerController::Shoot);
         UEI->BindAction(ShowStatsTableAction, ETriggerEvent::Started, this, &AAS_PlayerController::ShowStatsTable);
         UEI->BindAction(ShowStatsTableAction, ETriggerEvent::Completed, this, &AAS_PlayerController::HideStatsTable);
+        UEI->BindAction(PauseAction, ETriggerEvent::Started, this, &AAS_PlayerController::Pause);
     }
 }
 
@@ -99,6 +103,15 @@ void AAS_PlayerController::Look(const FInputActionValue& Value)
     PlayerCharacter->AddControllerPitchInput(LookAxisVector.Y);
 }
 
+void AAS_PlayerController::ShowCrosshair(const FInputActionValue& Value)
+{
+    if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
+
+    const FVector CrosshairStart = PlayerCharacter->GetCombatComponent()->GetStartMuzzlePoint();
+    const FVector CrosshairEnd = PlayerCharacter->GetCombatComponent()->GetEndMuzzlePoint();
+    PlayerCharacter->CrosshairActivate(CrosshairStart, CrosshairEnd);
+}
+
 void AAS_PlayerController::Jump()
 {
     if (!PlayerCharacter) return;
@@ -129,21 +142,22 @@ void AAS_PlayerController::StopCrouch()
 
 void AAS_PlayerController::Aim()
 {
-    if (!PlayerCharacter) return;
+    if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
     PlayerCharacter->GetCombatComponent()->Aim();
 }
 
 void AAS_PlayerController::StopAim()
 {
-    if (!PlayerCharacter) return;
+    if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
+    PlayerCharacter->CrosshairDeactivate();
     PlayerCharacter->GetCombatComponent()->StopAim();
 }
 
 void AAS_PlayerController::Shoot()
 {
-    if (!PlayerCharacter) return;
+    if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
     PlayerCharacter->GetCombatComponent()->Fire();
 }
@@ -168,6 +182,46 @@ void AAS_PlayerController::HideStatsTable()
     {
         CustomHUD->HideStatsTable();
     }
+}
+
+void AAS_PlayerController::Pause()
+{
+    AHUD* HUD = GetHUD();
+    if (!HUD) return;
+
+    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
+    {
+        CustomHUD->Pause(true);
+        SetInputModeUIOnly();
+    }
+}
+
+void AAS_PlayerController::UnPause() 
+{
+    SetInputModeGameOnly();
+}
+
+void AAS_PlayerController::ExitToMenu()
+{
+    const auto GameInstance = GetGameInstance<UAS_GameInstance>();
+    if (!GameInstance) return;
+
+    UGameplayStatics::OpenLevel(this, GameInstance->MenuMapName);
+}
+
+void AAS_PlayerController::SetInputModeGameOnly()
+{
+    FInputModeGameOnly InputModeGameOnly;
+    SetInputMode(InputModeGameOnly);
+    SetShowMouseCursor(false);
+}
+
+void AAS_PlayerController::SetInputModeUIOnly()
+{
+    FInputModeUIOnly InputModeUI;
+    SetInputMode(InputModeUI);
+    SetShowMouseCursor(true);
+}
 }
 
 void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)

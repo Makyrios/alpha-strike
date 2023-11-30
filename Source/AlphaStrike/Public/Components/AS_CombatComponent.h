@@ -35,7 +35,10 @@ public:
 public:
     FORCEINLINE bool IsAiming() const { return bIsAiming; }
     FORCEINLINE AAS_BaseWeapon* GetEquippedWeapon() const { return EquippedWeapon; }
+
     EWeaponType GetEquippedWeaponType() const;
+    FVector GetStartMuzzlePoint() const;
+    FVector GetEndMuzzlePoint() const;
 
 protected:
     virtual void BeginPlay() override;

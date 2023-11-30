@@ -10,6 +10,7 @@ class UAS_MenuWidget;
 class AAS_PlayerController;
 class UAS_TableStatsWidget;
 class UAS_HUDWidget;
+class UAS_PauseWidget;
 class UProgressBar;
 
 UCLASS()
@@ -24,6 +25,9 @@ public:
     
     void ShowStatsTable();
     void HideStatsTable();
+
+    void Pause(bool bPause);
+    void ExitToMenu();
 
     void ShowStartGameWidget(float StartDelayTime);
 
@@ -51,4 +55,9 @@ private:
     UPROPERTY()
     UAS_TableStatsWidget* TableStatsWidget;
 
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Widgets")
+    TSubclassOf<UUserWidget> PauseWidgetClass;
+
+    UPROPERTY()
+    UAS_PauseWidget* PauseWidget;
 };

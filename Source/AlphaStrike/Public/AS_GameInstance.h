@@ -28,4 +28,7 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
     FName PlayersMapName = TEXT("PlayersMap_1");
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
+    FName MenuMapName = TEXT("MenuMap");
 };

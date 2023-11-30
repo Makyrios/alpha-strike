@@ -28,6 +28,8 @@ public:
     FORCEINLINE FName GetMuzzleSocketName() const { return MuzzleSocketName; }
     FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
     FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+    FORCEINLINE FVector GetStartMuzzlePoint() const { return HitStart; }
+    FORCEINLINE FVector GetEndMuzzlePoint() const { return HitTarget.bBlockingHit ? HitTarget.ImpactPoint : HitEnd; }
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "AS|Components")

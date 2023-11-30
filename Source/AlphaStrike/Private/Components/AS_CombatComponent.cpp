@@ -105,3 +105,15 @@ void UAS_CombatComponent::Fire()
     if (!EquippedWeapon) return;
     EquippedWeapon->Fire();
 }
+
+FVector UAS_CombatComponent::GetStartMuzzlePoint() const
+{
+    if (!EquippedWeapon) return FVector();
+    return EquippedWeapon->GetStartMuzzlePoint();
+}
+
+FVector UAS_CombatComponent::GetEndMuzzlePoint() const
+{
+    if (!EquippedWeapon) return FVector();
+    return EquippedWeapon->GetEndMuzzlePoint();
+}

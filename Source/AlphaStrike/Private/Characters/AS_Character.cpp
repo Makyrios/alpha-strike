@@ -8,6 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/AS_HealthComponent.h"
 #include "Components/AS_CombatComponent.h"
+#include "Components/SplineMeshComponent.h"
+#include "Components/SplineComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapons/AS_BaseWeapon.h"
 #include "Net/UnrealNetwork.h"
@@ -46,9 +48,12 @@ AAS_Character::AAS_Character()
     DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
     DefaultCrouchWalkSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
     DefaultFOV = FollowCamera->FieldOfView;
+
+    CrosshairComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Crosshair"));
+    CrosshairComponent->SetupAttachment(GetRootComponent());
 }
 
-void AAS_Character::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const 
+void AAS_Character::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
@@ -57,7 +62,7 @@ void AAS_Character::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
     DOREPLIFETIME(AAS_Character, TurningInPlace);
 }
 
-void AAS_Character::Tick(float DeltaTime) 
+void AAS_Character::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
@@ -69,7 +74,17 @@ void AAS_Character::BeginPlay()
     Super::BeginPlay();
 }
 
-void AAS_Character::RotateInPlace(float DeltaTime) 
+void AAS_Character::UnPossessed()
+{
+    if (CombatComponent && CombatComponent->GetEquippedWeapon())
+    {
+        CombatComponent->GetEquippedWeapon()->Destroy();
+    }
+
+    Super::UnPossessed();
+}
+
+void AAS_Character::RotateInPlace(float DeltaTime)
 {
     if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy && IsLocallyControlled())
     {
@@ -207,7 +222,7 @@ void AAS_Character::Die()
         }
     }
 
-    if (CombatComponent->GetEquippedWeapon())
+    if (CombatComponent && CombatComponent->GetEquippedWeapon())
     {
         CombatComponent->GetEquippedWeapon()->Destroy();
     }
@@ -217,4 +232,55 @@ AAS_BaseWeapon* AAS_Character::GetEquippedWeapon() const
 {
     if (!CombatComponent) return nullptr;
     return CombatComponent->GetEquippedWeapon();
+}
+
+void AAS_Character::CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation)
+{
+    ClearCrosshair();
+    DrawCrosshair(StartLocation, EndLocation);
+}
+
+void AAS_Character::CrosshairDeactivate()
+{
+    ClearCrosshair();
+}
+
+void AAS_Character::DrawCrosshair(const FVector& StartLocation, const FVector& EndLocation)
+{
+    if (!CrosshairComponent || !SplineMesh || !SplineMaterial) return;
+
+    CrosshairComponent->AddSplinePointAtIndex(StartLocation, 0, ESplineCoordinateSpace::World);
+    CrosshairComponent->AddSplinePointAtIndex(EndLocation, 1, ESplineCoordinateSpace::World);
+
+    CrosshairComponent->SetSplinePointType(1, ESplinePointType::Linear);
+
+    SplineMeshComponent = Cast<USplineMeshComponent>(AddComponentByClass(USplineMeshComponent::StaticClass(), true, FTransform(), false));
+    if (!SplineMeshComponent) return;
+
+    SplineMeshComponent->SetMobility(EComponentMobility::Movable);
+
+    if (SplineMesh && SplineMaterial)
+    {
+        SplineMeshComponent->SetStaticMesh(SplineMesh);
+        SplineMeshComponent->SetMaterial(0, SplineMaterial);
+    }
+
+    SplineMeshComponent->SetStartScale(FVector2D(CrosshairDepth, CrosshairDepth));
+    SplineMeshComponent->SetEndScale(FVector2D(CrosshairDepth, CrosshairDepth));
+
+    SplineMeshComponent->SetStartAndEnd(                                             //
+        StartLocation,                                                               //
+        CrosshairComponent->GetTangentAtSplinePoint(0, ESplineCoordinateSpace::World),  //
+        EndLocation,                                                                 //
+        CrosshairComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::World)   //
+    );
+}
+
+void AAS_Character::ClearCrosshair()
+{
+    if (!CrosshairComponent) return;
+    CrosshairComponent->ClearSplinePoints();
+
+    if (!SplineMeshComponent) return;
+    SplineMeshComponent->DestroyComponent();
 }

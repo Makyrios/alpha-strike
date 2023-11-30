@@ -13,6 +13,8 @@ class UAS_CombatComponent;
 class UAS_HealthComponent;
 class UAnimMontage;
 class AAS_BaseWeapon;
+class USplineComponent;
+class USplineMeshComponent;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_Character : public ACharacter
@@ -24,6 +26,10 @@ public:
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     virtual void Tick(float DeltaTime) override;
+    virtual void UnPossessed() override;
+
+    void CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation);
+    void CrosshairDeactivate();
 
     void Die();
 
@@ -42,10 +48,10 @@ public:
     AAS_BaseWeapon* GetEquippedWeapon() const;
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
     UCameraComponent* FollowCamera;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
@@ -54,11 +60,29 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
     UAS_CombatComponent* CombatComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Components")
+    USplineComponent* CrosshairComponent;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Animations", meta = (AllowPrivateAccess = "true"))
     UAnimMontage* DeathAnimation;
 
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
+    float CrosshairDepth = 0.1f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
+    UStaticMesh* SplineMesh;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
+    UMaterial* SplineMaterial;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
+    FName CustomTag = FName(TEXT("AS_Character"));
+
 protected:
     virtual void BeginPlay() override;
+
+    void DrawCrosshair(const FVector& StartLocation, const FVector& EndLocation);
+    void ClearCrosshair();
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Movement")
@@ -66,6 +90,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Movement")
     float DeathDestroyDelay = 5.f;
+
+    UPROPERTY()
+    USplineMeshComponent* SplineMeshComponent;
 
     float DefaultWalkSpeed = 0.f;
     float DefaultCrouchWalkSpeed = 0.f;

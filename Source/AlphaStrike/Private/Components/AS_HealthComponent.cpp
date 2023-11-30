@@ -24,6 +24,7 @@ void UAS_HealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(UAS_HealthComponent, Health);
+    DOREPLIFETIME(UAS_HealthComponent, Shield);
 }
 
 void UAS_HealthComponent::BeginPlay()
@@ -39,6 +40,7 @@ void UAS_HealthComponent::ServerSideBeginPlay()
 
     // Update health and set damage callback only on the server side
     SetHealth(MaxHealth);
+    SetShield(MaxShield);
     GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UAS_HealthComponent::OnTakeAnyDamageCallback);
 }
 
@@ -81,18 +83,43 @@ void UAS_HealthComponent::SetHealth(const float NewHealth)
 
 void UAS_HealthComponent::SubHealth(const float SubHealth)
 {
-    UpdateHealth(Health - SubHealth);
+    if (bEnableShiled && HasSomeShield())
+    {
+        if (Shield > SubHealth)
+        {
+            Shield -= SubHealth;
+            // TODO show shield UI
+            LogShow();
+        }
+        else
+        {
+            const float Damage = SubHealth - Shield;
+            Shield = 0.f;
+            UpdateHealth(Health - Damage);
+        }
+    }
+    else
+    {
+        UpdateHealth(Health - SubHealth);
+    }
+}
+
+void UAS_HealthComponent::SetShield(const float NewShield)
+{
+    Shield = FMath::Clamp(NewShield, 0.f, MaxShield);
+    LogShow();
 }
 
 void UAS_HealthComponent::UpdateHealth(const float HealthToUpdate)
 {
     Health = FMath::Clamp(HealthToUpdate, 0.f, MaxHealth);
     SetHealthForHUD();
-    LogShowHealth();
+    LogShow();
 }
 
 void UAS_HealthComponent::SetHealthForHUD()
 {
+    // TODO replace to Controller class
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
 
@@ -107,7 +134,14 @@ void UAS_HealthComponent::SetHealthForHUD()
 
 void UAS_HealthComponent::OnRep_Health()
 {
-    LogShowHealth();
+    SetHealthForHUD();
+    LogShow();
+}
+
+void UAS_HealthComponent::OnRep_Shield()
+{
+    // TODO show shield UI
+    LogShow();
 }
 
 
@@ -118,6 +152,7 @@ void UAS_HealthComponent::CheckIsDead(AController* InstigatedBy)
         // TODO replace to Controller class
         ACharacter* Owner = GetOwner<ACharacter>();
         if (!GetWorld() || !Owner) return;
+
         auto GameMode = GetWorld()->GetAuthGameMode<AAS_BaseGameMode>();
         if (GameMode)
         {
@@ -139,16 +174,21 @@ void UAS_HealthComponent::Multicast_OnDead_Implementation()
     }
 }
 
-void UAS_HealthComponent::LogShowHealth()
+void UAS_HealthComponent::LogShow()
 {
-    if (!GetOwner() || !bLogShowHealth) return;
+    if (!GetOwner() || !bLogShow) return;
 
-    UE_LOG(AS_HealthComponentLog, Display, TEXT("%s health: %f"), *GetOwner()->GetName(), Health);
+    UE_LOG(AS_HealthComponentLog, Display, TEXT("%s shiled: %f, health: %f"), *GetOwner()->GetName(), Shield, Health);
 }
 
 float UAS_HealthComponent::GetHealthPercent()
 {
     return Health / MaxHealth;
+}
+
+float UAS_HealthComponent::GetShieldPercent()
+{
+    return Shield / MaxShield;
 }
 
 void UAS_HealthComponent::VisibilityFlicker()

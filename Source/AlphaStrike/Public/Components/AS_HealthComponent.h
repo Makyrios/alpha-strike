@@ -19,13 +19,19 @@ public:
 
 public:
     FORCEINLINE float GetHealth() const { return Health; }
+    FORCEINLINE float GetShield() const { return Shield; }
     FORCEINLINE bool IsFullHealth() const { return FMath::IsNearlyEqual(Health, MaxHealth); }
+    FORCEINLINE bool IsFullShield() const { return FMath::IsNearlyEqual(Shield, MaxShield); }
+    FORCEINLINE bool HasSomeShield() const { return !FMath::IsNearlyEqual(Shield, 0.f); }
     FORCEINLINE bool IsDead() const { return FMath::IsNearlyEqual(Health, 0.f); }
+    float GetHealthPercent();
+    float GetShieldPercent();
     FORCEINLINE bool IsInvincible() const { return bIsInvincible; }
     void SetInvincible(bool bNewValue, float InvincibilityTime);
 
     void SetHealth(const float NewHealth);
     void SubHealth(const float SubHealth);
+    void SetShield(const float NewShield);
 
 public:
     FOnDeadDelegate OnDeadDelegate;
@@ -40,8 +46,17 @@ private:
     UPROPERTY(ReplicatedUsing = OnRep_Health)
     float Health = 0.f;
 
-    UPROPERTY(EditAnywhere, Category = "AS|Health|Log")
-    bool bLogShowHealth = false;
+    UPROPERTY(EditAnywhere, Category = "AS|Health")
+    float MaxShield = 100.f;
+
+    UPROPERTY(ReplicatedUsing = OnRep_Shield)
+    float Shield = 0.f;
+
+    UPROPERTY(EditAnywhere, Category = "AS")
+    bool bEnableShiled = false;
+
+    UPROPERTY(EditAnywhere, Category = "AS")
+    bool bLogShow = false;
 
     UPROPERTY()
     AActor* OwnerCharacter;
@@ -61,6 +76,9 @@ private:
     UFUNCTION()
     void OnRep_Health();
 
+    UFUNCTION()
+    void OnRep_Shield();
+
     void ServerSideBeginPlay();
     /*
      * Other functions
@@ -71,8 +89,7 @@ private:
 
     void UpdateHealth(const float HealthToUpdate);
     void CheckIsDead(AController* InstigatedBy);
-    void LogShowHealth();
+    void LogShow();
     void SetHealthForHUD();
-    float GetHealthPercent();
     void VisibilityFlicker();
 };
