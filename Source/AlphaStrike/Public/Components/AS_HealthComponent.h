@@ -7,6 +7,7 @@
 #include "AS_HealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeadDelegate, AActor*, DeadActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageDelegate, AActor*, DamagedActor);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ALPHASTRIKE_API UAS_HealthComponent : public UActorComponent
@@ -35,6 +36,7 @@ public:
 
 public:
     FOnDeadDelegate OnDeadDelegate;
+    FOnDamageDelegate OnDamageDelegate;
 
 protected:
     virtual void BeginPlay() override;
@@ -90,6 +92,5 @@ private:
     void UpdateHealth(const float HealthToUpdate);
     void CheckIsDead(AController* InstigatedBy);
     void LogShow();
-    void SetHealthForHUD();
     void VisibilityFlicker();
 };

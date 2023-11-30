@@ -164,36 +164,43 @@ void AAS_PlayerController::Shoot()
 
 void AAS_PlayerController::ShowStatsTable()
 {
-    AHUD* HUD = GetHUD();
-    if (!HUD) return;
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
 
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->ShowStatsTable();
-    }
+    AS_HUD->ShowStatsTable();
 }
 
 void AAS_PlayerController::HideStatsTable()
 {
-    AHUD* HUD = GetHUD();
-    if (!HUD) return;
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
 
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->HideStatsTable();
-    }
+    AS_HUD->HideStatsTable();
+}
+
+void AAS_PlayerController::SetHealthBarPercent(float Percent)
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetHealthBarPercent(Percent);
+}
+
+void AAS_PlayerController::SetShieldBarPercent(float Percent)
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetShieldBarPercent(Percent);
 }
 
 void AAS_PlayerController::Pause()
 {
-    AHUD* HUD = GetHUD();
-    if (!HUD) return;
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
 
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->Pause(true);
-        SetInputModeUIOnly();
-    }
+    AS_HUD->Pause(true);
+    SetInputModeUIOnly();
 }
 
 void AAS_PlayerController::UnPause()
@@ -225,13 +232,10 @@ void AAS_PlayerController::SetInputModeUIOnly()
 
 void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)
 {
-    AHUD* HUD = GetHUD();
-    if (!HUD) return;
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
 
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->ShowStartGameWidget(StartGameDelay);
-    }
+    AS_HUD->ShowStartGameWidget(StartGameDelay);
 }
 
 void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
@@ -242,11 +246,8 @@ void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
         return;
     }
 
-    AHUD* HUD = GetHUD();
-    if (!HUD) return;
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
 
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->ShowStartGameWidget(StartGameDelay);
-    }
+    AS_HUD->ShowStartGameWidget(StartGameDelay);
 }

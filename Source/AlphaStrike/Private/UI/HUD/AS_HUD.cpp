@@ -106,6 +106,16 @@ void AAS_HUD::SetHealthBarPercent(float Percent)
     }
 }
 
+void AAS_HUD::SetShieldBarPercent(float Percent)
+{
+    if (!HUDWidget) return;
+
+    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
+    {
+        CurrentHUDWidget->SetShield(Percent);
+    }
+}
+
 void AAS_HUD::SetTimeRemaining(float RemainingTimeInSeconds)
 {
     if (!HUDWidget) return;

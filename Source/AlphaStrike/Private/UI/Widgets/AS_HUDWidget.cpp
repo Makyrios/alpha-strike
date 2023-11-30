@@ -5,20 +5,20 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Kismet/KismetStringLibrary.h"
-#include "Net/UnrealNetwork.h"
-
-void UAS_HUDWidget::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(UAS_HUDWidget, HealthBar);
-}
 
 void UAS_HUDWidget::SetHealth(float Percent) 
 {
     if (HealthBar) 
     {
         HealthBar->SetPercent(Percent);
+    }
+}
+
+void UAS_HUDWidget::SetShield(float Percent)
+{
+    if (ShieldBar)
+    {
+        ShieldBar->SetPercent(Percent);
     }
 }
 

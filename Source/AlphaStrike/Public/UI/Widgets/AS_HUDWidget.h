@@ -14,14 +14,17 @@ class ALPHASTRIKE_API UAS_HUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     void SetHealth(float Percent);
+    void SetShield(float Percent);
 
     void SetTimerText(float RemainingTimeInSeconds);
 
 public:
-    UPROPERTY(EditAnywhere, Replicated, meta = (BindWidget))
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
     UProgressBar* HealthBar;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UProgressBar* ShieldBar;
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UTextBlock* TimeRemainingText;

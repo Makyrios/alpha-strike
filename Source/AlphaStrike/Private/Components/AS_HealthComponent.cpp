@@ -41,13 +41,16 @@ void UAS_HealthComponent::ServerSideBeginPlay()
     // Update health and set damage callback only on the server side
     SetHealth(MaxHealth);
     SetShield(MaxShield);
+
+    OnDamageDelegate.Broadcast(GetOwner());
     GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UAS_HealthComponent::OnTakeAnyDamageCallback);
 }
 
 void UAS_HealthComponent::OnTakeAnyDamageCallback(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (IsDead() || bIsInvincible) return;
+    if (IsDead() || bIsInvincible || !GetOwner()) return;
+
     SubHealth(Damage);
     CheckIsDead(InstigatedBy);
 }
@@ -88,7 +91,6 @@ void UAS_HealthComponent::SubHealth(const float SubHealth)
         if (Shield > SubHealth)
         {
             Shield -= SubHealth;
-            // TODO show shield UI
             LogShow();
         }
         else
@@ -97,6 +99,7 @@ void UAS_HealthComponent::SubHealth(const float SubHealth)
             Shield = 0.f;
             UpdateHealth(Health - Damage);
         }
+        OnDamageDelegate.Broadcast(GetOwner());
     }
     else
     {
@@ -113,37 +116,20 @@ void UAS_HealthComponent::SetShield(const float NewShield)
 void UAS_HealthComponent::UpdateHealth(const float HealthToUpdate)
 {
     Health = FMath::Clamp(HealthToUpdate, 0.f, MaxHealth);
-    SetHealthForHUD();
+    OnDamageDelegate.Broadcast(GetOwner());
+
     LogShow();
-}
-
-void UAS_HealthComponent::SetHealthForHUD()
-{
-    // TODO replace to Controller class
-    ACharacter* Character = Cast<ACharacter>(GetOwner());
-    if (!Character) return;
-
-    if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
-    {
-        if (AAS_HUD* PlayerHUD = PlayerController->GetHUD<AAS_HUD>())
-        {
-            PlayerHUD->SetHealthBarPercent(GetHealthPercent());
-        }
-    }
 }
 
 void UAS_HealthComponent::OnRep_Health()
 {
-    SetHealthForHUD();
     LogShow();
 }
 
 void UAS_HealthComponent::OnRep_Shield()
 {
-    // TODO show shield UI
     LogShow();
 }
-
 
 void UAS_HealthComponent::CheckIsDead(AController* InstigatedBy)
 {

@@ -10,6 +10,7 @@
 class UInputMappingContext;
 class UInputAction;
 class AAS_Character;
+class AAS_HUD;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_PlayerController : public APlayerController
@@ -22,6 +23,9 @@ public:
     void Pause();
     void UnPause();
     void ExitToMenu();
+
+    void SetHealthBarPercent(float Percent);
+    void SetShieldBarPercent(float Percent);
 
     void CreateStartGameWidget(float StartGameDelay);
 
@@ -58,6 +62,9 @@ private:
 private:
     UPROPERTY(Replicated)
     AAS_Character* PlayerCharacter;
+
+    UPROPERTY()
+    AAS_HUD* AS_HUD;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputMappingContext* DefaultMappingContext;

@@ -13,6 +13,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapons/AS_BaseWeapon.h"
 #include "Net/UnrealNetwork.h"
+#include "Controllers/AS_PlayerController.h"
 
 AAS_Character::AAS_Character()
 {
@@ -72,6 +73,20 @@ void AAS_Character::Tick(float DeltaTime)
 void AAS_Character::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (HealthComponent)
+    {
+        HealthComponent->OnDamageDelegate.AddDynamic(this, &AAS_Character::OnDamageCallback);
+    }
+}
+
+void AAS_Character::PossessedBy(AController* NewController)
+{
+    if (!NewController) return;
+
+    Super::PossessedBy(NewController);
+
+    OnDamageCallback(this);
 }
 
 void AAS_Character::UnPossessed()
@@ -82,6 +97,35 @@ void AAS_Character::UnPossessed()
     }
 
     Super::UnPossessed();
+}
+
+void AAS_Character::OnDamageCallback(AActor* DamagedActor)
+{
+    if (!HealthComponent || !HasAuthority()) return;
+
+    if (IsLocallyControlled())
+    {
+        PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
+        if (!PlayerController) return;
+
+        PlayerController->SetHealthBarPercent(HealthComponent->GetHealthPercent());
+        PlayerController->SetShieldBarPercent(HealthComponent->GetShieldPercent());
+    }
+    else
+    {
+        Client_DamageCallback(HealthComponent->GetHealthPercent(), HealthComponent->GetShieldPercent());
+    }
+}
+
+void AAS_Character::Client_DamageCallback_Implementation(float HealthPercent, float ShieldPercent)
+{
+    if (!HealthComponent) return;
+
+    PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
+    if (!PlayerController) return;
+
+    PlayerController->SetHealthBarPercent(HealthPercent);
+    PlayerController->SetShieldBarPercent(ShieldPercent);
 }
 
 void AAS_Character::RotateInPlace(float DeltaTime)

@@ -19,6 +19,7 @@ class ALPHASTRIKE_API AAS_HUD : public AHUD
     GENERATED_BODY()
 public:
     void SetHealthBarPercent(float Percent);
+    void SetShieldBarPercent(float Percent);
     void SetTimeRemaining(float RemainingTimeInSeconds);
 
     void Tick(float DeltaTime) override;

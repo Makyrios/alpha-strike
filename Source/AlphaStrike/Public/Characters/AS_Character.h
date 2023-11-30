@@ -15,6 +15,7 @@ class UAnimMontage;
 class AAS_BaseWeapon;
 class USplineComponent;
 class USplineMeshComponent;
+class AAS_PlayerController;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_Character : public ACharacter
@@ -26,6 +27,7 @@ public:
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     virtual void Tick(float DeltaTime) override;
+    virtual void PossessedBy(AController* NewController) override;
     virtual void UnPossessed() override;
 
     void CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation);
@@ -91,6 +93,9 @@ private:
     UPROPERTY()
     USplineMeshComponent* SplineMeshComponent;
 
+    UPROPERTY()
+    AAS_PlayerController* PlayerController;
+
     float DefaultWalkSpeed = 0.f;
     float DefaultCrouchWalkSpeed = 0.f;
     float DefaultFOV = 0.f;
@@ -111,6 +116,12 @@ private:
     bool bRotateRootBone = false;
 
 private:
+    UFUNCTION(Client, Reliable)
+    void Client_DamageCallback(float HealthPercent, float ShieldPercent);
+
+    UFUNCTION()
+    void OnDamageCallback(AActor* DamagedActor);
+
     void RotateInPlace(float DeltaTime);
     void UpdateAimOffset(float DeltaTime);
     void SetTurningInPlace(float DeltaTime);
