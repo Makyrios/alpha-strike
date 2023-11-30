@@ -11,7 +11,7 @@ class ALPHASTRIKE_API AAS_BasePlayerState : public APlayerState
 {
     GENERATED_BODY()
 public:
-    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     FORCEINLINE void AddKill() { ++Kills; }
     FORCEINLINE void AddDeath() { ++Deaths; }

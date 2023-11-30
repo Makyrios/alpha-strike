@@ -9,10 +9,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 #include "AS_GameInstance.h"
+#include "AS_PlayerStart.h"
 #include "Saves/AS_PlayerSavedInfo.h"
-#include <UI/Widgets/AS_StartGameWidget.h>
-#include <Controllers/AS_PlayerController.h>
+#include "UI/Widgets/AS_StartGameWidget.h"
+#include "Controllers/AS_PlayerController.h"
 #include "Components/AS_HealthComponent.h"
+
 
 bool AAS_BaseGameMode::ReadyToStartMatch_Implementation()
 {
@@ -34,7 +36,7 @@ void AAS_BaseGameMode::PostLogin(APlayerController* NewPlayer)
 
     AAS_BasePlayerState* PlayerState = NewPlayer->GetPlayerState<AAS_BasePlayerState>();
     UAS_GameInstance* GameInstance = Cast<UAS_GameInstance>(GetGameInstance());
-    if (GameInstance)
+    if (GameInstance && PlayerState)
     {
         FString PlayerName = GameInstance->GetPlayerName().ToString();
         PlayerState->SetPlayerName(PlayerName);
@@ -58,14 +60,44 @@ void AAS_BaseGameMode::HandleMatchHasStarted()
 {
     Super::HandleMatchHasStarted();
 
-    if (PlayerControllerList.Num() > RespawnPoints.Num()) return;
-    for (int i = 0; i < PlayerControllerList.Num(); ++i)
+    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
-        APawn* Pawn = PlayerControllerList[i]->GetPawn();
-        if (Pawn)
+        AActor* PlayerStart = ChoosePlayerStart_Implementation(Iterator->Get());
+        APawn* PlayerPawn = (*Iterator)->GetPawn();
+        if (PlayerStart && PlayerPawn)
         {
-            Pawn->SetActorLocation(RespawnPoints[i]);
+            PlayerPawn->SetActorLocation(PlayerStart->GetActorLocation());
+            PlayerPawn->SetActorRotation(PlayerStart->GetActorRotation());
         }
+    }
+}
+
+AActor* AAS_BaseGameMode::ChoosePlayerStart_Implementation(AController* Player)
+{
+    if (!Player) return nullptr;
+
+    TArray<AActor*> PlayerStarts;
+    UGameplayStatics::GetAllActorsOfClass(this, AAS_PlayerStart::StaticClass(), PlayerStarts);
+    for (int i = 0; i < PlayerStarts.Num(); ++i)
+    {
+        AAS_PlayerStart* CustomPlayerStart = Cast<AAS_PlayerStart>(PlayerStarts[i]);
+        if (!(CustomPlayerStart->GetIsOccupied()))
+        {
+            CustomPlayerStart->SetIsOccupied(true);
+            return CustomPlayerStart;
+        }
+    }
+    return nullptr;
+}
+
+void AAS_BaseGameMode::SetBotName(AController* BotController, int32 BotIndex)
+{
+    if (!BotController) return;
+
+    if (AAS_BasePlayerState* CustomPlayerState = BotController->GetPlayerState<AAS_BasePlayerState>())
+    {
+        FString BotName = FString("Bot ") + FString::FromInt(BotIndex);
+        CustomPlayerState->SetPlayerName(BotName);
     }
 }
 
@@ -95,7 +127,7 @@ void AAS_BaseGameMode::HandleActorDeath(AController* DeadActor, AController* Kil
 
     FTimerHandle DelayRespawnTimer;
     RespawnDelegate.BindUFunction(this, FName("RespawnPawn"), DeadActor);
-    GetWorldTimerManager().SetTimer(DelayRespawnTimer, RespawnDelegate, MinRespawnDelay, false, MinRespawnDelay);
+    GetWorldTimerManager().SetTimer(DelayRespawnTimer, RespawnDelegate, MinRespawnDelay, false);
 
     AddKillsAndDeathsToPlayers(DeadActor, KillerActor);
 }
@@ -115,11 +147,11 @@ void AAS_BaseGameMode::RespawnPawn(AController* Controller)
 {
     UWorld* World = GetWorld();
     APawn* OldPawn = Controller->GetPawn();
-    AActor* PlayerStart = FindPlayerStart(Controller);
+    AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
 
     if (!World || !Controller || !OldPawn || !PlayerStart) return;
 
-    APawn* NewPawn = World->SpawnActor<APawn>(OldPawn->GetClass(), PlayerStart->GetActorLocation(), FRotator(0.0f));
+    APawn* NewPawn = World->SpawnActor<APawn>(OldPawn->GetClass(), PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
     OldPawn->Destroy();
     if (NewPawn)
     {

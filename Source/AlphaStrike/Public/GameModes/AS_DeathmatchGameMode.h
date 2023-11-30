@@ -16,6 +16,9 @@ struct FPawnSpawnInfo
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
     TSubclassOf<APawn> PawnClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
+    TSubclassOf<AController> ControllerClass;
 };
 
 UCLASS()
@@ -28,7 +31,6 @@ public:
 protected:
     virtual void HandleMatchHasStarted() override;
     virtual void SpawnBotsPawns();
-    virtual void SetBotsNames(APawn* BotPawn, int32 BotIndex);
 
     virtual bool ReadyToEndMatch_Implementation() override;
 

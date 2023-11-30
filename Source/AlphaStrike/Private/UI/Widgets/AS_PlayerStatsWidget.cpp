@@ -25,6 +25,7 @@ void UAS_PlayerStatsWidget::UpdatePlayerStats()
 
  void UAS_PlayerStatsWidget::SetPlayerState(AAS_BasePlayerState* NewPlayerState) 
  {
+     if (!NewPlayerState) return;
      PlayerState = NewPlayerState;
  }
 

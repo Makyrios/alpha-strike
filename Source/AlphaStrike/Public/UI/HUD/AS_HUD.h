@@ -39,7 +39,7 @@ protected:
 
     void SetupTableWidget();
 
-private:
+protected:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Widgets")
     TSubclassOf<UUserWidget> HUDWidgetClass;
 

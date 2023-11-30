@@ -22,6 +22,8 @@ protected:
     virtual bool ReadyToStartMatch_Implementation() override;
 
     virtual void HandleMatchHasStarted() override;
+    AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+    virtual void SetBotName(AController* BotController, int32 BotIndex);
 
     UFUNCTION()
     virtual void RespawnPawn(AController* Controller);
@@ -47,7 +49,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay", meta = (EditCondition = "bInvincibleOnSpawn"))
     float InvincibilityTime = 2.f;
-
 
     UPROPERTY(BlueprintReadOnly)
     TArray<APlayerController*> PlayerControllerList;

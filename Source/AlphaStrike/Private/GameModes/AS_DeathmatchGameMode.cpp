@@ -21,31 +21,19 @@ void AAS_DeathmatchGameMode::HandleMatchHasStarted()
 void AAS_DeathmatchGameMode::SpawnBotsPawns()
 {
     UWorld* World = GetWorld();
-    UNavigationSystemV1* NavigationSystem = UNavigationSystemV1::GetCurrent(this);
-    if (!World || !NavigationSystem) return;
-
-    FNavLocation NavLocation;
-    bool FoundLocation;
+    if (!World) return;
 
     for (int i = 0; i < BotsSpawnInfo.NumberOfPawns; ++i)
     {
-        FoundLocation = NavigationSystem->GetRandomPoint(NavLocation);
-        if (FoundLocation)
+        AController* Controller = World->SpawnActor<AController>(BotsSpawnInfo.ControllerClass);
+        AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
+        if (Controller && PlayerStart)
         {
-            APawn* NewPawn = World->SpawnActor<APawn>(BotsSpawnInfo.PawnClass, NavLocation.Location, FRotator(0.0f));
-            SetBotsNames(NewPawn, i);
+            APawn* Pawn =
+                World->SpawnActor<APawn>(BotsSpawnInfo.PawnClass, PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
+            Controller->Possess(Pawn);
+            SetBotName(Controller, i);
         }
-    }
-}
-
-void AAS_DeathmatchGameMode::SetBotsNames(APawn* BotPawn, int32 BotIndex)
-{
-    if (!BotPawn) return;
-
-    if (AAS_BasePlayerState* CustomPlayerState = BotPawn->GetPlayerState<AAS_BasePlayerState>())
-    {
-        FString BotName = FString("Bot ") + FString::FromInt(BotIndex); 
-        CustomPlayerState->SetPlayerName(BotName);
     }
 }
 

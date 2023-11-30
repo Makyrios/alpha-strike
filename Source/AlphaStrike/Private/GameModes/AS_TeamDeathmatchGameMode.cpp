@@ -4,6 +4,8 @@
 #include "NavigationSystem.h"
 #include "PlayerStates/AS_TeamDeathmatchPlayerState.h"
 #include "GameStates/AS_TeamDeathmatchGameState.h"
+#include "AS_PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 
 void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
 {
@@ -11,45 +13,73 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
 
     if (bSpawnBots)
     {
-        SpawnBotsPawns();
+        AAS_TeamDeathmatchPlayerState* TeamPlayerState = PlayerControllerList[0]->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+        if (TeamPlayerState)
+        {
+            TeamsSpawnInfo[TeamPlayerState->GetTeam()].NumberOfPawns -= 1;
+        }
+        SpawnBotsPawns(ETeams::TEAM_A);
+        SpawnBotsPawns(ETeams::TEAM_B);
     }
 }
 
-void AAS_TeamDeathmatchGameMode::SpawnBotsPawns()
+void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
 {
+    FTeamSpawnInfo TeamSpawnInfo = TeamsSpawnInfo[TeamToSpawn];
     UWorld* World = GetWorld();
+
     if (!World) return;
 
-    UE_LOG(LogTemp, Warning, TEXT("Bots spawned!"));
-
-    for (int i = 0; i < TeamASpawnInfo.NumberOfPawns; ++i)
+    for (int i = 0; i < TeamSpawnInfo.NumberOfPawns; ++i)
     {
-        APawn* NewPawn = World->SpawnActor<APawn>(TeamASpawnInfo.PawnClass, TeamASpawnInfo.SpawnPoints[i], FRotator(0.0f));
-        GiveTeamToPawn(NewPawn, true);
-    }
-
-    for (int i = 0; i < TeamBSpawnInfo.NumberOfPawns; ++i)
-    {
-        APawn* NewPawn = World->SpawnActor<APawn>(TeamBSpawnInfo.PawnClass, TeamBSpawnInfo.SpawnPoints[i], FRotator(0.0f));
-        GiveTeamToPawn(NewPawn, false);
+        AController* Controller = World->SpawnActor<AController>(TeamSpawnInfo.ControllerClass);
+        GiveTeamToPlayer(Controller, TeamToSpawn);
+        AActor* SpawnActor = ChoosePlayerStart_Implementation(Controller);
+        if (Controller && SpawnActor)
+        {
+            APawn* Pawn = World->SpawnActor<APawn>(TeamSpawnInfo.PawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation());
+            if (Pawn)
+            {
+                SetBotName(Controller, i);
+                Controller->Possess(Pawn);
+            }
+        }
     }
 }
 
-void AAS_TeamDeathmatchGameMode::GiveTeamToPawn(APawn* Pawn, bool bGiveTeamA)
+void AAS_TeamDeathmatchGameMode::GiveTeamToPlayer(AController* Player, ETeams TeamToGive)
 {
     AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>();
-    if (!Pawn || !CurrentGameState) return;
+    if (!Player || !CurrentGameState) return;
 
-    APlayerState* PawnPlayerState = Pawn->GetPlayerState();
-
-    if (!PawnPlayerState) return;
-
-    if (AAS_TeamDeathmatchPlayerState* TeamPlayerState = Cast<AAS_TeamDeathmatchPlayerState>(PawnPlayerState))
+    if (AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState < AAS_TeamDeathmatchPlayerState>())
     {
-        TeamPlayerState->SetToTeamA(bGiveTeamA);
-        CurrentGameState->AddPlayerToTeam(PawnPlayerState);
+        TeamPlayerState->SetTeam(TeamToGive);
+        CurrentGameState->AddPlayerToTeam(TeamPlayerState, TeamToGive);
     }
 }
+
+AActor* AAS_TeamDeathmatchGameMode::ChoosePlayerStart_Implementation(AController* Player)
+{
+    if (!Player) return nullptr;
+
+    TArray<AActor*> PlayerStarts;
+    AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+    UGameplayStatics::GetAllActorsOfClass(this, AAS_PlayerStart::StaticClass(), PlayerStarts);
+
+    if (PlayerStarts.IsEmpty() || !TeamPlayerState) return nullptr;
+
+    for (int i = 0; i < PlayerStarts.Num(); ++i)
+    {
+        AAS_PlayerStart* CustomPlayerStart = Cast<AAS_PlayerStart>(PlayerStarts[i]);
+        if (CustomPlayerStart->GetTeam() == TeamPlayerState->GetTeam() && !(CustomPlayerStart->GetIsOccupied()))
+        {
+            CustomPlayerStart->SetIsOccupied(true);
+            return CustomPlayerStart;
+        }
+    }
+    return nullptr;
+ }
 
 void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AController* KillerActor)
 {
@@ -57,7 +87,7 @@ void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AContr
 
     if (AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
     {
-        CurrentGameState->UpdateTeamScore(KillerActor);
+        CurrentGameState->AddScoreToTeam(KillerActor);
     }
 }
 
@@ -65,7 +95,7 @@ bool AAS_TeamDeathmatchGameMode::ReadyToEndMatch_Implementation()
 {
     if (AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
     {
-        return CurrentGameState->GetTeamAScore() >= ScoreGoal || CurrentGameState->GetTeamBScore() >= ScoreGoal ||
+        return CurrentGameState->GetTeamScore(ETeams::TEAM_A) >= ScoreGoal || CurrentGameState->GetTeamScore(ETeams::TEAM_B) >= ScoreGoal ||
                Super::ReadyToEndMatch_Implementation();
     }
     return false;

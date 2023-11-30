@@ -14,7 +14,6 @@ void AAS_DeathmatchGameState::UpdateMaxKillsAndWinningPlayer(AController* Player
         if (PlayerState->GetKills() > MaxPlayerKills)
         {
             MaxPlayerKills = PlayerState->GetKills();
-            UE_LOG(LogTemp, Warning, TEXT("New max kills: %i"), MaxPlayerKills);
             WinningPlayer = PlayerController;
         }
     }

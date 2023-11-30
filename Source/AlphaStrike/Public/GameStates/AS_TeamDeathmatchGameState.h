@@ -6,16 +6,18 @@
 #include "GameStates/AS_BaseGameState.h"
 #include "AS_TeamDeathmatchGameState.generated.h"
 
+enum class ETeams;
+
 USTRUCT(BlueprintType)
 struct FTeamInfo
 {
     GENERATED_BODY()
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    TArray<APlayerState*> TeamMembers;
+    TArray<APlayerState*> Members;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    int32 TeamScore;
+    int32 Score;
 };
 
 UCLASS()
@@ -24,17 +26,14 @@ class ALPHASTRIKE_API AAS_TeamDeathmatchGameState : public AAS_BaseGameState
 	GENERATED_BODY()
 
 public:
-    FORCEINLINE int32 GetTeamAScore() const { return TeamA.TeamScore; }
-    FORCEINLINE int32 GetTeamBScore() const { return TeamB.TeamScore; }
+    AAS_TeamDeathmatchGameState();
 
-    void AddPlayerToTeam(APlayerState* Player);
+    FORCEINLINE int32 GetTeamScore(ETeams Team) const;
 
-    void UpdateTeamScore(AController* PlayerController);
+    void AddPlayerToTeam(APlayerState* Player, ETeams Team);
+
+    void AddScoreToTeam(AController* ScoredPlayer);
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    FTeamInfo TeamA;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    FTeamInfo TeamB;
+    TMap<ETeams, FTeamInfo> TeamsInfo;
 };

@@ -6,19 +6,21 @@
 #include "GameModes/AS_BaseGameMode.h"
 #include "AS_TeamDeathmatchGameMode.generated.h"
 
+enum class ETeams;
+
 USTRUCT(BlueprintType)
 struct FTeamSpawnInfo
 {
     GENERATED_BODY()
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     int32 NumberOfPawns = 4;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSubclassOf<APawn> PawnClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, EditFixedSize)
-    TArray<FVector> SpawnPoints = {FVector(), FVector(), FVector(), FVector()};
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TSubclassOf<AController> ControllerClass;
 };
 
 UCLASS()
@@ -30,8 +32,9 @@ public:
 
 protected:
     virtual void HandleMatchHasStarted() override;
-    void SpawnBotsPawns();
-	void GiveTeamToPawn(APawn* Pawn, bool bGiveTeamA);
+    void SpawnBotsPawns(ETeams TeamToSpawn);
+    AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	void GiveTeamToPlayer(AController* Pawn, ETeams TeamToGive);
 
     virtual bool ReadyToEndMatch_Implementation() override;
 
@@ -43,8 +46,5 @@ protected:
     bool bSpawnBots;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AS|GameStart", meta = (EditCondition = "bSpawnBots"))
-    FTeamSpawnInfo TeamASpawnInfo;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AS|GameStart", meta = (EditCondition = "bSpawnBots"))
-    FTeamSpawnInfo TeamBSpawnInfo;
+    TMap<ETeams, FTeamSpawnInfo> TeamsSpawnInfo;
 };

@@ -21,9 +21,9 @@ public:
 protected:
     void NativeOnInitialized() override;
     void UpdatePlayers();
-    void AddPlayerStatsToTable(AAS_BasePlayerState* PlayerToAdd);
+    virtual void AddPlayerStatsToTable(AAS_BasePlayerState* PlayerToAdd);
 
-private:
+protected:
     UPROPERTY()
     TArray<AAS_BasePlayerState*> PlayerStatesInTable;
 
