@@ -157,7 +157,6 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
             HitStart,                                                                              //
             FRotator::ZeroRotator,                                                                 //
             true                                                                                   //
-            true                                                                                   //
         );
 
         if (BeamSystemComponent)

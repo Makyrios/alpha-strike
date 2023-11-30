@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/AS_HealthComponent.h"
 #include "Components/AS_CombatComponent.h"
+#include "Components/AS_BuffComponent.h"
 #include "Components/SplineMeshComponent.h"
 #include "Components/SplineComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -45,10 +46,7 @@ AAS_Character::AAS_Character()
 
     HealthComponent = CreateDefaultSubobject<UAS_HealthComponent>(TEXT("HealthComponent"));
     CombatComponent = CreateDefaultSubobject<UAS_CombatComponent>(TEXT("CombatComponent"));
-
-    DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-    DefaultCrouchWalkSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-    DefaultFOV = FollowCamera->FieldOfView;
+    BuffComponent = CreateDefaultSubobject<UAS_BuffComponent>(TEXT("BuffComponent"));
 
     CrosshairComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Crosshair"));
     CrosshairComponent->SetupAttachment(GetRootComponent());
@@ -78,6 +76,11 @@ void AAS_Character::BeginPlay()
     {
         HealthComponent->OnDamageDelegate.AddDynamic(this, &AAS_Character::OnDamageCallback);
     }
+
+    DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+    DefaultCrouchWalkSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+    DefaultJumpZVelocity = GetCharacterMovement()->JumpZVelocity;
+    DefaultFOV = FollowCamera->FieldOfView;
 }
 
 void AAS_Character::PossessedBy(AController* NewController)

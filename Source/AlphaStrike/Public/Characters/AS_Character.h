@@ -15,6 +15,7 @@ class UAnimMontage;
 class AAS_BaseWeapon;
 class USplineComponent;
 class USplineMeshComponent;
+class UAS_BuffComponent;
 class AAS_PlayerController;
 
 UCLASS()
@@ -40,8 +41,11 @@ public:
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     FORCEINLINE UAS_CombatComponent* GetCombatComponent() const { return CombatComponent; }
     FORCEINLINE UAS_HealthComponent* GetHealthComponent() const { return HealthComponent; }
+    FORCEINLINE UAS_BuffComponent* GetBuffComponent() const {return BuffComponent; }
+
     FORCEINLINE const float GetDefaultWalkSpeed() const { return DefaultWalkSpeed; }
     FORCEINLINE const float GetDefaultCrouchWalkSpeed() const { return DefaultCrouchWalkSpeed; }
+    FORCEINLINE const float GetDefaultJumpZVelocity() const { return DefaultJumpZVelocity; }
     FORCEINLINE const float GetDefaultFOV() const { return DefaultFOV; }
     FORCEINLINE ETurningInPlace GetTurningState() const { return TurningInPlace; }
     FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
@@ -61,6 +65,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
     UAS_CombatComponent* CombatComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
+    UAS_BuffComponent* BuffComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Components")
     USplineComponent* CrosshairComponent;
@@ -98,6 +105,7 @@ private:
 
     float DefaultWalkSpeed = 0.f;
     float DefaultCrouchWalkSpeed = 0.f;
+    float DefaultJumpZVelocity = 0.f;
     float DefaultFOV = 0.f;
 
     UPROPERTY(Replicated)

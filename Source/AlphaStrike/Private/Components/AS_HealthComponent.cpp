@@ -118,10 +118,21 @@ void UAS_HealthComponent::SubHealth(const float SubHealth)
     }
 }
 
+void UAS_HealthComponent::AddHealth(const float AddHealth)
+{
+    SetHealth(Health + AddHealth);
+}
+
 void UAS_HealthComponent::SetShield(const float NewShield)
 {
     Shield = FMath::Clamp(NewShield, 0.f, MaxShield);
     LogShow();
+}
+
+void UAS_HealthComponent::AddShield(const float AddShield)
+{
+    SetShield(Shield + AddShield);
+    OnDamageDelegate.Broadcast(GetOwner());
 }
 
 void UAS_HealthComponent::UpdateHealth(const float HealthToUpdate)
