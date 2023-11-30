@@ -1,6 +1,5 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "UI/Widgets/AS_HUDWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -14,9 +13,9 @@ void UAS_HUDWidget::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
     DOREPLIFETIME(UAS_HUDWidget, HealthBar);
 }
 
-void UAS_HUDWidget::SetHealth(float Percent) 
+void UAS_HUDWidget::SetHealth(float Percent)
 {
-    if (HealthBar) 
+    if (HealthBar)
     {
         HealthBar->SetPercent(Percent);
     }
@@ -29,5 +28,13 @@ void UAS_HUDWidget::SetTimerText(float RemainingTimeInSeconds)
         FString TimerString = UKismetStringLibrary::TimeSecondsToString(RemainingTimeInSeconds);
         TimerString.RemoveAt(5, 3);
         TimeRemainingText->SetText(FText::FromString(TimerString));
+    }
+}
+
+void UAS_HUDWidget::SetAmmoInfoText(FText NewAmmoInfo)
+{
+    if (AmmoInfoText)
+    {
+        AmmoInfoText->SetText(NewAmmoInfo);
     }
 }

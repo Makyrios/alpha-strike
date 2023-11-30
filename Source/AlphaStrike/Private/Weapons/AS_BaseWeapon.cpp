@@ -65,7 +65,8 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
     Multicast_Fire(HitResult);
 }
 
-void AAS_BaseWeapon::Reload() {
+void AAS_BaseWeapon::Reload()
+{
     AmmoComponent->Reload();
 }
 
@@ -156,6 +157,7 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
             HitStart,                                                                              //
             FRotator::ZeroRotator,                                                                 //
             true                                                                                   //
+            true                                                                                   //
         );
 
         if (BeamSystemComponent)
@@ -163,4 +165,9 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
             BeamSystemComponent->SetVectorParameter(FName("Target"), BeamEnd);
         }
     }
+}
+
+FText AAS_BaseWeapon::GetAmmoInfoAsText()
+{
+    return AmmoComponent->GetAmmoInfoAsText();
 }

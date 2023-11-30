@@ -18,6 +18,7 @@ public:
     void SetHealth(float Percent);
 
     void SetTimerText(float RemainingTimeInSeconds);
+    void SetAmmoInfoText(FText NewAmmoInfo);
 
 public:
     UPROPERTY(EditAnywhere, Replicated, meta = (BindWidget))
@@ -25,4 +26,7 @@ public:
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UTextBlock* TimeRemainingText;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UTextBlock* AmmoInfoText;
 };

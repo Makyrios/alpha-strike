@@ -20,6 +20,7 @@ class ALPHASTRIKE_API AAS_HUD : public AHUD
 public:
     void SetHealthBarPercent(float Percent);
     void SetTimeRemaining(float RemainingTimeInSeconds);
+    void SetAmmoInfo(FText NewAmmoInfo);
 
     void Tick(float DeltaTime) override;
     

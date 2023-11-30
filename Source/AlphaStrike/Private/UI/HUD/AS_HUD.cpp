@@ -116,6 +116,16 @@ void AAS_HUD::SetTimeRemaining(float RemainingTimeInSeconds)
     }
 }
 
+ void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo) 
+ {
+    if (!HUDWidget) return;
+
+    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
+    {
+        CurrentHUDWidget->SetAmmoInfoText(NewAmmoInfo);
+    }
+ }
+
 template <typename T>
 T* AAS_HUD::AddWidget(TSubclassOf<UUserWidget> WidgetToAdd)
 {

@@ -26,6 +26,8 @@ public:
     virtual void Fire();
     virtual void Reload();
 
+    FText GetAmmoInfoAsText();
+
 public:
     FORCEINLINE FName GetMuzzleSocketName() const { return MuzzleSocketName; }
     FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
