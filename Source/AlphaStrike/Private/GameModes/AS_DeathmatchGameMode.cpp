@@ -13,7 +13,6 @@ void AAS_DeathmatchGameMode::HandleMatchHasStarted()
     {
         SpawnBotsPawns();
     }
-
 }
 
 void AAS_DeathmatchGameMode::SpawnBotsPawns()
@@ -44,7 +43,6 @@ void AAS_DeathmatchGameMode::HandleActorDeath(AController* DeadActor, AControlle
     {
         CurrentGameState->UpdateMaxKillsAndWinningPlayer(KillerActor);
     }
-
 }
 
 bool AAS_DeathmatchGameMode::ReadyToEndMatch_Implementation() {

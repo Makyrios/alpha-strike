@@ -59,9 +59,20 @@ void UAS_HealthComponent::SetInvincible(bool bNewValue, float InvincibilityTime)
 {
     bIsInvincible = bNewValue;
 
+    HandleInvincible(bNewValue, InvincibilityTime);
+    Multicast_InvincibleFlicker(bNewValue, InvincibilityTime);
+}
+
+void UAS_HealthComponent::Multicast_InvincibleFlicker_Implementation(bool bNewValue, float InvincibilityTime)
+{
+    HandleInvincible(bNewValue, InvincibilityTime);
+}
+
+void UAS_HealthComponent::HandleInvincible(bool bNewValue, float InvincibilityTime)
+{
     if (!GetWorld()) return;
 
-    if (bIsInvincible)
+    if (bNewValue)
     {
         GetWorld()->GetTimerManager().SetTimer(FlickerHandle, this, &UAS_HealthComponent::VisibilityFlicker, 0.1, true);
         GetWorld()->GetTimerManager().SetTimer(
@@ -71,13 +82,13 @@ void UAS_HealthComponent::SetInvincible(bool bNewValue, float InvincibilityTime)
     {
         GetWorld()->GetTimerManager().ClearTimer(FlickerHandle);
         GetWorld()->GetTimerManager().ClearTimer(EndFlickerHandle);
-        if (ACharacter* OwnerChar = Cast<ACharacter>(GetOwner()))
+        if (AAS_Character* OwnerChar = GetOwner<AAS_Character>())
         {
             OwnerChar->GetMesh()->SetVisibility(true);
+            OwnerChar->GetEquippedWeapon()->GetWeaponMesh()->SetVisibility(true);
         }
     }
 }
-
 
 void UAS_HealthComponent::SetHealth(const float NewHealth)
 {

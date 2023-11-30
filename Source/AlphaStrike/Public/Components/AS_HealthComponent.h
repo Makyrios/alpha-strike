@@ -75,6 +75,9 @@ private:
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_OnDead();
 
+    UFUNCTION(NetMulticast, Reliable)
+    void Multicast_InvincibleFlicker(bool bNewValue, float InvincibilityTime);
+
     UFUNCTION()
     void OnRep_Health();
 
@@ -93,4 +96,5 @@ private:
     void CheckIsDead(AController* InstigatedBy);
     void LogShow();
     void VisibilityFlicker();
+    void HandleInvincible(bool bNewValue, float InvincibilityTime);
 };
