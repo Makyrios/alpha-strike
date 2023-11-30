@@ -1,11 +1,9 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "GameModes/AS_DeathmatchGameMode.h"
 #include "GameStates/AS_DeathmatchGameState.h"
 #include "PlayerStates/AS_BasePlayerState.h"
 #include "NavigationSystem.h"
-
 
 void AAS_DeathmatchGameMode::HandleMatchHasStarted() 
 {
