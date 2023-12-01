@@ -18,6 +18,9 @@ struct FPawnSpawnInfo
     TSubclassOf<APawn> PawnClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
+    TSubclassOf<APawn> HeavyPawnClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
     TSubclassOf<AController> ControllerClass;
 };
 

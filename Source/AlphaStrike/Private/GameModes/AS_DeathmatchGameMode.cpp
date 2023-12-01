@@ -26,8 +26,9 @@ void AAS_DeathmatchGameMode::SpawnBotsPawns()
         AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
         if (Controller && PlayerStart)
         {
-            APawn* Pawn =
-                World->SpawnActor<APawn>(BotsSpawnInfo.PawnClass, PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
+            TSubclassOf<APawn> RandPawnClass = (FMath::RandBool()) ? BotsSpawnInfo.PawnClass : BotsSpawnInfo.HeavyPawnClass;
+
+            APawn* Pawn = World->SpawnActor<APawn>(RandPawnClass, PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
             Controller->Possess(Pawn);
             SetBotName(Controller, i);
         }

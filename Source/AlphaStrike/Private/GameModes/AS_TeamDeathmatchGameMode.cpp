@@ -41,8 +41,10 @@ void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
             FActorSpawnParameters SpawnParameters;
             SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-            APawn* Pawn = World->SpawnActor<APawn>(
-                TeamSpawnInfo.PawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation(), SpawnParameters);
+            TSubclassOf<APawn> RandPawnClass = (FMath::RandBool()) ? TeamSpawnInfo.PawnClass : TeamSpawnInfo.HeavyPawnClass;
+
+            APawn* Pawn =
+                World->SpawnActor<APawn>(RandPawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation(), SpawnParameters);
             if (Pawn)
             {
                 SetBotName(Controller, i);
@@ -57,7 +59,7 @@ void AAS_TeamDeathmatchGameMode::GiveTeamToPlayer(AController* Player, ETeams Te
     AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>();
     if (!Player || !CurrentGameState) return;
 
-    if (AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState < AAS_TeamDeathmatchPlayerState>())
+    if (AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState<AAS_TeamDeathmatchPlayerState>())
     {
         TeamPlayerState->SetTeam(TeamToGive);
         CurrentGameState->AddPlayerToTeam(TeamPlayerState, TeamToGive);
@@ -90,7 +92,7 @@ AActor* AAS_TeamDeathmatchGameMode::ChoosePlayerStart_Implementation(AController
     TeamPlayerStarts[RandIndex]->SetIsOccupied(true);
 
     return TeamPlayerStarts[RandIndex];
- }
+}
 
 void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AController* KillerActor)
 {

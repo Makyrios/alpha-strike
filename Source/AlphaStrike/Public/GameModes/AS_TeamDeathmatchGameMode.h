@@ -20,6 +20,9 @@ struct FTeamSpawnInfo
     TSubclassOf<APawn> PawnClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TSubclassOf<APawn> HeavyPawnClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TSubclassOf<AController> ControllerClass;
 };
 
