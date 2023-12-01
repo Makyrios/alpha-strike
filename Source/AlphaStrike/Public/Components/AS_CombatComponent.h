@@ -38,7 +38,7 @@ public:
 
 public:
     FORCEINLINE bool IsAiming() const { return bIsAiming; }
-    FORCEINLINE AAS_BaseWeapon* GetEquippedWeapon() const { return EquippedWeapon; }
+    AAS_BaseWeapon* GetEquippedWeapon() const;
 
     EWeaponType GetEquippedWeaponType() const;
     FVector GetStartMuzzlePoint() const;
@@ -58,19 +58,26 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Combat")
     TSubclassOf<AAS_BaseWeapon> EquippedWeaponClass;
 
-    UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
-    AAS_BaseWeapon* EquippedWeapon = nullptr;
-    TArray<AAS_BaseWeapon*> WeaponInventory;
+//    UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
+//    AAS_BaseWeapon* EquippedWeapon = nullptr;
+    UPROPERTY(ReplicatedUsing = OnRep_EquippedWeaponIndex)
     int EquippedWeaponIndex;
+    
+    int PreviousWeaponIndex;
+
+    UPROPERTY(Replicated)
+    TArray<AAS_BaseWeapon*> WeaponInventory;
     UPROPERTY(Replicated)
     bool bIsAiming = false;
 
+
 private:
     UFUNCTION()
-    void OnRep_EquippedWeapon();
+    void OnRep_EquippedWeaponIndex();
 
     UFUNCTION(Server, Reliable)
     void Server_SetAim(bool bAim);
+    UFUNCTION(Server, Reliable)
     void ChangeWeapon(int WeaponIndex);
     void UpdateHUDAmmoInfo();
 };

@@ -14,6 +14,7 @@ AAS_BaseWeapon::AAS_BaseWeapon()
 
     WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(FName("WeaponMesh"));
     WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    WeaponMesh->SetIsReplicated(true);
     SetRootComponent(WeaponMesh);
 
     AmmoComponent = CreateDefaultSubobject<UAS_AmmoComponent>(FName("AmmoComponent"));
