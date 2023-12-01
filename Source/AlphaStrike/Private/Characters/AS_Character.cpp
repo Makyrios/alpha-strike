@@ -11,6 +11,7 @@
 #include "Components/AS_BuffComponent.h"
 #include "Components/SplineMeshComponent.h"
 #include "Components/SplineComponent.h"
+#include "Components/AS_AmmoComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapons/AS_BaseWeapon.h"
 #include "Net/UnrealNetwork.h"
@@ -90,6 +91,7 @@ void AAS_Character::PossessedBy(AController* NewController)
     Super::PossessedBy(NewController);
 
     OnDamageCallback(this);
+    UpdateHUDAmmoInfo();
 }
 
 void AAS_Character::UnPossessed()
@@ -331,4 +333,15 @@ void AAS_Character::ClearCrosshair()
 
     if (!SplineMeshComponent) return;
     SplineMeshComponent->DestroyComponent();
+}
+
+void AAS_Character::UpdateHUDAmmoInfo()
+{
+    if (IsLocallyControlled())
+    {
+        PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
+        if (!PlayerController || !CombatComponent || !CombatComponent->GetEquippedWeapon()) return;
+
+        PlayerController->SetAmmoInfo(CombatComponent->GetEquippedWeapon()->GetAmmoInfoText());
+    }
 }
