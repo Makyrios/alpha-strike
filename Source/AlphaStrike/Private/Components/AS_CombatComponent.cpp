@@ -77,13 +77,6 @@ void UAS_CombatComponent::SpawnWeapon()
 
 void UAS_CombatComponent::OnRep_EquippedWeaponIndex()
 {
-
-    /*ACharacter* Owner = GetOwner<ACharacter>();
-    if (!Owner || !Owner->GetMesh() || !EquippedWeapon) return;
-
-    FAttachmentTransformRules AttachmentTransformRules(
-        EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-    EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquippedWeapon->GetMuzzleSocketName());*/
     if (!WeaponInventory.IsValidIndex(PreviousWeaponIndex) || !WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return;
     AAS_BaseWeapon* PreviousWeapon = WeaponInventory[PreviousWeaponIndex];
     AAS_BaseWeapon* CurrentWeapon = WeaponInventory[EquippedWeaponIndex];
@@ -106,13 +99,6 @@ void UAS_CombatComponent::ChangeWeapon_Implementation(int WeaponIndex)
         WeaponIndex = 0;
     }
     if (!WeaponInventory.IsValidIndex(WeaponIndex)) return;
-
-    /*AAS_BaseWeapon* OldWeapon = WeaponInventory[EquippedWeaponIndex];
-    OldWeapon->GetWeaponMesh()->SetVisibility(false);
-
-    AAS_BaseWeapon* NewWeapon = WeaponInventory[WeaponIndex];
-    if (!NewWeapon || !NewWeapon->GetWeaponMesh()) return;
-    NewWeapon->GetWeaponMesh()->SetVisibility(true);*/
 
     PreviousWeaponIndex = EquippedWeaponIndex;
     EquippedWeaponIndex = WeaponIndex;
@@ -194,6 +180,12 @@ FVector UAS_CombatComponent::GetEndMuzzlePoint() const
 {
     if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return FVector();
     return WeaponInventory[EquippedWeaponIndex]->GetEndMuzzlePoint();
+}
+
+AAS_BaseWeapon* UAS_CombatComponent::FindWeaponOfClass(TSubclassOf<AAS_BaseWeapon> WeaponClass)
+{
+    AAS_BaseWeapon** FoundWeapon = WeaponInventory.FindByPredicate([&](AAS_BaseWeapon* W1) { return W1->GetClass() == WeaponClass.Get(); });
+    return FoundWeapon ? *FoundWeapon : nullptr;
 }
 
 void UAS_CombatComponent::AddWeaponToInventory(AAS_BaseWeapon* NewWeapon)

@@ -26,7 +26,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
-	virtual void StopFire();
+    virtual void StopFire();
     virtual void Reload();
 
     void HandleAmmoChange();

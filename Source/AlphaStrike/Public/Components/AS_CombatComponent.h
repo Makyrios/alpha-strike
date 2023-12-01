@@ -43,7 +43,7 @@ public:
     EWeaponType GetEquippedWeaponType() const;
     FVector GetStartMuzzlePoint() const;
     FVector GetEndMuzzlePoint() const;
-    TArray<AAS_BaseWeapon*> GetWeaponInventory() const { return WeaponInventory; }
+    AAS_BaseWeapon* FindWeaponOfClass(TSubclassOf<AAS_BaseWeapon> WeaponClass);
     void AddWeaponToInventory(AAS_BaseWeapon* NewWeapon);
 
 protected:
@@ -58,8 +58,6 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Combat")
     TSubclassOf<AAS_BaseWeapon> EquippedWeaponClass;
 
-//    UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
-//    AAS_BaseWeapon* EquippedWeapon = nullptr;
     UPROPERTY(ReplicatedUsing = OnRep_EquippedWeaponIndex)
     int EquippedWeaponIndex;
     
@@ -79,5 +77,6 @@ private:
     void Server_SetAim(bool bAim);
     UFUNCTION(Server, Reliable)
     void ChangeWeapon(int WeaponIndex);
+
     void UpdateHUDAmmoInfo();
 };

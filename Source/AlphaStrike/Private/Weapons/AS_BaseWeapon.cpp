@@ -170,7 +170,7 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
     }
 }
 
-void AAS_BaseWeapon::SetOwner(AActor* NewOwner) 
+void AAS_BaseWeapon::SetOwner(AActor* NewOwner)
 {
     Super::SetOwner(NewOwner);
 
@@ -190,6 +190,6 @@ void AAS_BaseWeapon::HandleAmmoChange()
 
     AS_Owner = (!AS_Owner) ? GetOwner<AAS_Character>() : AS_Owner;
     if (!AS_Owner) return;
-    
+
     AS_Owner->UpdateHUDAmmoInfo();
 }
