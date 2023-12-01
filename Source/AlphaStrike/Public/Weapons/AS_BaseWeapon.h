@@ -11,6 +11,7 @@ class USkeletalMeshComponent;
 class UAnimSequence;
 class UParticleSystem;
 class UAS_AmmoComponent;
+class AAS_Character;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_BaseWeapon : public AActor
@@ -21,12 +22,13 @@ public:
     AAS_BaseWeapon();
 
     virtual void Tick(float DeltaTime) override;
+    virtual void SetOwner(AActor* NewOwner) override;
 
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
     virtual void Reload();
 
-    FText GetAmmoInfoAsText();
+    void HandleAmmoChange();
 
 public:
     FORCEINLINE FName GetMuzzleSocketName() const { return MuzzleSocketName; }
@@ -34,6 +36,8 @@ public:
     FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
     FORCEINLINE FVector GetStartMuzzlePoint() const { return HitStart; }
     FORCEINLINE FVector GetEndMuzzlePoint() const { return HitTarget.bBlockingHit ? HitTarget.ImpactPoint : HitEnd; }
+    FORCEINLINE UAS_AmmoComponent* GetAmmoComponent() const { return AmmoComponent; }
+    FText GetAmmoInfoText();
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "AS|Components")
@@ -66,6 +70,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UAS_AmmoComponent* AmmoComponent;
+
+    UPROPERTY()
+    AAS_Character* AS_Owner;
 
     FHitResult HitTarget;
     FVector HitStart;

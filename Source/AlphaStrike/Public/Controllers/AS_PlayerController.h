@@ -27,6 +27,8 @@ public:
     void SetHealthBarPercent(float Percent);
     void SetShieldBarPercent(float Percent);
 
+    void SetAmmoInfo(FText NewAmmoInfo);
+
     void CreateStartGameWidget(float StartGameDelay);
 
 protected:

@@ -65,6 +65,9 @@ void UAS_CombatComponent::OnRep_EquippedWeapon()
     FAttachmentTransformRules AttachmentTransformRules(
         EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
     EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquippedWeapon->GetMuzzleSocketName());
+
+    if (!PlayerCharacter) return;
+    PlayerCharacter->UpdateHUDAmmoInfo();
 }
 
 void UAS_CombatComponent::Aim()

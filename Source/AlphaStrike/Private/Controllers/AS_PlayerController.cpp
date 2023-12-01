@@ -162,14 +162,6 @@ void AAS_PlayerController::Shoot()
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
     PlayerCharacter->GetCombatComponent()->Fire();
-
-    AHUD* HUD = GetHUD();
-    if (!HUD) return;
-
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->SetAmmoInfo(PlayerCharacter->GetEquippedWeapon()->GetAmmoInfoAsText());
-    }
 }
 
 void AAS_PlayerController::Reload()
@@ -177,14 +169,6 @@ void AAS_PlayerController::Reload()
     if (!PlayerCharacter || !PlayerCharacter->GetEquippedWeapon()) return;
 
     PlayerCharacter->GetEquippedWeapon()->Reload();
-
-     AHUD* HUD = GetHUD();
-    if (!HUD) return;
-
-    if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(HUD))
-    {
-        CustomHUD->SetAmmoInfo(PlayerCharacter->GetEquippedWeapon()->GetAmmoInfoAsText());
-    }
 }
 
 void AAS_PlayerController::ShowStatsTable()
@@ -217,6 +201,14 @@ void AAS_PlayerController::SetShieldBarPercent(float Percent)
     if (!AS_HUD) return;
 
     AS_HUD->SetShieldBarPercent(Percent);
+}
+
+void AAS_PlayerController::SetAmmoInfo(FText NewAmmoInfo)
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetAmmoInfo(NewAmmoInfo);
 }
 
 void AAS_PlayerController::Pause()

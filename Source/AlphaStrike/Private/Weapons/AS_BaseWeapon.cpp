@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AS_AmmoComponent.h"
+#include "Characters/AS_Character.h"
 
 AAS_BaseWeapon::AAS_BaseWeapon()
 {
@@ -36,7 +37,7 @@ void AAS_BaseWeapon::Fire()
 {
     if (AmmoComponent->CanShoot())
     {
-        AmmoComponent->HandleWeaponFired();
+        AmmoComponent->Server_HandleWeaponFired();
         Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
     }
     else
@@ -67,7 +68,7 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
 
 void AAS_BaseWeapon::Reload()
 {
-    AmmoComponent->Reload();
+    AmmoComponent->Server_Reload();
 }
 
 void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
@@ -166,7 +167,26 @@ void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
     }
 }
 
-FText AAS_BaseWeapon::GetAmmoInfoAsText()
+void AAS_BaseWeapon::SetOwner(AActor* NewOwner) 
 {
+    Super::SetOwner(NewOwner);
+
+    HandleAmmoChange();
+}
+
+FText AAS_BaseWeapon::GetAmmoInfoText()
+{
+    if (!AmmoComponent) return FText();
+
     return AmmoComponent->GetAmmoInfoAsText();
+}
+
+void AAS_BaseWeapon::HandleAmmoChange()
+{
+    if (!AmmoComponent) return;
+
+    AS_Owner = (!AS_Owner) ? GetOwner<AAS_Character>() : AS_Owner;
+    if (!AS_Owner) return;
+    
+    AS_Owner->UpdateHUDAmmoInfo();
 }
