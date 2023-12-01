@@ -53,10 +53,13 @@ protected:
     void StopAim();
 
     void Shoot();
+    void StopShoot();
     void Reload();
 
     void ShowStatsTable();
     void HideStatsTable();
+    void ScrollWeaponUp();
+    void ScrollWeaponDown();
 
 private:
     UFUNCTION(Client, Reliable)
@@ -98,6 +101,12 @@ private:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* PauseAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* ScrollWeaponUpAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* ScrollWeaponDownAction;
 
 private:
     void SetInputModeGameOnly();

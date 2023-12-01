@@ -46,6 +46,8 @@ void AAS_BaseWeapon::Fire()
     }
 }
 
+void AAS_BaseWeapon::StopFire() {}
+
 void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, const FHitResult& HitResult)
 {
     if (GetOwner() && GetInstigatorController() && DamagedActor)

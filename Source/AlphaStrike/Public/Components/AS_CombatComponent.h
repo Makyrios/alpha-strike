@@ -31,6 +31,10 @@ public:
     void StopAim();
 
     void Fire();
+    void StopFire();
+
+    void ScrollWeaponUp();
+    void ScrollWeaponDown();
 
 public:
     FORCEINLINE bool IsAiming() const { return bIsAiming; }
@@ -39,9 +43,13 @@ public:
     EWeaponType GetEquippedWeaponType() const;
     FVector GetStartMuzzlePoint() const;
     FVector GetEndMuzzlePoint() const;
+    TArray<AAS_BaseWeapon*> GetWeaponInventory() const { return WeaponInventory; }
+    void AddWeaponToInventory(AAS_BaseWeapon* NewWeapon);
 
 protected:
     virtual void BeginPlay() override;
+
+    void SpawnWeapon();
 
 private:
     UPROPERTY()
@@ -52,7 +60,8 @@ private:
 
     UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
     AAS_BaseWeapon* EquippedWeapon = nullptr;
-
+    TArray<AAS_BaseWeapon*> WeaponInventory;
+    int EquippedWeaponIndex;
     UPROPERTY(Replicated)
     bool bIsAiming = false;
 
@@ -62,4 +71,6 @@ private:
 
     UFUNCTION(Server, Reliable)
     void Server_SetAim(bool bAim);
+    void ChangeWeapon(int WeaponIndex);
+    void UpdateHUDAmmoInfo();
 };

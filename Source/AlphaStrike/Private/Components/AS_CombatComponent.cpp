@@ -39,6 +39,11 @@ void UAS_CombatComponent::BeginPlay()
 
     PlayerCharacter = Cast<AAS_Character>(GetOwner());
 
+        SpawnWeapon();
+}
+
+void UAS_CombatComponent::SpawnWeapon()
+{
     if (GetOwnerRole() == ENetRole::ROLE_Authority && GetWorld())
     {
         ACharacter* Owner = GetOwner<ACharacter>();
@@ -54,6 +59,9 @@ void UAS_CombatComponent::BeginPlay()
         FAttachmentTransformRules AttachmentTransformRules(
             EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
         EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquippedWeapon->GetMuzzleSocketName());
+
+        WeaponInventory.Add(EquippedWeapon);
+        EquippedWeaponIndex = 0;
     }
 }
 
@@ -70,6 +78,38 @@ void UAS_CombatComponent::OnRep_EquippedWeapon()
     PlayerCharacter->UpdateHUDAmmoInfo();
 }
 
+void UAS_CombatComponent::ChangeWeapon(int WeaponIndex)
+{
+    if (WeaponInventory.Num() < 2 || !EquippedWeapon) return;
+    if (WeaponIndex < 0)
+    {
+        WeaponIndex = WeaponInventory.Num() - 1;
+    }
+    else if (WeaponIndex >= WeaponInventory.Num())
+    {
+        WeaponIndex = 0;
+    }
+
+    AAS_BaseWeapon* OldWeapon = EquippedWeapon;
+    OldWeapon->GetWeaponMesh()->SetVisibility(false);
+
+    AAS_BaseWeapon* NewWeapon = WeaponInventory[WeaponIndex];
+    if (!NewWeapon || !NewWeapon->GetWeaponMesh()) return;
+    NewWeapon->GetWeaponMesh()->SetVisibility(true);
+    EquippedWeapon = NewWeapon;
+    EquippedWeaponIndex = WeaponIndex;
+
+    //UpdateHUDAmmoInfo();
+}
+
+//void UAS_CombatComponent::UpdateHUDAmmoInfo()
+//{
+//    APlayerController* PlayerController = GetOwner()->GetInstigatorController<APlayerController>();
+//    if (!PlayerController) return;
+//    AAS_HUD* CustomHUD = PlayerController->GetHUD<AAS_HUD>();
+//    if (!CustomHUD) return;
+//    CustomHUD->SetAmmoInfo(EquippedWeapon->GetAmmoInfoAsText());
+//}
 void UAS_CombatComponent::Aim()
 {
     if (!PlayerCharacter) return;
@@ -109,6 +149,27 @@ void UAS_CombatComponent::Fire()
     EquippedWeapon->Fire();
 }
 
+void UAS_CombatComponent::StopFire()
+{
+    if (!EquippedWeapon) return;
+    EquippedWeapon->StopFire();
+}
+
+void UAS_CombatComponent::ScrollWeaponUp()
+{
+    if (WeaponInventory.Num() > 1)
+    {
+        ChangeWeapon(EquippedWeaponIndex - 1);
+    }
+}
+
+void UAS_CombatComponent::ScrollWeaponDown()
+{
+    if (WeaponInventory.Num() > 1)
+    {
+        ChangeWeapon(EquippedWeaponIndex + 1);
+    }
+}
 FVector UAS_CombatComponent::GetStartMuzzlePoint() const
 {
     if (!EquippedWeapon) return FVector();
@@ -119,4 +180,9 @@ FVector UAS_CombatComponent::GetEndMuzzlePoint() const
 {
     if (!EquippedWeapon) return FVector();
     return EquippedWeapon->GetEndMuzzlePoint();
+}
+
+void UAS_CombatComponent::AddWeaponToInventory(AAS_BaseWeapon* NewWeapon)
+{
+    WeaponInventory.Add(NewWeapon);
 }

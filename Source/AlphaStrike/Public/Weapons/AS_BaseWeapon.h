@@ -26,6 +26,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
+	virtual void StopFire();
     virtual void Reload();
 
     void HandleAmmoChange();
@@ -42,6 +43,9 @@ public:
 protected:
     UPROPERTY(VisibleAnywhere, Category = "AS|Components")
     USkeletalMeshComponent* WeaponMesh;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Components")
+    UAS_AmmoComponent* AmmoComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Components")
     FName MuzzleSocketName = FName("MuzzleSocket");
@@ -67,9 +71,6 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* BeamParticles;
-
-    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
-    UAS_AmmoComponent* AmmoComponent;
 
     UPROPERTY()
     AAS_Character* AS_Owner;
