@@ -8,6 +8,7 @@
 
 class UButton;
 class UEditableText;
+class UVerticalBox;
 
 UCLASS()
 class ALPHASTRIKE_API UAS_MenuWidget : public UUserWidget
@@ -17,9 +18,12 @@ public:
     void SetNameText(FText Name);
     FText GetNameText();
 
+protected:
+    void NativeOnInitialized() override;
+
 public:
     UPROPERTY(meta = (BindWidget))
-    UButton* BotsGameButton;
+    UVerticalBox* PrimaryOptions;
 
     UPROPERTY(meta = (BindWidget))
     UButton* HostButton;
@@ -35,4 +39,10 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     UEditableText* IP_AddressBox;
+
+    UPROPERTY(meta = (BindWidget))
+    UButton* SingleDeathmatchButton;
+
+    UPROPERTY(meta = (BindWidget)) 
+    UButton* TeamDeathmatchButton;
 };
