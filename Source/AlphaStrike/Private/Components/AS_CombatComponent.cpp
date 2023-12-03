@@ -145,7 +145,7 @@ void UAS_CombatComponent::Server_SetAim_Implementation(bool bAim)
 
 void UAS_CombatComponent::Fire()
 {
-    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return;
+    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex) || !WeaponInventory[EquippedWeaponIndex]) return;
     WeaponInventory[EquippedWeaponIndex]->Fire();
 }
 

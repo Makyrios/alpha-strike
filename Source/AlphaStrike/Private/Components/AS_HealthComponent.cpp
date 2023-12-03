@@ -82,7 +82,9 @@ void UAS_HealthComponent::HandleInvincible(bool bNewValue, float InvincibilityTi
     {
         GetWorld()->GetTimerManager().ClearTimer(FlickerHandle);
         GetWorld()->GetTimerManager().ClearTimer(EndFlickerHandle);
-        if (AAS_Character* OwnerChar = GetOwner<AAS_Character>())
+
+        AAS_Character* OwnerChar = GetOwner<AAS_Character>();
+        if (OwnerChar && OwnerChar->GetMesh() && OwnerChar->GetEquippedWeapon() && OwnerChar->GetEquippedWeapon()->GetWeaponMesh())
         {
             OwnerChar->GetMesh()->SetVisibility(true);
             OwnerChar->GetEquippedWeapon()->GetWeaponMesh()->SetVisibility(true);

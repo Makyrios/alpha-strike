@@ -41,7 +41,7 @@ void AAS_MenuPlayerController::CreateDeathmatchHostGame()
     const auto GameInstance = GetGameInstance<UAS_GameInstance>();
     if (!GameInstance) return;
 
-    UGameplayStatics::OpenLevel(this, GameInstance->DeathmatchMapName, true, TEXT("listen"));
+    UGameplayStatics::OpenLevel(this, GameInstance->MultDeathmatchMapName, true, TEXT("listen"));
 }
 
 void AAS_MenuPlayerController::JoinGame(const FText& IP_Address) 

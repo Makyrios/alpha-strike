@@ -15,13 +15,9 @@
 #include "Controllers/AS_PlayerController.h"
 #include "Components/AS_HealthComponent.h"
 
-
 bool AAS_BaseGameMode::ReadyToStartMatch_Implementation()
 {
-    if (bDelayedStart)
-    {
-        return false;
-    }
+    if (bDelayedStart) return false;
 
     if (GetMatchState() == MatchState::WaitingToStart)
     {
@@ -185,6 +181,4 @@ bool AAS_BaseGameMode::ReadyToEndMatch_Implementation()
 void AAS_BaseGameMode::HandleMatchHasEnded()
 {
     Super::HandleMatchHasEnded();
-
-    UE_LOG(LogTemp, Warning, TEXT("Match ended!"));
 }

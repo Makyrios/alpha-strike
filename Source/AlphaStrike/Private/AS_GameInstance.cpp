@@ -1,12 +1,3 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
 #include "AS_GameInstance.h"
-#include "Saves/AS_PlayerSavedInfo.h"
-#include "Kismet/GameplayStatics.h"
-
-void UAS_GameInstance::Init()
-{
-    Super::Init();
-    UE_LOG(LogTemp, Warning, TEXT("Init for game instance called!"));
-    PlayerInfo = Cast<UAS_PlayerSavedInfo>(UGameplayStatics::CreateSaveGameObject(UAS_PlayerSavedInfo::StaticClass()));
-}
