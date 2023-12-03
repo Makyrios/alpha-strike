@@ -12,8 +12,9 @@ class ALPHASTRIKE_API AAS_MenuPlayerController : public APlayerController
     GENERATED_BODY()
 
 public:
-    void CreateBotsGame();
-    void CreateHostGame();
+    void CreateTeamDeathmatchGame();
+    void CreateDeathmatchGame();
+    void CreateDeathmatchHostGame();
     void JoinGame(const FText& IP_Address);
 
 protected:

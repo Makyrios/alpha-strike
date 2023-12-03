@@ -39,6 +39,8 @@ protected:
     AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	void GiveTeamToPlayer(AController* Pawn, ETeams TeamToGive);
 
+    void UpdateTeamsScoreInHUDs();
+
     virtual bool ReadyToEndMatch_Implementation() override;
 
 protected:

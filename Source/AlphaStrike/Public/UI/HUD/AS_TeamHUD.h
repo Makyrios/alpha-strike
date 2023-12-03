@@ -12,7 +12,7 @@ class ALPHASTRIKE_API AAS_TeamHUD : public AAS_HUD
 {
 	GENERATED_BODY()
 public:
-    void SetTeamAScore(int32 NewScore);
-    void SetTeamBScore(int32 NewScore);
+    void SetTeamAScore(int32 NewScore) override;
+    void SetTeamBScore(int32 NewScore) override;
 
 };

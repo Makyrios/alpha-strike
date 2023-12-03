@@ -31,24 +31,31 @@ void AAS_MenuHUD::AddMenuWidget()
 
     MenuWidget->AddToViewport();
 
-    if (!MenuWidget->BotsGameButton || !MenuWidget->HostButton || !MenuWidget->JoinButton) return;
+    if (!MenuWidget->SingleDeathmatchButton || !MenuWidget->HostButton || !MenuWidget->JoinButton) return;
 
-    MenuWidget->BotsGameButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnBotsGameButtonClicked);
+    MenuWidget->SingleDeathmatchButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnSingleDeathmatchButtonClicked);
+    MenuWidget->TeamDeathmatchButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnTeamDeathmatchButtonClicked);
     MenuWidget->HostButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnHostButtonClicked);
     MenuWidget->JoinButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnJoinButtonClicked);
     MenuWidget->ApplyNameButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnApplyNameButtonClicked);
 }
 
-void AAS_MenuHUD::OnBotsGameButtonClicked()
+void AAS_MenuHUD::OnSingleDeathmatchButtonClicked()
 {
     if (!GetPlayerController()) return;
-    GetPlayerController()->CreateBotsGame();
+    GetPlayerController()->CreateDeathmatchGame();
+}
+
+void AAS_MenuHUD::OnTeamDeathmatchButtonClicked() 
+{
+    if (!GetPlayerController()) return;
+    GetPlayerController()->CreateTeamDeathmatchGame();
 }
 
 void AAS_MenuHUD::OnHostButtonClicked()
 {
     if (!GetPlayerController()) return;
-    GetPlayerController()->CreateHostGame();
+    GetPlayerController()->CreateDeathmatchHostGame();
 }
 
 void AAS_MenuHUD::OnJoinButtonClicked()

@@ -33,7 +33,10 @@ private:
 
 private:
     UFUNCTION()
-    void OnBotsGameButtonClicked();
+    void OnSingleDeathmatchButtonClicked();
+
+    UFUNCTION()
+    void OnTeamDeathmatchButtonClicked();
 
     UFUNCTION()
     void OnHostButtonClicked();

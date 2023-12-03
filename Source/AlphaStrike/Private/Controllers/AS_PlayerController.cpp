@@ -11,6 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "AS_GameInstance.h"
 #include "Weapons/AS_BaseWeapon.h"
+#include "GameStates/AS_TeamDeathmatchGameState.h"
+#include "PlayerStates/AS_TeamDeathmatchPlayerState.h"
 
 void AAS_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -220,6 +222,20 @@ void AAS_PlayerController::SetAmmoInfo(FText NewAmmoInfo)
     if (!AS_HUD) return;
 
     AS_HUD->SetAmmoInfo(NewAmmoInfo);
+}
+
+void AAS_PlayerController::SetTeamsScore()
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    AGameStateBase* GameState = UGameplayStatics::GetGameState(this);
+    if (!GameState && !AS_HUD) return;
+
+    AAS_TeamDeathmatchGameState* TeamGameState = Cast<AAS_TeamDeathmatchGameState>(GameState);
+    if (TeamGameState)
+    {
+        AS_HUD->SetTeamAScore(TeamGameState->GetTeamScore(ETeams::TEAM_A));
+        AS_HUD->SetTeamBScore(TeamGameState->GetTeamScore(ETeams::TEAM_B));
+    }
 }
 
 void AAS_PlayerController::ScrollWeaponUp()

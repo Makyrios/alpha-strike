@@ -24,10 +24,10 @@ public:
     UAS_PlayerSavedInfo* PlayerInfo;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
-    FName BotsMapName = TEXT("BotsMap_1");
+    FName TeamDeathmatchMapName = TEXT("BotsMap_1");
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
-    FName PlayersMapName = TEXT("PlayersMap_1");
+    FName DeathmatchMapName = TEXT("PlayersMap_1");
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
     FName MenuMapName = TEXT("MenuMap");

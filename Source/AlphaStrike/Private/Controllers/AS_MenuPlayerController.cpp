@@ -20,20 +20,28 @@ void AAS_MenuPlayerController::BeginPlay()
     SetShowMouseCursor(true);
 }
 
-void AAS_MenuPlayerController::CreateBotsGame() 
+void AAS_MenuPlayerController::CreateDeathmatchGame() 
 {
     const auto GameInstance = GetGameInstance<UAS_GameInstance>();
     if (!GameInstance) return;
 
-    UGameplayStatics::OpenLevel(this, GameInstance->BotsMapName);
+    UGameplayStatics::OpenLevel(this, GameInstance->DeathmatchMapName);
 }
 
-void AAS_MenuPlayerController::CreateHostGame() 
+void AAS_MenuPlayerController::CreateTeamDeathmatchGame() 
 {
     const auto GameInstance = GetGameInstance<UAS_GameInstance>();
     if (!GameInstance) return;
 
-    UGameplayStatics::OpenLevel(this, GameInstance->PlayersMapName, true, TEXT("listen"));
+    UGameplayStatics::OpenLevel(this, GameInstance->TeamDeathmatchMapName);
+}
+
+void AAS_MenuPlayerController::CreateDeathmatchHostGame() 
+{
+    const auto GameInstance = GetGameInstance<UAS_GameInstance>();
+    if (!GameInstance) return;
+
+    UGameplayStatics::OpenLevel(this, GameInstance->DeathmatchMapName, true, TEXT("listen"));
 }
 
 void AAS_MenuPlayerController::JoinGame(const FText& IP_Address) 

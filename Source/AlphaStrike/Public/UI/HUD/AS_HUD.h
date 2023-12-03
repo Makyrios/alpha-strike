@@ -23,6 +23,9 @@ public:
     void SetTimeRemaining(float RemainingTimeInSeconds);
     void SetAmmoInfo(FText NewAmmoInfo);
 
+    virtual void SetTeamAScore(int32 NewScore){};
+    virtual void SetTeamBScore(int32 NewScore){};
+
     void Tick(float DeltaTime) override;
     
     void ShowStatsTable();
