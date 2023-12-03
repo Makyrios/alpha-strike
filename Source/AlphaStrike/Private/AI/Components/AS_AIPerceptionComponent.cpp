@@ -42,10 +42,6 @@ AActor* UAS_AIPerceptionComponent::GetClosestEnemy()
             if (!AS_BaseGameMode) return nullptr;
         }
 
-        AS_TeamDeathmatchPlayerState =
-            (!AS_TeamDeathmatchPlayerState) ? Controller->GetPlayerState<AAS_TeamDeathmatchPlayerState>() : AS_TeamDeathmatchPlayerState;
-        if (!AS_TeamDeathmatchPlayerState) return nullptr;
-
         bool AreFriends = true;
 
         if (AS_BaseGameMode->IsA<AAS_DeathmatchGameMode>())
@@ -57,6 +53,10 @@ AActor* UAS_AIPerceptionComponent::GetClosestEnemy()
         {
             const auto PercievePlayerState = PercievePawn->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
             if (!PercievePlayerState) return nullptr;
+
+            AS_TeamDeathmatchPlayerState = (!AS_TeamDeathmatchPlayerState) ? Controller->GetPlayerState<AAS_TeamDeathmatchPlayerState>()
+                                                                           : AS_TeamDeathmatchPlayerState;
+            if (!AS_TeamDeathmatchPlayerState) return nullptr;
 
             AreFriends = AS_TeamDeathmatchPlayerState->GetTeam() == PercievePlayerState->GetTeam();
         }
