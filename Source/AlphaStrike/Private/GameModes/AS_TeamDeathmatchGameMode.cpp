@@ -6,6 +6,7 @@
 #include "GameStates/AS_TeamDeathmatchGameState.h"
 #include "AS_PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+#include "Controllers/AS_PlayerController.h"
 
 void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
 {
@@ -20,6 +21,7 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
         }
         SpawnBotsPawns(ETeams::TEAM_A);
         SpawnBotsPawns(ETeams::TEAM_B);
+        UpdateTeamsScoreInHUDs();
     }
 }
 
@@ -99,6 +101,19 @@ void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AContr
     if (AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
     {
         CurrentGameState->AddScoreToTeam(KillerActor);
+        UpdateTeamsScoreInHUDs();
+    }
+}
+
+void AAS_TeamDeathmatchGameMode::UpdateTeamsScoreInHUDs() 
+{
+    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+    {
+        AAS_PlayerController* PlayerController = Cast<AAS_PlayerController>(*Iterator);
+        if (PlayerController)
+        {
+            PlayerController->SetTeamsScore();
+        }
     }
 }
 

@@ -29,6 +29,8 @@ public:
 
     void SetAmmoInfo(FText NewAmmoInfo);
 
+    void SetTeamsScore();
+
     void CreateStartGameWidget(float StartGameDelay);
 
 protected:
