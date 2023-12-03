@@ -38,6 +38,8 @@ public:
     FORCEINLINE FVector GetStartMuzzlePoint() const { return HitStart; }
     FORCEINLINE FVector GetEndMuzzlePoint() const { return HitTarget.bBlockingHit ? HitTarget.ImpactPoint : HitEnd; }
     FORCEINLINE UAS_AmmoComponent* GetAmmoComponent() const { return AmmoComponent; }
+    FORCEINLINE float GetFireRange() const { return TraceLength; }
+    FORCEINLINE bool CanFire() const { return bCanFire; }
     FText GetAmmoInfoText();
 
 protected:
@@ -63,6 +65,9 @@ private:
     UPROPERTY(EditAnywhere, Category = "AS|Weapon properties")
     float TraceLength = 10000.f;
 
+    UPROPERTY(EditAnywhere, Category = "AS|Weapon properties")
+    float FireDelay = 0.1f;
+
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UAnimSequence* FireAnimation;
 
@@ -78,6 +83,9 @@ private:
     FHitResult HitTarget;
     FVector HitStart;
     FVector HitEnd;
+
+    bool bCanFire = true;
+    FTimerHandle FireDelayTimer;
 
 private:
     /*

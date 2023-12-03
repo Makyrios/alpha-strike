@@ -15,8 +15,9 @@ class ALPHASTRIKE_API AAS_RifleWeapon : public AAS_BaseWeapon
     GENERATED_BODY()
 
 private:
-    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon")
-    float FireInterval = 0.2f;
+    // This delay cannot be less than FireDelay from base class
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    float AutomaticFireDelay = 0.2f;
 
 protected:
     virtual void Fire() override;

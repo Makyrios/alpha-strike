@@ -38,8 +38,14 @@ void AAS_BaseWeapon::Fire()
 {
     if (AmmoComponent->CanShoot())
     {
-        AmmoComponent->Server_HandleWeaponFired();
-        Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
+        if (bCanFire)
+        {
+            bCanFire = false;
+            AmmoComponent->Server_HandleWeaponFired();
+            Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
+            GetWorld()->GetTimerManager().SetTimer(
+                FireDelayTimer, [this]() { bCanFire = true; }, FireDelay, false);
+        }
     }
     else
     {

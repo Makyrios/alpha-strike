@@ -16,9 +16,7 @@ EBTNodeResult::Type UBTTask_MoveToInFiringRange::ExecuteTask(UBehaviorTreeCompon
         {
             if (AICharacter->GetCombatComponent()->GetEquippedWeapon())
             {
-                // TODO: replace number with fire range of weapon
-                //AcceptableRadius = AICharacter->GetCombatComponent()->GetEquippedWeapon()->GetFireRange()
-                AcceptableRadius = 1000;
+                AcceptableRadius = AICharacter->GetCombatComponent()->GetEquippedWeapon()->GetFireRange();
                 return Super::ExecuteTask(OwnerComp, NodeMemory);
             }
         }
