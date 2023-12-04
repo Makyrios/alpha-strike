@@ -16,7 +16,7 @@ public:
 
     FORCEINLINE float GetTimeLimit() const { return TimeLimit; }
     FORCEINLINE float GetDelayBeforeStart() const { return DelayBeforeStart; }
-    bool IsGameStarted() const;
+    virtual bool IsGameStarted();
 
 protected:
     virtual void PostLogin(APlayerController* NewPlayer) override;

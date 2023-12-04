@@ -189,10 +189,10 @@ void AAS_BaseGameMode::RestartGame()
     UGameplayStatics::OpenLevelBySoftObjectPtr(this, GetWorld()->GetCurrentLevel());
 }
 
-bool AAS_BaseGameMode::IsGameStarted() const
+bool AAS_BaseGameMode::IsGameStarted()
 {
     UWorld* World = GetWorld();
     if (!World) return false;
 
-    return World->GetTimerManager().IsTimerActive(DelayStartTimer);
+    return !(GetWorld()->GetTimerManager().IsTimerActive(DelayStartTimer));
 }
