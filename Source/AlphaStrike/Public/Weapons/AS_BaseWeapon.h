@@ -12,6 +12,7 @@ class UAnimSequence;
 class UParticleSystem;
 class UAS_AmmoComponent;
 class AAS_Character;
+class UAnimMontage;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_BaseWeapon : public AActor
@@ -27,7 +28,8 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
     virtual void StopFire();
-    virtual void Reload();
+    void StartReload();
+    void FinishReload();
 
     void HandleAmmoChange();
 
@@ -40,6 +42,8 @@ public:
     FORCEINLINE UAS_AmmoComponent* GetAmmoComponent() const { return AmmoComponent; }
     FORCEINLINE float GetFireRange() const { return TraceLength; }
     FORCEINLINE bool CanFire() const { return bCanFire; }
+    FORCEINLINE void SetCanFire(bool NewValue) { bCanFire = NewValue; }
+    FORCEINLINE UAnimMontage* GetReloadAnimation() const { return ReloadAnimMontage; }
     FText GetAmmoInfoText();
 
 protected:
@@ -70,6 +74,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UAnimSequence* FireAnimation;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    UAnimMontage* ReloadAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* ImpactParticles;
@@ -105,6 +112,9 @@ private:
 
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_Fire(const FHitResult& HitResult);
+
+    UFUNCTION(NetMulticast, Reliable)
+    void Multicast_Reload();
 
     /*
      * Other functions

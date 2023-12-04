@@ -50,7 +50,7 @@ void AAS_BaseWeapon::Fire()
     }
     else
     {
-        Reload();
+        StartReload();
     }
 }
 
@@ -76,9 +76,17 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
     Multicast_Fire(HitResult);
 }
 
-void AAS_BaseWeapon::Reload()
+void AAS_BaseWeapon::StartReload()
 {
-    AmmoComponent->Server_Reload();
+    Multicast_Reload();
+}
+
+void AAS_BaseWeapon::FinishReload()
+{
+    if (AmmoComponent)
+    {
+        AmmoComponent->Server_Reload();
+    }
 }
 
 void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
@@ -95,6 +103,21 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
     }
 
     SpawnBeamParticles(HitResult);
+}
+
+void AAS_BaseWeapon::Multicast_Reload_Implementation()
+{
+    if (!ReloadAnimMontage || !AS_Owner) return;
+
+    if (AmmoComponent)
+    {
+        FAmmoInfo AmmoInfo = AmmoComponent->GetAmmoInfo();
+        if (AmmoInfo.CurrentAmmo < AmmoInfo.MaxAmmoInClip)
+        {
+            AS_Owner->PlayAnimMontage(ReloadAnimMontage);
+        }
+    }
+    //AS_Owner->GetMesh()->GetAnimInstance()->Montage_Play(ReloadAnimMontage);
 }
 
 void AAS_BaseWeapon::SpawnImpactParticles(const FHitResult& HitResult)
@@ -140,7 +163,8 @@ void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
     if (HitDecalMaterial)
     {
         FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
-        UGameplayStatics::SpawnDecalAtLocation(this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
+        UGameplayStatics::SpawnDecalAtLocation(
+            this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
     }
 }
 

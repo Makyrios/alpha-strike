@@ -113,4 +113,5 @@ private:
 private:
     void SetInputModeGameOnly();
     void SetInputModeUIOnly();
+    void StopAnimMontages();
 };
