@@ -14,7 +14,7 @@ struct FTeamInfo
     GENERATED_BODY()
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    TArray<APlayerState*> Members;
+    TArray<AController*> Members;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     int32 Score;
@@ -28,9 +28,10 @@ class ALPHASTRIKE_API AAS_TeamDeathmatchGameState : public AAS_BaseGameState
 public:
     AAS_TeamDeathmatchGameState();
 
-    FORCEINLINE int32 GetTeamScore(ETeams Team) const;
+    int32 GetTeamScore(ETeams Team) const;
+    TArray<AController*> GetWinningTeamPlayers();
 
-    void AddPlayerToTeam(APlayerState* Player, ETeams Team);
+    void AddPlayerToTeam(AController* Player, ETeams Team);
 
     void AddScoreToTeam(AController* ScoredPlayer);
 

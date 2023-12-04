@@ -1,16 +1,16 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "GameStates/AS_BaseGameState.h"
 #include "UI/HUD/AS_HUD.h"
 #include "GameModes/AS_BaseGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
-AAS_BaseGameState::AAS_BaseGameState() 
+AAS_BaseGameState::AAS_BaseGameState()
 {
     PrimaryActorTick.bCanEverTick = true;
 }
 
-void AAS_BaseGameState::Tick(float DeltaTime) 
+void AAS_BaseGameState::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
@@ -19,18 +19,18 @@ void AAS_BaseGameState::Tick(float DeltaTime)
 
 void AAS_BaseGameState::SetTimeForHUD()
 {
-    AAS_BaseGameMode const* CustomGameMode = Cast<AAS_BaseGameMode>(GetDefaultGameMode());
-
-    if (!CustomGameMode) return;
+    AAS_BaseGameMode* CustomGameMode = Cast <AAS_BaseGameMode>(UGameplayStatics::GetGameMode(this));
+    if (!CustomGameMode || !(CustomGameMode->IsGameStarted())) return;
 
     float TimeLimit = CustomGameMode->GetTimeLimit();
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
         if (AHUD* PlayerHUD = Iterator->Get()->GetHUD())
         {
-            if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(PlayerHUD))
+            AAS_HUD* CustomHUD = Cast<AAS_HUD>(PlayerHUD);
+            if (CustomHUD)
             {
-                CustomHUD->SetTimeRemaining(TimeLimit - GetServerWorldTimeSeconds());
+                CustomHUD->SetTimeRemaining(TimeLimit - GetServerWorldTimeSeconds() + CustomGameMode->GetDelayBeforeStart());
             }
         }
     }

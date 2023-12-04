@@ -34,6 +34,9 @@ public:
 
     void CreateStartGameWidget(float StartGameDelay);
 
+    void HandleWin();
+    void HandleLose();
+
 protected:
     void BeginPlay() override;
 
@@ -67,6 +70,12 @@ protected:
 private:
     UFUNCTION(Client, Reliable)
     void Client_CreateStartGameWidget(float StartGameDelay);
+
+    UFUNCTION(Client, Reliable)
+    void Client_HandleWin();
+
+    UFUNCTION(Client, Reliable)
+    void Client_HandleLose();
 
 private:
     UPROPERTY(Replicated)

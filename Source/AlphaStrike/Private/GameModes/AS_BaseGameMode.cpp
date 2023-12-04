@@ -39,8 +39,6 @@ void AAS_BaseGameMode::PostLogin(APlayerController* NewPlayer)
     }
 
     CreateStartGameWidget(NewPlayer);
-
-    PlayerControllerList.Add(NewPlayer);
 }
 
 void AAS_BaseGameMode::CreateStartGameWidget(APlayerController* NewPlayer)
@@ -100,16 +98,6 @@ void AAS_BaseGameMode::SetBotName(AController* BotController, int32 BotIndex)
 void AAS_BaseGameMode::BeginPlay()
 {
     Super::BeginPlay();
-
-    TArray<AActor*> PlayerStarts;
-    UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
-    for (int i = 0; i < PlayerStarts.Num(); ++i)
-    {
-        if (PlayerStarts[i])
-        {
-            RespawnPoints.Add(PlayerStarts[i]->GetActorLocation());
-        }
-    }
 
     if (bDelayedStart)
     {
@@ -194,4 +182,30 @@ bool AAS_BaseGameMode::ReadyToEndMatch_Implementation()
 void AAS_BaseGameMode::HandleMatchHasEnded()
 {
     Super::HandleMatchHasEnded();
+
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    UGameplayStatics::SetGlobalTimeDilation(this, 0.3);
+    FTimerHandle OpenLevelTimer;
+    FTimerDelegate OpenLevelDelegate;
+    OpenLevelDelegate.BindUObject(this, &AAS_BaseGameMode::RestartGame);
+
+    World->GetTimerManager().SetTimer(OpenLevelTimer, OpenLevelDelegate, DelayBeforeRestart, false);
+}
+
+void AAS_BaseGameMode::RestartGame()
+{
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    UGameplayStatics::OpenLevelBySoftObjectPtr(this, GetWorld()->GetCurrentLevel());
+}
+
+bool AAS_BaseGameMode::IsGameStarted()
+{
+    UWorld* World = GetWorld();
+    if (!World) return false;
+
+    return !(GetWorld()->GetTimerManager().IsTimerActive(DelayStartTimer));
 }

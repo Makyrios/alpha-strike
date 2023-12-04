@@ -37,6 +37,7 @@ protected:
     virtual void SpawnBotsPawns();
 
     virtual bool ReadyToEndMatch_Implementation() override;
+    virtual void HandleMatchHasEnded() override;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|GameStart", meta = (DisplayName = "SpawnBots", InlineEditConditionToggle))

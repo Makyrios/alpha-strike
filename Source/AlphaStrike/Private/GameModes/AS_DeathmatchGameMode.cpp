@@ -5,6 +5,8 @@
 #include "PlayerStates/AS_BasePlayerState.h"
 #include "NavigationSystem.h"
 #include "Characters/AS_Character.h"
+#include "Controllers/AS_PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 void AAS_DeathmatchGameMode::HandleMatchHasStarted()
 {
@@ -57,4 +59,28 @@ bool AAS_DeathmatchGameMode::ReadyToEndMatch_Implementation()
         return CurrentGameState->GetMaxPlayerKills() >= KillsToWin || Super::ReadyToEndMatch_Implementation();
     }
     return false;
+}
+
+void AAS_DeathmatchGameMode::HandleMatchHasEnded()
+{
+    Super::HandleMatchHasEnded();
+
+    AAS_DeathmatchGameState* CustomGameState = GetGameState<AAS_DeathmatchGameState>();
+    if (!CustomGameState) return;
+
+    AController* WonController = CustomGameState->GetWinningPlayer();
+    if (!WonController) return;
+
+    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+    {
+        AAS_PlayerController* CustomController = Cast<AAS_PlayerController>(*Iterator);
+        if (CustomController && (*Iterator).Get() == WonController)
+        {
+            CustomController->HandleWin();
+        }
+        else
+        {
+            CustomController->HandleLose();
+        }
+    }
 }

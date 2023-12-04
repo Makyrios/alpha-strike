@@ -46,6 +46,7 @@ protected:
     void UpdateTeamsScoreInHUDs();
 
     virtual bool ReadyToEndMatch_Implementation() override;
+    virtual void HandleMatchHasEnded() override;
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AS|Gameplay")
