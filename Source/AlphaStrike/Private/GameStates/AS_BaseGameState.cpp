@@ -1,16 +1,15 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "GameStates/AS_BaseGameState.h"
 #include "UI/HUD/AS_HUD.h"
 #include "GameModes/AS_BaseGameMode.h"
 
-AAS_BaseGameState::AAS_BaseGameState() 
+AAS_BaseGameState::AAS_BaseGameState()
 {
     PrimaryActorTick.bCanEverTick = true;
 }
 
-void AAS_BaseGameState::Tick(float DeltaTime) 
+void AAS_BaseGameState::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
@@ -28,9 +27,10 @@ void AAS_BaseGameState::SetTimeForHUD()
     {
         if (AHUD* PlayerHUD = Iterator->Get()->GetHUD())
         {
-            if (AAS_HUD* CustomHUD = Cast<AAS_HUD>(PlayerHUD))
+            AAS_HUD* CustomHUD = Cast<AAS_HUD>(PlayerHUD);
+            if (CustomHUD && CustomGameMode->IsGameStarted())
             {
-                CustomHUD->SetTimeRemaining(TimeLimit - GetServerWorldTimeSeconds());
+                CustomHUD->SetTimeRemaining(TimeLimit - GetServerWorldTimeSeconds() + CustomGameMode->GetDelayBeforeStart());
             }
         }
     }

@@ -15,6 +15,8 @@ public:
     virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor);
 
     FORCEINLINE float GetTimeLimit() const { return TimeLimit; }
+    FORCEINLINE float GetDelayBeforeStart() const { return DelayBeforeStart; }
+    bool IsGameStarted() const;
 
 protected:
     virtual void PostLogin(APlayerController* NewPlayer) override;

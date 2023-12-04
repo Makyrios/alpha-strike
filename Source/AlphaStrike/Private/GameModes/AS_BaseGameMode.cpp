@@ -169,7 +169,7 @@ bool AAS_BaseGameMode::ReadyToEndMatch_Implementation()
 void AAS_BaseGameMode::HandleMatchHasEnded()
 {
     Super::HandleMatchHasEnded();
-    
+
     UWorld* World = GetWorld();
     if (!World) return;
 
@@ -181,10 +181,18 @@ void AAS_BaseGameMode::HandleMatchHasEnded()
     World->GetTimerManager().SetTimer(OpenLevelTimer, OpenLevelDelegate, DelayBeforeRestart, false);
 }
 
-void AAS_BaseGameMode::RestartGame() 
+void AAS_BaseGameMode::RestartGame()
 {
     UWorld* World = GetWorld();
     if (!World) return;
 
     UGameplayStatics::OpenLevelBySoftObjectPtr(this, GetWorld()->GetCurrentLevel());
+}
+
+bool AAS_BaseGameMode::IsGameStarted() const
+{
+    UWorld* World = GetWorld();
+    if (!World) return false;
+
+    return World->GetTimerManager().IsTimerActive(DelayStartTimer);
 }

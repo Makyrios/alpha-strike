@@ -312,13 +312,42 @@ void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
 
 void AAS_PlayerController::HandleWin() 
 {
+    if (!IsLocalController())
+    {
+        Client_HandleWin();
+        return;
+    }
+
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
 
     AS_HUD->ShowWonWidget();
 }
 
+void AAS_PlayerController::Client_HandleWin_Implementation() 
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->ShowWonWidget();
+}
+
+
 void AAS_PlayerController::HandleLose()
+{
+    if (!IsLocalController())
+    {
+        Client_HandleLose();
+        return;
+    }
+
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->ShowLoseWidget();
+}
+
+void AAS_PlayerController::Client_HandleLose_Implementation()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;

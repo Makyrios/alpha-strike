@@ -70,6 +70,12 @@ private:
     UFUNCTION(Client, Reliable)
     void Client_CreateStartGameWidget(float StartGameDelay);
 
+    UFUNCTION(Client, Reliable)
+    void Client_HandleWin();
+
+    UFUNCTION(Client, Reliable)
+    void Client_HandleLose();
+
 private:
     UPROPERTY(Replicated)
     AAS_Character* PlayerCharacter;
