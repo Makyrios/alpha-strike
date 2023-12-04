@@ -8,6 +8,7 @@
 #include "UI/Widgets/AS_PauseWidget.h"
 #include "Controllers/AS_PlayerController.h"
 #include <UI/Widgets/AS_StartGameWidget.h>
+#include "Weapons/AS_BaseWeapon.h"
 
 void AAS_HUD::BeginPlay()
 {
@@ -96,6 +97,16 @@ void AAS_HUD::ShowStartGameWidget(float StartDelayTime)
     }
 }
 
+void AAS_HUD::UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
+{
+    if (!HUDWidget) return;
+
+    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
+    {
+        CurrentHUDWidget->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
+    }
+}
+
 void AAS_HUD::SetHealthBarPercent(float Percent)
 {
     if (!HUDWidget) return;
@@ -126,15 +137,15 @@ void AAS_HUD::SetTimeRemaining(float RemainingTimeInSeconds)
     }
 }
 
- void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo) 
- {
+void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo)
+{
     if (!HUDWidget) return;
 
     if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
     {
         CurrentHUDWidget->SetAmmoInfoText(NewAmmoInfo);
     }
- }
+}
 
 template <typename T>
 T* AAS_HUD::AddWidget(TSubclassOf<UUserWidget> WidgetToAdd)

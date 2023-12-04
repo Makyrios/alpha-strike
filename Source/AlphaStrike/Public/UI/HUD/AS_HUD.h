@@ -12,11 +12,13 @@ class UAS_TableStatsWidget;
 class UAS_HUDWidget;
 class UAS_PauseWidget;
 class UProgressBar;
+class AAS_BaseWeapon;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_HUD : public AHUD
 {
     GENERATED_BODY()
+
 public:
     void SetHealthBarPercent(float Percent);
     void SetShieldBarPercent(float Percent);
@@ -35,6 +37,8 @@ public:
     void ExitToMenu();
 
     void ShowStartGameWidget(float StartDelayTime);
+
+    void UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
 
 protected:
     void BeginPlay() override;

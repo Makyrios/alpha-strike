@@ -11,6 +11,7 @@ class UInputMappingContext;
 class UInputAction;
 class AAS_Character;
 class AAS_HUD;
+class AAS_BaseWeapon;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_PlayerController : public APlayerController
@@ -32,6 +33,8 @@ public:
     void SetTeamsScore();
 
     void CreateStartGameWidget(float StartGameDelay);
+
+    void UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
 
 protected:
     void BeginPlay() override;

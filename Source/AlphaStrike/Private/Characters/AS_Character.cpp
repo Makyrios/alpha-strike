@@ -92,6 +92,7 @@ void AAS_Character::PossessedBy(AController* NewController)
 
     OnDamageCallback(this);
     UpdateHUDAmmoInfo();
+    UpdateHUDInventoryInfo(CombatComponent->GetWeaponInventory(), 0);
 }
 
 void AAS_Character::UnPossessed()
@@ -343,5 +344,16 @@ void AAS_Character::UpdateHUDAmmoInfo()
         if (!PlayerController || !CombatComponent || !CombatComponent->GetEquippedWeapon()) return;
 
         PlayerController->SetAmmoInfo(CombatComponent->GetEquippedWeapon()->GetAmmoInfoText());
+    }
+}
+
+void AAS_Character::UpdateHUDInventoryInfo(const TArray<AAS_BaseWeapon*> WeaponArray, int CurrentWeaponIndex)
+{
+    if (IsLocallyControlled())
+    {
+        PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
+        if (!PlayerController || !CombatComponent || !CombatComponent->GetEquippedWeapon()) return;
+
+        PlayerController->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
     }
 }
