@@ -152,7 +152,7 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasEnded()
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
         AAS_PlayerController* CustomController = Cast<AAS_PlayerController>(*Iterator);
-        if (WinningPlayers.Find((*Iterator).Get()))
+        if (WinningPlayers.Contains(CustomController))
         {
             CustomController->HandleWin();
         }

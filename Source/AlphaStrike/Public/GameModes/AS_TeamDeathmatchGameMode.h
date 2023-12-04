@@ -32,7 +32,7 @@ struct FTeamSpawnInfo
 UCLASS()
 class ALPHASTRIKE_API AAS_TeamDeathmatchGameMode : public AAS_BaseGameMode
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
     virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor, bool bEnableRandColor = true,
         const FLinearColor& CustomColor = FLinearColor::Black) override;
@@ -41,7 +41,7 @@ protected:
     virtual void HandleMatchHasStarted() override;
     void SpawnBotsPawns(ETeams TeamToSpawn);
     AActor* ChoosePlayerStart_Implementation(AController* Player) override;
-	void GiveTeamToPlayer(AController* Pawn, ETeams TeamToGive);
+    void GiveTeamToPlayer(AController* Pawn, ETeams TeamToGive);
 
     void UpdateTeamsScoreInHUDs();
 

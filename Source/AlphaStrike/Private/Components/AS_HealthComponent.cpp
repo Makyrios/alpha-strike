@@ -80,7 +80,7 @@ void UAS_HealthComponent::Multicast_InvincibleFlicker_Implementation(bool bNewVa
 
 void UAS_HealthComponent::HandleInvincible(bool bNewValue, float InvincibilityTime)
 {
-    if (!GetWorld() || !FlickerHandle.IsValid() || !EndFlickerHandle.IsValid()) return;
+    if (!GetWorld()) return;
 
     if (bNewValue)
     {
