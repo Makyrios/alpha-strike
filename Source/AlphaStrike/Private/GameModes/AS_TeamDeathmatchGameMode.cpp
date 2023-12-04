@@ -6,6 +6,7 @@
 #include "GameStates/AS_TeamDeathmatchGameState.h"
 #include "AS_PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+#include "Characters/AS_Character.h"
 #include "Controllers/AS_PlayerController.h"
 
 void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
@@ -17,6 +18,7 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
         AAS_TeamDeathmatchPlayerState* TeamPlayerState = PlayerControllerList[0]->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
         if (TeamPlayerState)
         {
+            TeamPlayerState->SetTeamColor(TeamsSpawnInfo[TeamPlayerState->GetTeam()].TeamColor);
             TeamsSpawnInfo[TeamPlayerState->GetTeam()].NumberOfPawns -= 1;
         }
         SpawnBotsPawns(ETeams::TEAM_A);
@@ -45,10 +47,11 @@ void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
 
             TSubclassOf<APawn> RandPawnClass = (FMath::RandBool()) ? TeamSpawnInfo.PawnClass : TeamSpawnInfo.HeavyPawnClass;
 
-            APawn* Pawn =
-                World->SpawnActor<APawn>(RandPawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation(), SpawnParameters);
+            AAS_Character* Pawn = World->SpawnActor<AAS_Character>(
+                RandPawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation(), SpawnParameters);
             if (Pawn)
             {
+                Pawn->SetPlayerColor(TeamSpawnInfo.TeamColor);
                 SetBotName(Controller, i);
                 Controller->Possess(Pawn);
             }
@@ -96,18 +99,24 @@ AActor* AAS_TeamDeathmatchGameMode::ChoosePlayerStart_Implementation(AController
     return TeamPlayerStarts[RandIndex];
 }
 
-void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AController* KillerActor)
+void AAS_TeamDeathmatchGameMode::HandleActorDeath(
+    AController* DeadActor, AController* KillerActor, bool bEnableRandColor, const FLinearColor& CustomColor)
 {
-    Super::HandleActorDeath(DeadActor, KillerActor);
+    AAS_TeamDeathmatchPlayerState* TeamPlayerState = DeadActor->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+    if (!TeamPlayerState || TeamsSpawnInfo.IsEmpty()) return;
+
+    FTeamSpawnInfo TeamSpawnInfo = TeamsSpawnInfo[TeamPlayerState->GetTeam()];
 
     if (AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
     {
         CurrentGameState->AddScoreToTeam(KillerActor);
         UpdateTeamsScoreInHUDs();
     }
+
+    Super::HandleActorDeath(DeadActor, KillerActor, false, TeamSpawnInfo.TeamColor);
 }
 
-void AAS_TeamDeathmatchGameMode::UpdateTeamsScoreInHUDs() 
+void AAS_TeamDeathmatchGameMode::UpdateTeamsScoreInHUDs()
 {
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {

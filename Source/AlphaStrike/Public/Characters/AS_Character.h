@@ -32,6 +32,8 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void UnPossessed() override;
 
+    void SetPlayerColor(const FLinearColor& Color);
+
     void CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation);
     void CrosshairDeactivate();
 

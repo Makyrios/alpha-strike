@@ -98,6 +98,15 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
         WeaponMesh->PlayAnimation(FireAnimation, false);
     }
 
+    if (FireSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(  //
+            GetWorld(),                         //
+            FireSound,                          //
+            GetActorLocation()                  //
+        );
+    }
+
     if (HitResult.bBlockingHit)
     {
         if (ImpactParticles && ImpactSound)

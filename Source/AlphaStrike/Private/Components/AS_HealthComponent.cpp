@@ -86,7 +86,7 @@ void UAS_HealthComponent::HandleInvincible(bool bNewValue, float InvincibilityTi
     {
         GetWorld()->GetTimerManager().SetTimer(FlickerHandle, this, &UAS_HealthComponent::VisibilityFlicker, 0.1, true);
         GetWorld()->GetTimerManager().SetTimer(
-            EndFlickerHandle, [&]() { HandleInvincible(false, 0); }, InvincibilityTime, false);
+            EndFlickerHandle, [&]() { SetInvincible(false, 0); }, InvincibilityTime, false);
     }
     else
     {

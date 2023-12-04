@@ -117,12 +117,13 @@ void AAS_BaseGameMode::BeginPlay()
     }
 }
 
-void AAS_BaseGameMode::HandleActorDeath(AController* DeadActor, AController* KillerActor)
+void AAS_BaseGameMode::HandleActorDeath(
+    AController* DeadActor, AController* KillerActor, bool bEnableRandColor, const FLinearColor& CustomColor)
 {
     if (!DeadActor || !KillerActor) return;
 
     FTimerHandle DelayRespawnTimer;
-    RespawnDelegate.BindUFunction(this, FName("RespawnPawn"), DeadActor);
+    RespawnDelegate.BindUFunction(this, FName("RespawnPawn"), DeadActor, bEnableRandColor);
     GetWorldTimerManager().SetTimer(DelayRespawnTimer, RespawnDelegate, MinRespawnDelay, false);
 
     AddKillsAndDeathsToPlayers(DeadActor, KillerActor);
@@ -139,7 +140,7 @@ void AAS_BaseGameMode::AddKillsAndDeathsToPlayers(AController* DeadActor, AContr
     KillerActorPlayerState->AddKill();
 }
 
-void AAS_BaseGameMode::RespawnPawn(AController* Controller)
+void AAS_BaseGameMode::RespawnPawn(AController* Controller, bool bEnableRandColor, const FLinearColor& CustomColor)
 {
     UWorld* World = GetWorld();
     APawn* OldPawn = Controller->GetPawn();
@@ -147,12 +148,24 @@ void AAS_BaseGameMode::RespawnPawn(AController* Controller)
 
     if (!World || !Controller || !OldPawn || !PlayerStart) return;
 
-    APawn* NewPawn = World->SpawnActor<APawn>(OldPawn->GetClass(), PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
+    AAS_Character* NewPawn =
+        World->SpawnActor<AAS_Character>(OldPawn->GetClass(), PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
+
     OldPawn->Destroy();
+
     if (NewPawn)
     {
         Controller->UnPossess();
         Controller->Possess(NewPawn);
+
+        if (bEnableRandColor)
+        {
+            NewPawn->SetPlayerColor(FLinearColor::MakeRandomColor());
+        }
+        else
+        {
+            NewPawn->SetPlayerColor(CustomColor);
+        }
 
         if (bInvincibleOnSpawn)
         {

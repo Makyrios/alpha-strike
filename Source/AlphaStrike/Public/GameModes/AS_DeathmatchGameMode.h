@@ -29,7 +29,8 @@ class ALPHASTRIKE_API AAS_DeathmatchGameMode : public AAS_BaseGameMode
 {
 	GENERATED_BODY()
 public:
-    virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor) override;
+    virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor, bool bEnableRandColor = true,
+        const FLinearColor& CustomColor = FLinearColor::Black) override;
 
 protected:
     virtual void HandleMatchHasStarted() override;

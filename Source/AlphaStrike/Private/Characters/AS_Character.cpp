@@ -18,6 +18,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Controllers/AS_PlayerController.h"
 #include "GameModes/AS_BaseGameMode.h"
+#include "PlayerStates/AS_TeamDeathmatchPlayerState.h"
 #include "Sound/SoundCue.h"
 
 AAS_Character::AAS_Character()
@@ -86,6 +87,15 @@ void AAS_Character::BeginPlay()
         HealthComponent->OnDamageDelegate.AddDynamic(this, &AAS_Character::OnDamageCallback);
     }
 
+    if (IsLocallyControlled())
+    {
+        AAS_TeamDeathmatchPlayerState* TeamPlayerState = GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+        if (TeamPlayerState)
+        {
+            SetPlayerColor(TeamPlayerState->GetTeamColor());
+        }
+    }
+
     DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
     DefaultCrouchWalkSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
     DefaultJumpZVelocity = GetCharacterMovement()->JumpZVelocity;
@@ -110,6 +120,14 @@ void AAS_Character::UnPossessed()
     }
 
     Super::UnPossessed();
+}
+
+void AAS_Character::SetPlayerColor(const FLinearColor& Color) 
+{
+    const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+    if (!MaterialInst) return;
+
+    MaterialInst->SetVectorParameterValue(TEXT("BodyMetalColor"), Color);
 }
 
 void AAS_Character::OnDeadCallback(AActor* DeadActor, AController* InstigatedBy)

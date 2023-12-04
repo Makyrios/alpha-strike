@@ -12,7 +12,8 @@ class ALPHASTRIKE_API AAS_BaseGameMode : public AGameMode
     GENERATED_BODY()
 
 public:
-    virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor);
+    virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor, bool bEnableRandColor = true,
+        const FLinearColor& CustomColor = FLinearColor::Black);
 
     FORCEINLINE float GetTimeLimit() const { return TimeLimit; }
 
@@ -26,7 +27,7 @@ protected:
     virtual void SetBotName(AController* BotController, int32 BotIndex);
 
     UFUNCTION()
-    virtual void RespawnPawn(AController* Controller);
+    virtual void RespawnPawn(AController* Controller, bool bEnableRandColor = true, const FLinearColor& CustomColor = FLinearColor::Black);
 
     void MakeInvincible(APawn* NewPawn);
 

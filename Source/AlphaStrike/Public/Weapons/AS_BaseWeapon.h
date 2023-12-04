@@ -79,6 +79,9 @@ private:
     UParticleSystem* BeamParticles;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    USoundCue* FireSound;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     USoundCue* ImpactSound;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")

@@ -16,12 +16,16 @@ enum class ETeams
 UCLASS()
 class ALPHASTRIKE_API AAS_TeamDeathmatchPlayerState : public AAS_BasePlayerState
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
     FORCEINLINE void SetTeam(ETeams NewTeam) { Team = NewTeam; }
     FORCEINLINE ETeams GetTeam() { return Team; }
+    FORCEINLINE void SetTeamColor(const FLinearColor& NewColor) { TeamColor = NewColor; }
+    FORCEINLINE FLinearColor GetTeamColor() { return TeamColor; }
 
 protected:
     UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "AS|Stats")
-    ETeams Team;
+    ETeams Team = ETeams::TEAM_A;
+
+    FLinearColor TeamColor = FLinearColor::Black;
 };
