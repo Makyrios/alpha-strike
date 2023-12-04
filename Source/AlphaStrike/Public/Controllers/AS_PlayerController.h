@@ -110,6 +110,11 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* ScrollWeaponDownAction;
 
+    UPROPERTY(EditAnywhere, Category = "AS")
+    float JumpDelay = 2.f;
+
+    FTimerHandle JumpTimer;
+
 private:
     void SetInputModeGameOnly();
     void SetInputModeUIOnly();

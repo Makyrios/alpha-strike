@@ -12,6 +12,7 @@ class UCameraComponent;
 class UAS_CombatComponent;
 class UAS_HealthComponent;
 class UAnimMontage;
+class USoundCue;
 class AAS_BaseWeapon;
 class USplineComponent;
 class USplineMeshComponent;
@@ -73,6 +74,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Components")
     USplineComponent* CrosshairComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Sound")
+    USoundCue* DeathSound;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Animations", meta = (AllowPrivateAccess = "true"))
     UAnimMontage* DeathAnimation;
 
@@ -125,8 +129,14 @@ private:
     bool bRotateRootBone = false;
 
 private:
+    UFUNCTION(NetMulticast, Reliable)
+    void Multicast_OnDead();
+
     UFUNCTION(Client, Reliable)
     void Client_DamageCallback(float HealthPercent, float ShieldPercent);
+
+    UFUNCTION()
+    void OnDeadCallback(AActor* DeadActor, AController* InstigatedBy);
 
     UFUNCTION()
     void OnDamageCallback(AActor* DamagedActor);

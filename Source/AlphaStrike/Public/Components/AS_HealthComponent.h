@@ -6,8 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "AS_HealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeadDelegate, AActor*, DeadActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageDelegate, AActor*, DamagedActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDeadDelegate, class AActor*, DeadActor, class AController*, InstigatedBy);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageDelegate, class AActor*, DamagedActor);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ALPHASTRIKE_API UAS_HealthComponent : public UActorComponent
@@ -16,7 +16,8 @@ class ALPHASTRIKE_API UAS_HealthComponent : public UActorComponent
 
 public:
     UAS_HealthComponent();
-    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void OnUnregister();
 
 public:
     FORCEINLINE float GetHealth() const { return Health; }
@@ -74,9 +75,6 @@ private:
     /*
      * Multiplayer functions
      */
-    UFUNCTION(NetMulticast, Reliable)
-    void Multicast_OnDead();
-
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_InvincibleFlicker(bool bNewValue, float InvincibilityTime);
 

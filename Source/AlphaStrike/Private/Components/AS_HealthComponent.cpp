@@ -5,7 +5,6 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameModes/AS_BaseGameMode.h"
 #include <AI/AS_AICharacter.h>
 #include "UI/HUD/AS_HUD.h"
 #include "Weapons/AS_BaseWeapon.h"
@@ -25,6 +24,17 @@ void UAS_HealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
     DOREPLIFETIME(UAS_HealthComponent, Health);
     DOREPLIFETIME(UAS_HealthComponent, Shield);
+}
+
+void UAS_HealthComponent::OnUnregister() 
+{
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(FlickerHandle);
+        GetWorld()->GetTimerManager().ClearTimer(EndFlickerHandle);
+    }
+
+    Super::OnUnregister();
 }
 
 void UAS_HealthComponent::BeginPlay()
@@ -76,7 +86,7 @@ void UAS_HealthComponent::HandleInvincible(bool bNewValue, float InvincibilityTi
     {
         GetWorld()->GetTimerManager().SetTimer(FlickerHandle, this, &UAS_HealthComponent::VisibilityFlicker, 0.1, true);
         GetWorld()->GetTimerManager().SetTimer(
-            EndFlickerHandle, [&]() { SetInvincible(false, 0); }, InvincibilityTime, false);
+            EndFlickerHandle, [&]() { HandleInvincible(false, 0); }, InvincibilityTime, false);
     }
     else
     {
@@ -159,28 +169,7 @@ void UAS_HealthComponent::CheckIsDead(AController* InstigatedBy)
 {
     if (IsDead() && GetOwner())
     {
-        // TODO replace to Controller class
-        ACharacter* Owner = GetOwner<ACharacter>();
-        if (!GetWorld() || !Owner) return;
-
-        auto GameMode = GetWorld()->GetAuthGameMode<AAS_BaseGameMode>();
-        if (GameMode)
-        {
-            GameMode->HandleActorDeath(Owner->GetController(), InstigatedBy);
-        }
-
-        OnDeadDelegate.Broadcast(GetOwner());
-
-        Multicast_OnDead();
-    }
-}
-
-void UAS_HealthComponent::Multicast_OnDead_Implementation()
-{
-    AAS_Character* Character = Cast<AAS_Character>(GetOwner());
-    if (Character)
-    {
-        Character->Die();
+        OnDeadDelegate.Broadcast(GetOwner(), InstigatedBy);
     }
 }
 

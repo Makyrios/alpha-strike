@@ -62,11 +62,19 @@ void UAS_CharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     Roll = DeltaRot.Roll;
     Pitch = DeltaRot.Pitch;
 
+    AO_Yaw = Character->GetAO_Yaw();
+    AO_Pitch = Character->GetAO_Pitch();
+
     bIsFullBody = GetCurveValue(FName("FullBody")) > 0;
 
     bIsAiming = Character->GetCombatComponent()->IsAiming();
 
     EquippedWeapon = Character->GetEquippedWeapon();
+
+    if (EquippedWeapon)
+    {
+        WeaponType = EquippedWeapon->GetWeaponType();
+    }
 
     // Set if character need to turn right or left while standing
     TurningInPlace = Character->GetTurningState();
@@ -91,24 +99,5 @@ void UAS_CharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
         // Set completed variables to LeftHandTransform for using in blueprints
         LeftHandTransform.SetLocation(OutPosition);
         LeftHandTransform.SetRotation(FQuat4d(OutRotation));
-
-        if (Character->IsLocallyControlled())
-        {
-            bIsLocallyControlled = true;
-            FTransform RightHandTransform = Character->GetMesh()->GetSocketTransform(FName("hand_r"), ERelativeTransformSpace::RTS_World);
-
-            // Rotate right hand to hit target so that weapon will rotate to hit target
-            // Hand_R has opposite location for hit target, so we must find look at rotation in opposite direction
-            //FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(RightHandTransform.GetLocation(),
-            //    RightHandTransform.GetLocation() + (RightHandTransform.GetLocation() - Character->GetHitTarget()));
-
-            //RightHandRotation = FMath::RInterpTo(RightHandRotation, LookAtRotation, DeltaSeconds, 30.f);
-        }
     }
-
-    // Test
-
-    // Set yaw and pitch for aim offsets
-    AO_Yaw = Character->GetAO_Yaw();
-    AO_Pitch = Character->GetAO_Pitch();
 }

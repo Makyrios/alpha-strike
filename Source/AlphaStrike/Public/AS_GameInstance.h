@@ -6,12 +6,17 @@
 #include "Engine/GameInstance.h"
 #include "AS_GameInstance.generated.h"
 
+class USoundClass;
+
 UCLASS()
 class ALPHASTRIKE_API UAS_GameInstance : public UGameInstance
 {
     GENERATED_BODY()
 
 public:
+    void SetMasterSoundVolume(float Volume);
+    float GetMasterSoundVolume() const;
+
     FORCEINLINE void SetPlayerName(FText NewName) { PlayerName = NewName; }
     FORCEINLINE FText GetPlayerName() { return PlayerName; }
 
@@ -29,4 +34,7 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
     FName MenuMapName = TEXT("MenuMap");
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Sound")
+    USoundClass* MasterSoundClass;
 };

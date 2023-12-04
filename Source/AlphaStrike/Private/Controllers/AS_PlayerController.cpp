@@ -13,6 +13,7 @@
 #include "Weapons/AS_BaseWeapon.h"
 #include "GameStates/AS_TeamDeathmatchGameState.h"
 #include "PlayerStates/AS_TeamDeathmatchPlayerState.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void AAS_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -122,7 +123,9 @@ void AAS_PlayerController::ShowCrosshair(const FInputActionValue& Value)
 
 void AAS_PlayerController::Jump()
 {
-    if (!PlayerCharacter) return;
+    if (!PlayerCharacter || !GetWorld() || GetWorld()->GetTimerManager().IsTimerActive(JumpTimer)) return;
+
+    GetWorld()->GetTimerManager().SetTimer(JumpTimer, JumpDelay, false);
 
     PlayerCharacter->Jump();
 }

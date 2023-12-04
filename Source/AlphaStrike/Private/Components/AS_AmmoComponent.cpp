@@ -57,6 +57,11 @@ bool UAS_AmmoComponent::CanShoot() const
     return (!(AmmoInfo.bFiniteAmmo) || AmmoInfo.CurrentAmmo != 0) && !bIsReloading;
 }
 
+bool UAS_AmmoComponent::CanReload() const
+{
+    return AmmoInfo.AmmoInBag != 0;
+}
+
 void UAS_AmmoComponent::AddAmmoInBag(int AmmoAmount)
 {
     OwnerWeapon = (!OwnerWeapon) ? GetOwner<AAS_BaseWeapon>() : OwnerWeapon;
@@ -69,7 +74,7 @@ void UAS_AmmoComponent::AddAmmoInBag(int AmmoAmount)
 void UAS_AmmoComponent::Server_Reload_Implementation()
 {
     UWorld* World = GetWorld();
-    if (AmmoInfo.AmmoInBag == 0 && World) return;
+    if (!CanReload() && World) return;
 
     if (!(World->GetTimerManager().IsTimerActive(ReloadTimer)))
     {

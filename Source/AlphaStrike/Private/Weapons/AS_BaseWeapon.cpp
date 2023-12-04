@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AS_AmmoComponent.h"
 #include "Characters/AS_Character.h"
+#include "Sound/SoundCue.h"
 
 AAS_BaseWeapon::AAS_BaseWeapon()
 {
@@ -36,6 +37,8 @@ void AAS_BaseWeapon::BeginPlay()
 
 void AAS_BaseWeapon::Fire()
 {
+    if (!AmmoComponent || !GetWorld()) return;
+
     if (AmmoComponent->CanShoot())
     {
         if (bCanFire)
@@ -47,9 +50,17 @@ void AAS_BaseWeapon::Fire()
                 FireDelayTimer, [this]() { bCanFire = true; }, FireDelay, false);
         }
     }
-    else
+    else if (AmmoComponent->CanReload())
     {
         Reload();
+    }
+    else if (NoAmmoSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(  //
+            GetWorld(),                         //
+            NoAmmoSound,                        //
+            GetActorLocation()                  //
+        );
     }
 }
 
@@ -89,13 +100,19 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
 
     if (HitResult.bBlockingHit)
     {
-        if (ImpactParticles)
+        if (ImpactParticles && ImpactSound)
         {
             UGameplayStatics::SpawnEmitterAtLocation(  //
                 GetWorld(),                            //
                 ImpactParticles,                       //
                 HitResult.ImpactPoint,                 //
                 HitResult.ImpactNormal.Rotation()      //
+            );
+
+            UGameplayStatics::PlaySoundAtLocation(  //
+                GetWorld(),                         //
+                ImpactSound,                        //
+                HitResult.ImpactPoint               //
             );
         }
     }

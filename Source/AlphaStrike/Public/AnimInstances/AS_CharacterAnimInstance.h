@@ -27,6 +27,9 @@ private:
     UPROPERTY(BlueprintReadOnly, Category = "AS|Character", meta = (AllowPrivateAccess = true))
     bool bIsLocallyControlled = false;
 
+    UPROPERTY(BlueprintReadOnly, Category = "AS|Character", meta = (AllowPrivateAccess = true))
+    EWeaponType WeaponType = EWeaponType::EWT_Empty;
+
     UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
     float Speed = 0.f;
 

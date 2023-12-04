@@ -10,6 +10,7 @@
 class USkeletalMeshComponent;
 class UAnimSequence;
 class UParticleSystem;
+class USoundCue;
 class UAS_AmmoComponent;
 class AAS_Character;
 
@@ -76,6 +77,12 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* BeamParticles;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    USoundCue* ImpactSound;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    USoundCue* NoAmmoSound;
 
     UPROPERTY()
     AAS_Character* AS_Owner;

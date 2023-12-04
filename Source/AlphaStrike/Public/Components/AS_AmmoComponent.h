@@ -42,6 +42,7 @@ public:
     void Server_Reload();
 
     bool CanShoot() const;
+    bool CanReload() const;
 
     void AddAmmoInBag(int AmmoAmount);
 

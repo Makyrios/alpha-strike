@@ -13,9 +13,12 @@
 #include "Components/SplineComponent.h"
 #include "Components/AS_AmmoComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Weapons/AS_BaseWeapon.h"
 #include "Net/UnrealNetwork.h"
 #include "Controllers/AS_PlayerController.h"
+#include "GameModes/AS_BaseGameMode.h"
+#include "Sound/SoundCue.h"
 
 AAS_Character::AAS_Character()
 {
@@ -75,6 +78,11 @@ void AAS_Character::BeginPlay()
 
     if (HealthComponent)
     {
+        if (HasAuthority())
+        {
+            HealthComponent->OnDeadDelegate.AddDynamic(this, &AAS_Character::OnDeadCallback);
+        }
+
         HealthComponent->OnDamageDelegate.AddDynamic(this, &AAS_Character::OnDamageCallback);
     }
 
@@ -102,6 +110,24 @@ void AAS_Character::UnPossessed()
     }
 
     Super::UnPossessed();
+}
+
+void AAS_Character::OnDeadCallback(AActor* DeadActor, AController* InstigatedBy)
+{
+    if (!GetWorld()) return;
+
+    auto GameMode = GetWorld()->GetAuthGameMode<AAS_BaseGameMode>();
+    if (GameMode)
+    {
+        GameMode->HandleActorDeath(GetController(), InstigatedBy);
+    }
+
+    Multicast_OnDead();
+}
+
+void AAS_Character::Multicast_OnDead_Implementation()
+{
+    Die();
 }
 
 void AAS_Character::OnDamageCallback(AActor* DamagedActor)
@@ -269,6 +295,15 @@ void AAS_Character::Die()
             GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
             GetMesh()->SetSimulatePhysics(true);
         }
+    }
+
+    if (DeathSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(  //
+            GetWorld(),                         //
+            DeathSound,                         //
+            GetActorLocation()                  //
+        );
     }
 
     if (CombatComponent && CombatComponent->GetEquippedWeapon())

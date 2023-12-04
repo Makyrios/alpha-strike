@@ -9,6 +9,8 @@
 class UButton;
 class UEditableText;
 class UVerticalBox;
+class USlider;
+class UAS_GameInstance;
 
 UCLASS()
 class ALPHASTRIKE_API UAS_MenuWidget : public UUserWidget
@@ -19,7 +21,7 @@ public:
     FText GetNameText();
 
 protected:
-    void NativeOnInitialized() override;
+    void NativeConstruct() override;
 
 public:
     UPROPERTY(meta = (BindWidget))
@@ -43,6 +45,16 @@ public:
     UPROPERTY(meta = (BindWidget))
     UButton* SingleDeathmatchButton;
 
-    UPROPERTY(meta = (BindWidget)) 
+    UPROPERTY(meta = (BindWidget))
     UButton* TeamDeathmatchButton;
+
+    UPROPERTY(meta = (BindWidget))
+    USlider* VolumeSlider;
+
+private:
+    UFUNCTION()
+    void OnVolumeSliderValueChanged(float Value);
+
+    UPROPERTY()
+    UAS_GameInstance* AS_GameInstance;
 };
