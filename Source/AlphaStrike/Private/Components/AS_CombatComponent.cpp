@@ -172,13 +172,13 @@ void UAS_CombatComponent::ScrollWeaponDown()
 }
 FVector UAS_CombatComponent::GetStartMuzzlePoint() const
 {
-    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return FVector();
+    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex) || !WeaponInventory[EquippedWeaponIndex]) return FVector();
     return WeaponInventory[EquippedWeaponIndex]->GetStartMuzzlePoint();
 }
 
 FVector UAS_CombatComponent::GetEndMuzzlePoint() const
 {
-    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return FVector();
+    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex) || !WeaponInventory[EquippedWeaponIndex]) return FVector();
     return WeaponInventory[EquippedWeaponIndex]->GetEndMuzzlePoint();
 }
 

@@ -38,6 +38,8 @@ public:
 
 public:
     FORCEINLINE bool IsAiming() const { return bIsAiming; }
+    FORCEINLINE const TArray<AAS_BaseWeapon*>& GetWeaponInventory() const { return WeaponInventory; }
+
     AAS_BaseWeapon* GetEquippedWeapon() const;
 
     EWeaponType GetEquippedWeaponType() const;
@@ -60,14 +62,13 @@ private:
 
     UPROPERTY(ReplicatedUsing = OnRep_EquippedWeaponIndex)
     int EquippedWeaponIndex;
-    
+
     int PreviousWeaponIndex;
 
     UPROPERTY(Replicated)
     TArray<AAS_BaseWeapon*> WeaponInventory;
     UPROPERTY(Replicated)
     bool bIsAiming = false;
-
 
 private:
     UFUNCTION()

@@ -13,6 +13,7 @@ class UParticleSystem;
 class USoundCue;
 class UAS_AmmoComponent;
 class AAS_Character;
+class UAnimMontage;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_BaseWeapon : public AActor
@@ -28,7 +29,8 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
     virtual void StopFire();
-    virtual void Reload();
+    void StartReload();
+    void FinishReload();
 
     void HandleAmmoChange();
 
@@ -41,6 +43,8 @@ public:
     FORCEINLINE UAS_AmmoComponent* GetAmmoComponent() const { return AmmoComponent; }
     FORCEINLINE float GetFireRange() const { return TraceLength; }
     FORCEINLINE bool CanFire() const { return bCanFire; }
+    FORCEINLINE void SetCanFire(bool NewValue) { bCanFire = NewValue; }
+    FORCEINLINE UAnimMontage* GetReloadAnimation() const { return ReloadAnimMontage; }
     FText GetAmmoInfoText();
 
 protected:
@@ -73,6 +77,9 @@ private:
     UAnimSequence* FireAnimation;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    UAnimMontage* ReloadAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* ImpactParticles;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
@@ -86,6 +93,15 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     USoundCue* NoAmmoSound;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    UMaterial* HitDecalMaterial;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    FVector HitDecalSize = FVector(10.f, 10.f, 10.f);
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    float HitDecalLifeSpan = 5.f;
 
     UPROPERTY()
     AAS_Character* AS_Owner;
@@ -107,6 +123,9 @@ private:
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_Fire(const FHitResult& HitResult);
 
+    UFUNCTION(NetMulticast, Reliable)
+    void Multicast_Reload();
+
     /*
      * Other functions
      */
@@ -114,4 +133,6 @@ private:
     void DoFireHit();
     void DrawDebugFireTrace(const FVector& Start, const FVector& End);
     void SpawnBeamParticles(const FHitResult& HitResult);
+    void SpawnHitDecals(const FHitResult& HitResult);
+    void SpawnImpactParticles(const FHitResult& HitResult);
 };

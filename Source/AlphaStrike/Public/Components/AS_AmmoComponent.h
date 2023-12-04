@@ -48,6 +48,8 @@ public:
 
     FText GetAmmoInfoAsText();
 
+    FORCEINLINE const FAmmoInfo& GetAmmoInfo() const { return AmmoInfo; }
+
 protected:
     virtual void BeginPlay() override;
 

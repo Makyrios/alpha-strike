@@ -67,14 +67,13 @@ void AAS_PlayerController::SetupInputComponent()
         UEI->BindAction(AimAction, ETriggerEvent::Completed, this, &AAS_PlayerController::StopAim);
         UEI->BindAction(AimAction, ETriggerEvent::Triggered, this, &AAS_PlayerController::ShowCrosshair);
         UEI->BindAction(FireAction, ETriggerEvent::Started, this, &AAS_PlayerController::Shoot);
-		UEI->BindAction(FireAction, ETriggerEvent::Completed, this, &AAS_PlayerController::StopShoot);
+        UEI->BindAction(FireAction, ETriggerEvent::Completed, this, &AAS_PlayerController::StopShoot);
         UEI->BindAction(ReloadAction, ETriggerEvent::Started, this, &AAS_PlayerController::Reload);
         UEI->BindAction(ShowStatsTableAction, ETriggerEvent::Started, this, &AAS_PlayerController::ShowStatsTable);
         UEI->BindAction(ShowStatsTableAction, ETriggerEvent::Completed, this, &AAS_PlayerController::HideStatsTable);
         UEI->BindAction(PauseAction, ETriggerEvent::Started, this, &AAS_PlayerController::Pause);
-		UEI->BindAction(ScrollWeaponUpAction, ETriggerEvent::Started, this, &AAS_PlayerController::ScrollWeaponUp);
+        UEI->BindAction(ScrollWeaponUpAction, ETriggerEvent::Started, this, &AAS_PlayerController::ScrollWeaponUp);
         UEI->BindAction(ScrollWeaponDownAction, ETriggerEvent::Started, this, &AAS_PlayerController::ScrollWeaponDown);
-
     }
 }
 
@@ -184,7 +183,7 @@ void AAS_PlayerController::Reload()
 {
     if (!PlayerCharacter || !PlayerCharacter->GetEquippedWeapon()) return;
 
-    PlayerCharacter->GetEquippedWeapon()->Reload();
+    PlayerCharacter->GetEquippedWeapon()->StartReload();
 }
 
 void AAS_PlayerController::ShowStatsTable()
@@ -252,15 +251,25 @@ void AAS_PlayerController::SetTeamsScore()
 void AAS_PlayerController::ScrollWeaponUp()
 {
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
-    PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();
-    PlayerCharacter->UpdateHUDAmmoInfo();
+
+    if (PlayerCharacter->GetCombatComponent()->GetWeaponInventory().Num() > 1)
+    {
+        StopAnimMontages();
+        PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();
+        PlayerCharacter->UpdateHUDAmmoInfo();
+    }
 }
 
 void AAS_PlayerController::ScrollWeaponDown()
 {
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
-    PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
-    PlayerCharacter->UpdateHUDAmmoInfo();
+
+    if (PlayerCharacter->GetCombatComponent()->GetWeaponInventory().Num() > 1)
+    {
+        StopAnimMontages();
+        PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
+        PlayerCharacter->UpdateHUDAmmoInfo();
+    }
 }
 
 void AAS_PlayerController::Pause()
@@ -297,6 +306,14 @@ void AAS_PlayerController::SetInputModeUIOnly()
     FInputModeUIOnly InputModeUI;
     SetInputMode(InputModeUI);
     SetShowMouseCursor(true);
+}
+
+void AAS_PlayerController::StopAnimMontages()
+{
+    if (PlayerCharacter && PlayerCharacter->GetMesh() && PlayerCharacter->GetMesh()->GetAnimInstance())
+    {
+        PlayerCharacter->GetMesh()->GetAnimInstance()->StopAllMontages(0.3);
+    }
 }
 
 void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)

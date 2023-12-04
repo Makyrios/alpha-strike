@@ -47,6 +47,7 @@ void UAS_AmmoComponent::Server_HandleWeaponFired_Implementation()
     OwnerWeapon->HandleAmmoChange();
 }
 
+
 bool UAS_AmmoComponent::CanShoot() const
 {
     UWorld* World = GetWorld();
@@ -76,10 +77,11 @@ void UAS_AmmoComponent::Server_Reload_Implementation()
     UWorld* World = GetWorld();
     if (!CanReload() && World) return;
 
-    if (!(World->GetTimerManager().IsTimerActive(ReloadTimer)))
+    ReloadAmmo();
+    /*if (!(World->GetTimerManager().IsTimerActive(ReloadTimer)))
     {
         World->GetTimerManager().SetTimer(ReloadTimer, this, &UAS_AmmoComponent::ReloadAmmo, ReloadTime, false);
-    }
+    }*/
 }
 
 void UAS_AmmoComponent::ReloadAmmo()

@@ -8,6 +8,7 @@
 #include "Components/AS_AmmoComponent.h"
 #include "Characters/AS_Character.h"
 #include "Sound/SoundCue.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AAS_BaseWeapon::AAS_BaseWeapon()
 {
@@ -52,7 +53,7 @@ void AAS_BaseWeapon::Fire()
     }
     else if (AmmoComponent->CanReload())
     {
-        Reload();
+        StartReload();
     }
     else if (NoAmmoSound)
     {
@@ -86,9 +87,17 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
     Multicast_Fire(HitResult);
 }
 
-void AAS_BaseWeapon::Reload()
+void AAS_BaseWeapon::StartReload()
 {
-    AmmoComponent->Server_Reload();
+    Multicast_Reload();
+}
+
+void AAS_BaseWeapon::FinishReload()
+{
+    if (AmmoComponent)
+    {
+        AmmoComponent->Server_Reload();
+    }
 }
 
 void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
@@ -109,24 +118,80 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
 
     if (HitResult.bBlockingHit)
     {
-        if (ImpactParticles && ImpactSound)
-        {
-            UGameplayStatics::SpawnEmitterAtLocation(  //
-                GetWorld(),                            //
-                ImpactParticles,                       //
-                HitResult.ImpactPoint,                 //
-                HitResult.ImpactNormal.Rotation()      //
-            );
-
-            UGameplayStatics::PlaySoundAtLocation(  //
-                GetWorld(),                         //
-                ImpactSound,                        //
-                HitResult.ImpactPoint               //
-            );
-        }
+        SpawnImpactParticles(HitResult);
+        SpawnHitDecals(HitResult);
     }
 
     SpawnBeamParticles(HitResult);
+}
+
+void AAS_BaseWeapon::Multicast_Reload_Implementation()
+{
+    if (!ReloadAnimMontage || !AS_Owner) return;
+
+    if (AmmoComponent)
+    {
+        FAmmoInfo AmmoInfo = AmmoComponent->GetAmmoInfo();
+        if (AmmoInfo.CurrentAmmo < AmmoInfo.MaxAmmoInClip)
+        {
+            AS_Owner->PlayAnimMontage(ReloadAnimMontage);
+        }
+    }
+    //AS_Owner->GetMesh()->GetAnimInstance()->Montage_Play(ReloadAnimMontage);
+}
+
+void AAS_BaseWeapon::SpawnImpactParticles(const FHitResult& HitResult)
+{
+    if (ImpactParticles && ImpactSound)
+    {
+        UGameplayStatics::SpawnEmitterAtLocation(  //
+            GetWorld(),                            //
+            ImpactParticles,                       //
+            HitResult.ImpactPoint,                 //
+            HitResult.ImpactNormal.Rotation()      //
+        );
+
+        UGameplayStatics::PlaySoundAtLocation(  //
+            GetWorld(),                         //
+            ImpactSound,                        //
+            HitResult.ImpactPoint               //
+        );
+    }
+}
+
+void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
+{
+    FVector BeamEnd = HitEnd;
+    if (HitResult.bBlockingHit)
+    {
+        BeamEnd = HitResult.ImpactPoint;
+    }
+
+    if (BeamParticles)
+    {
+        UParticleSystemComponent* BeamSystemComponent = UGameplayStatics::SpawnEmitterAtLocation(  //
+            GetWorld(),                                                                            //
+            BeamParticles,                                                                         //
+            HitStart,                                                                              //
+            FRotator::ZeroRotator,                                                                 //
+            true                                                                                   //
+        );
+
+        if (BeamSystemComponent)
+        {
+            BeamSystemComponent->SetVectorParameter(FName("Target"), BeamEnd);
+        }
+    }
+}
+
+void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
+{
+    if (HitDecalMaterial)
+    {
+        FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
+        UGameplayStatics::SpawnDecalAtLocation(
+            this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
+    }
 }
 
 void AAS_BaseWeapon::UpdateHitTarget()
@@ -175,31 +240,6 @@ void AAS_BaseWeapon::DrawDebugFireTrace(const FVector& Start, const FVector& End
      );*/
 
     DrawDebugSphere(GetWorld(), End, 6.f, 6, FColor::Red, false, -1.f, 0, 2.f);
-}
-
-void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
-{
-    FVector BeamEnd = HitEnd;
-    if (HitResult.bBlockingHit)
-    {
-        BeamEnd = HitResult.ImpactPoint;
-    }
-
-    if (BeamParticles)
-    {
-        UParticleSystemComponent* BeamSystemComponent = UGameplayStatics::SpawnEmitterAtLocation(  //
-            GetWorld(),                                                                            //
-            BeamParticles,                                                                         //
-            HitStart,                                                                              //
-            FRotator::ZeroRotator,                                                                 //
-            true                                                                                   //
-        );
-
-        if (BeamSystemComponent)
-        {
-            BeamSystemComponent->SetVectorParameter(FName("Target"), BeamEnd);
-        }
-    }
 }
 
 void AAS_BaseWeapon::SetOwner(AActor* NewOwner)
