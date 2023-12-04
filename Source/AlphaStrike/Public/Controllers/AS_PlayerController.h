@@ -26,6 +26,7 @@ public:
 
     void SetHealthBarPercent(float Percent);
     void SetShieldBarPercent(float Percent);
+    void PlayDamageAnimation();
 
     void SetAmmoInfo(FText NewAmmoInfo);
 

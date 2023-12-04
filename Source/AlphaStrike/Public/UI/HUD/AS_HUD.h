@@ -11,6 +11,7 @@ class AAS_PlayerController;
 class UAS_TableStatsWidget;
 class UAS_HUDWidget;
 class UAS_PauseWidget;
+class UAS_DamageWidget;
 class UProgressBar;
 
 UCLASS()
@@ -30,6 +31,8 @@ public:
     
     void ShowStatsTable();
     void HideStatsTable();
+
+    void PlayDamageAnimation();
 
     void Pause(bool bPause);
     void ExitToMenu();
@@ -65,4 +68,10 @@ protected:
 
     UPROPERTY()
     UAS_PauseWidget* PauseWidget;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Widgets")
+    TSubclassOf<UUserWidget> DamageWidgetClass;
+
+    UPROPERTY()
+    UAS_DamageWidget* DamageWidget;
 };

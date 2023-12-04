@@ -136,11 +136,7 @@ void AAS_Character::OnDamageCallback(AActor* DamagedActor)
 
     if (IsLocallyControlled())
     {
-        PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
-        if (!PlayerController) return;
-
-        PlayerController->SetHealthBarPercent(HealthComponent->GetHealthPercent());
-        PlayerController->SetShieldBarPercent(HealthComponent->GetShieldPercent());
+        HandleDamageCallback(HealthComponent->GetHealthPercent(), HealthComponent->GetShieldPercent());
     }
     else
     {
@@ -150,6 +146,11 @@ void AAS_Character::OnDamageCallback(AActor* DamagedActor)
 
 void AAS_Character::Client_DamageCallback_Implementation(float HealthPercent, float ShieldPercent)
 {
+    HandleDamageCallback(HealthPercent, ShieldPercent);
+}
+
+void AAS_Character::HandleDamageCallback(float HealthPercent, float ShieldPercent)
+{
     if (!HealthComponent) return;
 
     PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
@@ -157,6 +158,7 @@ void AAS_Character::Client_DamageCallback_Implementation(float HealthPercent, fl
 
     PlayerController->SetHealthBarPercent(HealthPercent);
     PlayerController->SetShieldBarPercent(ShieldPercent);
+    PlayerController->PlayDamageAnimation();
 }
 
 void AAS_Character::RotateInPlace(float DeltaTime)

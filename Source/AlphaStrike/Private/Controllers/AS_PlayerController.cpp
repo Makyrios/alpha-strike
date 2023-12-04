@@ -219,6 +219,14 @@ void AAS_PlayerController::SetShieldBarPercent(float Percent)
     AS_HUD->SetShieldBarPercent(Percent);
 }
 
+void AAS_PlayerController::PlayDamageAnimation() 
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->PlayDamageAnimation();
+}
+
 void AAS_PlayerController::SetAmmoInfo(FText NewAmmoInfo)
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
@@ -231,7 +239,7 @@ void AAS_PlayerController::SetTeamsScore()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     AGameStateBase* GameState = UGameplayStatics::GetGameState(this);
-    if (!GameState && !AS_HUD) return;
+    if (!GameState || !AS_HUD) return;
 
     AAS_TeamDeathmatchGameState* TeamGameState = Cast<AAS_TeamDeathmatchGameState>(GameState);
     if (TeamGameState)

@@ -141,6 +141,7 @@ private:
     UFUNCTION()
     void OnDamageCallback(AActor* DamagedActor);
 
+    void HandleDamageCallback(float HealthPercent, float ShieldPercent);
     void RotateInPlace(float DeltaTime);
     void UpdateAimOffset(float DeltaTime);
     void SetTurningInPlace(float DeltaTime);
@@ -148,5 +149,4 @@ private:
     void CalculateAO_Pitch();
 
     float CalculateSpeed();
-
 };

@@ -8,6 +8,8 @@
 #include "UI/Widgets/AS_PauseWidget.h"
 #include "Controllers/AS_PlayerController.h"
 #include <UI/Widgets/AS_StartGameWidget.h>
+#include "UI/Widgets/AS_DamageWidget.h"
+#include "Animation/WidgetAnimation.h"
 
 void AAS_HUD::BeginPlay()
 {
@@ -23,6 +25,8 @@ void AAS_HUD::BeginPlay()
         const FString MapName = UGameplayStatics::GetCurrentLevelName(this);
         TableStatsWidget->SetMapName(FText::FromString(MapName));
     }
+
+    DamageWidget = AddWidget<UAS_DamageWidget>(DamageWidgetClass);
 
     PauseWidget = AddWidget<UAS_PauseWidget>(PauseWidgetClass);
     if (PauseWidget)
@@ -57,6 +61,12 @@ void AAS_HUD::HideStatsTable()
 {
     if (!TableStatsWidget) return;
     TableStatsWidget->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void AAS_HUD::PlayDamageAnimation()
+{
+    if (!DamageWidget) return;
+    DamageWidget->PlayDamageAnimation();
 }
 
 void AAS_HUD::Pause(bool bPause)
@@ -126,15 +136,15 @@ void AAS_HUD::SetTimeRemaining(float RemainingTimeInSeconds)
     }
 }
 
- void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo) 
- {
+void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo)
+{
     if (!HUDWidget) return;
 
     if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
     {
         CurrentHUDWidget->SetAmmoInfoText(NewAmmoInfo);
     }
- }
+}
 
 template <typename T>
 T* AAS_HUD::AddWidget(TSubclassOf<UUserWidget> WidgetToAdd)

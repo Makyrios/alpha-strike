@@ -9,6 +9,8 @@
 class UButton;
 class AAS_HUD;
 class AAS_PlayerController;
+class USlider;
+class UAS_GameInstance;
 
 UCLASS()
 class ALPHASTRIKE_API UAS_PauseWidget : public UUserWidget
@@ -22,6 +24,9 @@ public:
     UPROPERTY(meta = (BindWidget))
     UButton* ExitButton;
 
+    UPROPERTY(meta = (BindWidget))
+    USlider* VolumeSlider;
+
 protected:
     virtual void NativeConstruct() override;
 
@@ -31,6 +36,12 @@ private:
 
     UFUNCTION()
     void OnExitButtonClicked();
+
+    UFUNCTION()
+    void OnVolumeSliderValueChanged(float Value);
+
+    UPROPERTY()
+    UAS_GameInstance* AS_GameInstance;
 
     UPROPERTY()
     AAS_HUD* AS_HUD;
