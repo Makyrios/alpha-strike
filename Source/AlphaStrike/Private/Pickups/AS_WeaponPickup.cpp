@@ -41,10 +41,7 @@ void AAS_WeaponPickup::PickupInteract(TArray<AActor*>& InteractedActors)
 
             AttachWeaponToCharacter(Character, CreatedWeapon);
 
-            Character->UpdateHUDInventoryInfo(
-                Character->GetCombatComponent()->GetWeaponInventory(), Character->GetCombatComponent()->GetEquippedWeaponIndex());
-            Client_UpdateHUDInventory(Character, Character->GetCombatComponent()->GetWeaponInventory(),
-                Character->GetCombatComponent()->GetEquippedWeaponIndex());
+            Character->UpdateHUDInventoryInfo();
 
             UE_LOG(LogTemp, Display, TEXT("Weapon %s added to %s"), *CreatedWeapon->GetActorNameOrLabel(),
                 *InteractedActor->GetActorNameOrLabel());
@@ -94,10 +91,4 @@ void AAS_WeaponPickup::AddAmmoInBag(AAS_BaseWeapon* Weapon)
         Weapon->GetAmmoComponent()->AddAmmoInBag(AmmoRefillAmount);
         UE_LOG(LogTemp, Display, TEXT("%d ammo added to %s"), AmmoRefillAmount, *Weapon->GetOwner()->GetActorNameOrLabel());
     }
-}
-
-void AAS_WeaponPickup::Client_UpdateHUDInventory_Implementation(AAS_Character* Char, const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
-{
-    Char->UpdateHUDInventoryInfo(
-        Char->GetCombatComponent()->GetWeaponInventory(), Char->GetCombatComponent()->GetEquippedWeaponIndex());
 }

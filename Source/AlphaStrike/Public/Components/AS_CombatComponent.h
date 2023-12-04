@@ -66,7 +66,7 @@ private:
 
     int PreviousWeaponIndex;
 
-    UPROPERTY(Replicated)
+    UPROPERTY(ReplicatedUsing = OnRep_WeaponInventory)
     TArray<AAS_BaseWeapon*> WeaponInventory;
     UPROPERTY(Replicated)
     bool bIsAiming = false;
@@ -74,6 +74,8 @@ private:
 private:
     UFUNCTION()
     void OnRep_EquippedWeaponIndex();
+    UFUNCTION()
+    void OnRep_WeaponInventory();
 
     UFUNCTION(Server, Reliable)
     void Server_SetAim(bool bAim);

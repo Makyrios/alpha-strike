@@ -14,7 +14,7 @@ class AAS_BaseWeapon;
 UCLASS()
 class ALPHASTRIKE_API UAS_HUDWidget : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
     void SetHealth(float Percent);
     void SetShield(float Percent);
@@ -22,7 +22,9 @@ public:
     void SetTimerText(float RemainingTimeInSeconds);
     void SetAmmoInfoText(FText NewAmmoInfo);
 
-    void UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
+    void UpdateInventoryInfo();
+
+    void UpdateWeaponIcons(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
 
 public:
     UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -45,4 +47,5 @@ public:
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UImage* SniperRifleIcon;
+
 };

@@ -35,7 +35,7 @@ public:
 
     void CreateStartGameWidget(float StartGameDelay);
 
-    void UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
+    void UpdateInventoryInfo();
 
     void HandleWin();
     void HandleLose();

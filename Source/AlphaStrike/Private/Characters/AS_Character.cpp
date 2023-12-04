@@ -110,7 +110,7 @@ void AAS_Character::PossessedBy(AController* NewController)
 
     OnDamageCallback(this);
     UpdateHUDAmmoInfo();
-    UpdateHUDInventoryInfo(CombatComponent->GetWeaponInventory(), 0);
+    UpdateHUDInventoryInfo();
 }
 
 void AAS_Character::UnPossessed()
@@ -123,7 +123,7 @@ void AAS_Character::UnPossessed()
     Super::UnPossessed();
 }
 
-void AAS_Character::SetPlayerColor(const FLinearColor& Color) 
+void AAS_Character::SetPlayerColor(const FLinearColor& Color)
 {
     const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
     if (!MaterialInst) return;
@@ -402,13 +402,13 @@ void AAS_Character::UpdateHUDAmmoInfo()
     }
 }
 
-void AAS_Character::UpdateHUDInventoryInfo(const TArray<AAS_BaseWeapon*> WeaponArray, int CurrentWeaponIndex)
+void AAS_Character::UpdateHUDInventoryInfo()
 {
     if (IsLocallyControlled())
     {
         PlayerController = (!PlayerController) ? GetController<AAS_PlayerController>() : PlayerController;
-        if (!PlayerController || !CombatComponent || !CombatComponent->GetEquippedWeapon()) return;
+        if (!PlayerController) return;
 
-        PlayerController->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
+        PlayerController->UpdateInventoryInfo();
     }
 }

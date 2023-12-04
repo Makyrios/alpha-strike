@@ -34,7 +34,4 @@ private:
     void AttachWeaponToCharacter(AAS_Character* Character, AAS_BaseWeapon* Weapon);
 
     void AddAmmoInBag(AAS_BaseWeapon* CombatComponent);
-
-    UFUNCTION(Client, Reliable)
-    void Client_UpdateHUDInventory(AAS_Character* Char, const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
 };

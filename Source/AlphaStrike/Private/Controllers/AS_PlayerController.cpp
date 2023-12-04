@@ -218,7 +218,7 @@ void AAS_PlayerController::SetShieldBarPercent(float Percent)
     AS_HUD->SetShieldBarPercent(Percent);
 }
 
-void AAS_PlayerController::PlayDamageAnimation() 
+void AAS_PlayerController::PlayDamageAnimation()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
@@ -257,8 +257,7 @@ void AAS_PlayerController::ScrollWeaponUp()
         StopAnimMontages();
         PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();
         PlayerCharacter->UpdateHUDAmmoInfo();
-        PlayerCharacter->UpdateHUDInventoryInfo(
-            PlayerCharacter->GetCombatComponent()->GetWeaponInventory(), PlayerCharacter->GetCombatComponent()->GetEquippedWeaponIndex());
+        PlayerCharacter->UpdateHUDInventoryInfo();
     }
 }
 
@@ -271,9 +270,7 @@ void AAS_PlayerController::ScrollWeaponDown()
         StopAnimMontages();
         PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
         PlayerCharacter->UpdateHUDAmmoInfo();
-        PlayerCharacter->UpdateHUDInventoryInfo(
-            PlayerCharacter->GetCombatComponent()->GetWeaponInventory(), PlayerCharacter->GetCombatComponent()->GetEquippedWeaponIndex());
-
+        PlayerCharacter->UpdateHUDInventoryInfo();
     }
 }
 
@@ -343,7 +340,7 @@ void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
     AS_HUD->ShowStartGameWidget(StartGameDelay);
 }
 
-void AAS_PlayerController::HandleWin() 
+void AAS_PlayerController::HandleWin()
 {
     if (!IsLocalController())
     {
@@ -357,14 +354,13 @@ void AAS_PlayerController::HandleWin()
     AS_HUD->ShowWonWidget();
 }
 
-void AAS_PlayerController::Client_HandleWin_Implementation() 
+void AAS_PlayerController::Client_HandleWin_Implementation()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
 
     AS_HUD->ShowWonWidget();
 }
-
 
 void AAS_PlayerController::HandleLose()
 {
@@ -388,10 +384,10 @@ void AAS_PlayerController::Client_HandleLose_Implementation()
     AS_HUD->ShowLoseWidget();
 }
 
-void AAS_PlayerController::UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
+void AAS_PlayerController::UpdateInventoryInfo()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
 
-    AS_HUD->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
+    AS_HUD->UpdateInventoryInfo();
 }

@@ -44,7 +44,7 @@ public:
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     FORCEINLINE UAS_CombatComponent* GetCombatComponent() const { return CombatComponent; }
     FORCEINLINE UAS_HealthComponent* GetHealthComponent() const { return HealthComponent; }
-    FORCEINLINE UAS_BuffComponent* GetBuffComponent() const {return BuffComponent; }
+    FORCEINLINE UAS_BuffComponent* GetBuffComponent() const { return BuffComponent; }
 
     FORCEINLINE const float GetDefaultWalkSpeed() const { return DefaultWalkSpeed; }
     FORCEINLINE const float GetDefaultCrouchWalkSpeed() const { return DefaultCrouchWalkSpeed; }
@@ -56,7 +56,7 @@ public:
     FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
     AAS_BaseWeapon* GetEquippedWeapon() const;
     void UpdateHUDAmmoInfo();
-    void UpdateHUDInventoryInfo(const TArray<AAS_BaseWeapon*> WeaponArray, int CurrentWeaponIndex);
+    void UpdateHUDInventoryInfo();
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))

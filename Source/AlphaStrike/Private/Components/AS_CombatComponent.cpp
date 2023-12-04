@@ -60,12 +60,12 @@ void UAS_CombatComponent::SpawnWeapon()
         if (!Owner) return;
 
         FActorSpawnParameters WeaponSpawnParameters;
+        WeaponSpawnParameters.Owner = Owner;
         WeaponSpawnParameters.Instigator = Owner;
         AAS_BaseWeapon* EquippedWeapon = GetWorld()->SpawnActor<AAS_BaseWeapon>(EquippedWeaponClass, WeaponSpawnParameters);
 
         if (!Owner->GetMesh() || !EquippedWeapon) return;
 
-        EquippedWeapon->SetOwner(Owner);
         FAttachmentTransformRules AttachmentTransformRules(
             EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
         EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquippedWeapon->GetMuzzleSocketName());
@@ -91,9 +91,17 @@ void UAS_CombatComponent::OnRep_EquippedWeaponIndex()
 
     if (!PlayerCharacter) return;
     PlayerCharacter->UpdateHUDAmmoInfo();
-    PlayerCharacter->UpdateHUDInventoryInfo(WeaponInventory, EquippedWeaponIndex);
+    PlayerCharacter->UpdateHUDInventoryInfo();
 }
 
+void UAS_CombatComponent::OnRep_WeaponInventory()
+{
+    PlayerCharacter = GetOwner<AAS_Character>();
+    if (!PlayerCharacter) return;
+
+    PlayerCharacter->UpdateHUDAmmoInfo();
+    PlayerCharacter->UpdateHUDInventoryInfo();
+}
 
 void UAS_CombatComponent::Server_ChangeWeapon_Implementation(int WeaponIndex)
 {

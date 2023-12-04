@@ -44,7 +44,7 @@ public:
     void ShowWonWidget();
     void ShowLoseWidget();
 
-    void UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
+    void UpdateInventoryInfo();
 
 protected:
     void BeginPlay() override;

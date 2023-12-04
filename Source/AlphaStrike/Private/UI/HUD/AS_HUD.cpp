@@ -107,13 +107,13 @@ void AAS_HUD::ShowStartGameWidget(float StartDelayTime)
     }
 }
 
-void AAS_HUD::UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
+void AAS_HUD::UpdateInventoryInfo()
 {
     if (!HUDWidget) return;
 
     if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
     {
-        CurrentHUDWidget->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
+        CurrentHUDWidget->UpdateInventoryInfo();
     }
 }
 
