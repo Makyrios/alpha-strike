@@ -309,3 +309,19 @@ void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
 
     AS_HUD->ShowStartGameWidget(StartGameDelay);
 }
+
+void AAS_PlayerController::HandleWin() 
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->ShowWonWidget();
+}
+
+void AAS_PlayerController::HandleLose()
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->ShowLoseWidget();
+}

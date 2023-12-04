@@ -50,10 +50,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay", meta = (EditCondition = "bInvincibleOnSpawn"))
     float InvincibilityTime = 2.f;
 
-    UPROPERTY(BlueprintReadOnly)
-    TArray<APlayerController*> PlayerControllerList;
-
-    TArray<FVector> RespawnPoints;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|GameEnd")
+    float DelayBeforeRestart;
 
     FTimerHandle DelayStartTimer;
 
@@ -61,4 +59,5 @@ protected:
 
 private:
     void AddKillsAndDeathsToPlayers(AController* DeadActor, AController* KillerActor);
+    void RestartGame();
 };

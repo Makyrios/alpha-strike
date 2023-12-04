@@ -14,10 +14,13 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
 
     if (bSpawnBots)
     {
-        AAS_TeamDeathmatchPlayerState* TeamPlayerState = PlayerControllerList[0]->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
-        if (TeamPlayerState)
+        for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
         {
-            TeamsSpawnInfo[TeamPlayerState->GetTeam()].NumberOfPawns -= 1;
+            AAS_TeamDeathmatchPlayerState* TeamPlayerState = (*Iterator)->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+            if (TeamPlayerState)
+            {
+                TeamsSpawnInfo[TeamPlayerState->GetTeam()].NumberOfPawns -= 1;
+            }
         }
         SpawnBotsPawns(ETeams::TEAM_A);
         SpawnBotsPawns(ETeams::TEAM_B);
@@ -64,7 +67,7 @@ void AAS_TeamDeathmatchGameMode::GiveTeamToPlayer(AController* Player, ETeams Te
     if (AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState<AAS_TeamDeathmatchPlayerState>())
     {
         TeamPlayerState->SetTeam(TeamToGive);
-        CurrentGameState->AddPlayerToTeam(TeamPlayerState, TeamToGive);
+        CurrentGameState->AddPlayerToTeam(Player, TeamToGive);
     }
 }
 
@@ -107,7 +110,7 @@ void AAS_TeamDeathmatchGameMode::HandleActorDeath(AController* DeadActor, AContr
     }
 }
 
-void AAS_TeamDeathmatchGameMode::UpdateTeamsScoreInHUDs() 
+void AAS_TeamDeathmatchGameMode::UpdateTeamsScoreInHUDs()
 {
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
@@ -127,4 +130,26 @@ bool AAS_TeamDeathmatchGameMode::ReadyToEndMatch_Implementation()
                Super::ReadyToEndMatch_Implementation();
     }
     return false;
+}
+
+void AAS_TeamDeathmatchGameMode::HandleMatchHasEnded()
+{
+    Super::HandleMatchHasEnded();
+
+    AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>();
+    if (!CurrentGameState) return;
+
+    TArray<AController*> WinningPlayers = CurrentGameState->GetWinningTeamPlayers();
+    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+    {
+        AAS_PlayerController* CustomController = Cast<AAS_PlayerController>(*Iterator);
+        if (WinningPlayers.Find((*Iterator).Get()))
+        {
+            CustomController->HandleWin();
+        }
+        else
+        {
+            CustomController->HandleLose();
+        }
+    }
 }

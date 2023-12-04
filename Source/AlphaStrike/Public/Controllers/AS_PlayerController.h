@@ -33,6 +33,9 @@ public:
 
     void CreateStartGameWidget(float StartGameDelay);
 
+    void HandleWin();
+    void HandleLose();
+
 protected:
     void BeginPlay() override;
 

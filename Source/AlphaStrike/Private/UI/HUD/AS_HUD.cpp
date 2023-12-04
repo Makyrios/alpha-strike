@@ -136,6 +136,16 @@ void AAS_HUD::SetTimeRemaining(float RemainingTimeInSeconds)
     }
  }
 
+ void AAS_HUD::ShowWonWidget() 
+ {
+    UUserWidget* WonWidget = AddWidget<UUserWidget>(WonWidgetClass);
+ }
+
+  void AAS_HUD::ShowLoseWidget()
+ {
+    UUserWidget* WonWidget = AddWidget<UUserWidget>(LoseWidgetClass);
+ }
+
 template <typename T>
 T* AAS_HUD::AddWidget(TSubclassOf<UUserWidget> WidgetToAdd)
 {

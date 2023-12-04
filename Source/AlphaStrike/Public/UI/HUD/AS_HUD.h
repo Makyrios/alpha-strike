@@ -36,6 +36,9 @@ public:
 
     void ShowStartGameWidget(float StartDelayTime);
 
+    void ShowWonWidget();
+    void ShowLoseWidget();
+
 protected:
     void BeginPlay() override;
 
@@ -65,4 +68,10 @@ protected:
 
     UPROPERTY()
     UAS_PauseWidget* PauseWidget;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Widgets")
+    TSubclassOf<UUserWidget> WonWidgetClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Widgets")
+    TSubclassOf<UUserWidget> LoseWidgetClass;
 };
