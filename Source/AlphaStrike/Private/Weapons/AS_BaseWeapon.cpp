@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AS_AmmoComponent.h"
 #include "Characters/AS_Character.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AAS_BaseWeapon::AAS_BaseWeapon()
 {
@@ -89,18 +90,58 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
 
     if (HitResult.bBlockingHit)
     {
-        if (ImpactParticles)
-        {
-            UGameplayStatics::SpawnEmitterAtLocation(  //
-                GetWorld(),                            //
-                ImpactParticles,                       //
-                HitResult.ImpactPoint,                 //
-                HitResult.ImpactNormal.Rotation()      //
-            );
-        }
+        SpawnImpactParticles(HitResult);
+        SpawnHitDecals(HitResult);
     }
 
     SpawnBeamParticles(HitResult);
+}
+
+void AAS_BaseWeapon::SpawnImpactParticles(const FHitResult& HitResult)
+{
+    if (ImpactParticles)
+    {
+        UGameplayStatics::SpawnEmitterAtLocation(  //
+            GetWorld(),                            //
+            ImpactParticles,                       //
+            HitResult.ImpactPoint,                 //
+            HitResult.ImpactNormal.Rotation()      //
+        );
+    }
+}
+
+void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
+{
+    FVector BeamEnd = HitEnd;
+    if (HitResult.bBlockingHit)
+    {
+        BeamEnd = HitResult.ImpactPoint;
+    }
+
+    if (BeamParticles)
+    {
+        UParticleSystemComponent* BeamSystemComponent = UGameplayStatics::SpawnEmitterAtLocation(  //
+            GetWorld(),                                                                            //
+            BeamParticles,                                                                         //
+            HitStart,                                                                              //
+            FRotator::ZeroRotator,                                                                 //
+            true                                                                                   //
+        );
+
+        if (BeamSystemComponent)
+        {
+            BeamSystemComponent->SetVectorParameter(FName("Target"), BeamEnd);
+        }
+    }
+}
+
+void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
+{
+    if (HitDecalMaterial)
+    {
+        FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
+        UGameplayStatics::SpawnDecalAtLocation(this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
+    }
 }
 
 void AAS_BaseWeapon::UpdateHitTarget()
@@ -149,31 +190,6 @@ void AAS_BaseWeapon::DrawDebugFireTrace(const FVector& Start, const FVector& End
      );*/
 
     DrawDebugSphere(GetWorld(), End, 6.f, 6, FColor::Red, false, -1.f, 0, 2.f);
-}
-
-void AAS_BaseWeapon::SpawnBeamParticles(const FHitResult& HitResult)
-{
-    FVector BeamEnd = HitEnd;
-    if (HitResult.bBlockingHit)
-    {
-        BeamEnd = HitResult.ImpactPoint;
-    }
-
-    if (BeamParticles)
-    {
-        UParticleSystemComponent* BeamSystemComponent = UGameplayStatics::SpawnEmitterAtLocation(  //
-            GetWorld(),                                                                            //
-            BeamParticles,                                                                         //
-            HitStart,                                                                              //
-            FRotator::ZeroRotator,                                                                 //
-            true                                                                                   //
-        );
-
-        if (BeamSystemComponent)
-        {
-            BeamSystemComponent->SetVectorParameter(FName("Target"), BeamEnd);
-        }
-    }
 }
 
 void AAS_BaseWeapon::SetOwner(AActor* NewOwner)

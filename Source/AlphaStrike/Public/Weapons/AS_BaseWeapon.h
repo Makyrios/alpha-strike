@@ -77,6 +77,15 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* BeamParticles;
 
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    UMaterial* HitDecalMaterial;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    FVector HitDecalSize = FVector(10.f, 10.f, 10.f);
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    float HitDecalLifeSpan = 5.f;
+
     UPROPERTY()
     AAS_Character* AS_Owner;
 
@@ -104,4 +113,6 @@ private:
     void DoFireHit();
     void DrawDebugFireTrace(const FVector& Start, const FVector& End);
     void SpawnBeamParticles(const FHitResult& HitResult);
+    void SpawnHitDecals(const FHitResult& HitResult);
+    void SpawnImpactParticles(const FHitResult& HitResult);
 };
