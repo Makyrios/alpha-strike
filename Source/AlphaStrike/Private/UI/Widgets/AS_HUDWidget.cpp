@@ -4,6 +4,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Weapons/AS_BaseWeapon.h"
 
 void UAS_HUDWidget::SetHealth(float Percent)
 {
@@ -36,5 +37,50 @@ void UAS_HUDWidget::SetAmmoInfoText(FText NewAmmoInfo)
     if (AmmoInfoText)
     {
         AmmoInfoText->SetText(NewAmmoInfo);
+    }
+}
+
+void UAS_HUDWidget::UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
+{
+    if (!PistolIcon || !RifleIcon || !SniperRifleIcon) return;
+
+    for (int i = 0; i < WeaponArray.Num(); i++)
+    {
+        if (WeaponArray[i]->GetWeaponType() == EWeaponType::EWT_Pistol)
+        {
+            PistolIcon->SetVisibility(ESlateVisibility::Visible);
+            if (CurrentWeaponIndex == i)
+            {
+                PistolIcon->SetOpacity(1);
+            }
+            else
+            {
+                PistolIcon->SetOpacity(0.5);
+            }
+        }
+        else if (WeaponArray[i]->GetWeaponType() == EWeaponType::EWT_Rifle)
+        {
+            RifleIcon->SetVisibility(ESlateVisibility::Visible);
+            if (CurrentWeaponIndex == i)
+            {
+                RifleIcon->SetOpacity(1);
+            }
+            else
+            {
+                RifleIcon->SetOpacity(0.5);
+            }
+        }
+        else if (WeaponArray[i]->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+        {
+            SniperRifleIcon->SetVisibility(ESlateVisibility::Visible);
+            if (CurrentWeaponIndex == i)
+            {
+                SniperRifleIcon->SetOpacity(1);
+            }
+            else
+            {
+                SniperRifleIcon->SetOpacity(0.5);
+            }
+        }
     }
 }

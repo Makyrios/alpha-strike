@@ -39,6 +39,7 @@ public:
 public:
     FORCEINLINE bool IsAiming() const { return bIsAiming; }
     FORCEINLINE const TArray<AAS_BaseWeapon*>& GetWeaponInventory() const { return WeaponInventory; }
+    FORCEINLINE int GetEquippedWeaponIndex() const { return EquippedWeaponIndex; }
 
     AAS_BaseWeapon* GetEquippedWeapon() const;
 
@@ -61,7 +62,7 @@ private:
     TSubclassOf<AAS_BaseWeapon> EquippedWeaponClass;
 
     UPROPERTY(ReplicatedUsing = OnRep_EquippedWeaponIndex)
-    int EquippedWeaponIndex;
+    int EquippedWeaponIndex = -1;
 
     int PreviousWeaponIndex;
 
@@ -77,7 +78,5 @@ private:
     UFUNCTION(Server, Reliable)
     void Server_SetAim(bool bAim);
     UFUNCTION(Server, Reliable)
-    void ChangeWeapon(int WeaponIndex);
-
-    void UpdateHUDAmmoInfo();
+    void Server_ChangeWeapon(int WeaponIndex);
 };

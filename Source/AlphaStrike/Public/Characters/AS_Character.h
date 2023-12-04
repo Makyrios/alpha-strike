@@ -56,6 +56,7 @@ public:
     FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
     AAS_BaseWeapon* GetEquippedWeapon() const;
     void UpdateHUDAmmoInfo();
+    void UpdateHUDInventoryInfo(const TArray<AAS_BaseWeapon*> WeaponArray, int CurrentWeaponIndex);
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))

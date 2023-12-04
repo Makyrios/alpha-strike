@@ -257,6 +257,8 @@ void AAS_PlayerController::ScrollWeaponUp()
         StopAnimMontages();
         PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();
         PlayerCharacter->UpdateHUDAmmoInfo();
+        PlayerCharacter->UpdateHUDInventoryInfo(
+            PlayerCharacter->GetCombatComponent()->GetWeaponInventory(), PlayerCharacter->GetCombatComponent()->GetEquippedWeaponIndex());
     }
 }
 
@@ -269,6 +271,9 @@ void AAS_PlayerController::ScrollWeaponDown()
         StopAnimMontages();
         PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
         PlayerCharacter->UpdateHUDAmmoInfo();
+        PlayerCharacter->UpdateHUDInventoryInfo(
+            PlayerCharacter->GetCombatComponent()->GetWeaponInventory(), PlayerCharacter->GetCombatComponent()->GetEquippedWeaponIndex());
+
     }
 }
 
@@ -381,4 +386,12 @@ void AAS_PlayerController::Client_HandleLose_Implementation()
     if (!AS_HUD) return;
 
     AS_HUD->ShowLoseWidget();
+}
+
+void AAS_PlayerController::UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
 }

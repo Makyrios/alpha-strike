@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include <Components/Image.h>
 #include "AS_HUDWidget.generated.h"
 
 class UProgressBar;
 class UTextBlock;
+class AAS_BaseWeapon;
 
 UCLASS()
 class ALPHASTRIKE_API UAS_HUDWidget : public UUserWidget
@@ -19,6 +21,8 @@ public:
 
     void SetTimerText(float RemainingTimeInSeconds);
     void SetAmmoInfoText(FText NewAmmoInfo);
+
+    void UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex);
 
 public:
     UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -32,4 +36,13 @@ public:
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UTextBlock* AmmoInfoText;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UImage* PistolIcon;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UImage* RifleIcon;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UImage* SniperRifleIcon;
 };

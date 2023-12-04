@@ -80,14 +80,22 @@ void UAS_CombatComponent::OnRep_EquippedWeaponIndex()
     if (!WeaponInventory.IsValidIndex(PreviousWeaponIndex) || !WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return;
     AAS_BaseWeapon* PreviousWeapon = WeaponInventory[PreviousWeaponIndex];
     AAS_BaseWeapon* CurrentWeapon = WeaponInventory[EquippedWeaponIndex];
-    PreviousWeapon->GetWeaponMesh()->SetVisibility(false);
-    CurrentWeapon->GetWeaponMesh()->SetVisibility(true);
+    if (PreviousWeapon)
+    {
+        PreviousWeapon->GetWeaponMesh()->SetVisibility(false);
+    }
+    if (CurrentWeapon)
+    {
+        CurrentWeapon->GetWeaponMesh()->SetVisibility(true);
+    }
 
     if (!PlayerCharacter) return;
     PlayerCharacter->UpdateHUDAmmoInfo();
+    PlayerCharacter->UpdateHUDInventoryInfo(WeaponInventory, EquippedWeaponIndex);
 }
 
-void UAS_CombatComponent::ChangeWeapon_Implementation(int WeaponIndex)
+
+void UAS_CombatComponent::Server_ChangeWeapon_Implementation(int WeaponIndex)
 {
     if (WeaponInventory.Num() < 2) return;
     if (WeaponIndex < 0)
@@ -159,7 +167,7 @@ void UAS_CombatComponent::ScrollWeaponUp()
 {
     if (WeaponInventory.Num() > 1)
     {
-        ChangeWeapon(EquippedWeaponIndex - 1);
+        Server_ChangeWeapon(EquippedWeaponIndex - 1);
     }
 }
 
@@ -167,7 +175,7 @@ void UAS_CombatComponent::ScrollWeaponDown()
 {
     if (WeaponInventory.Num() > 1)
     {
-        ChangeWeapon(EquippedWeaponIndex + 1);
+        Server_ChangeWeapon(EquippedWeaponIndex + 1);
     }
 }
 FVector UAS_CombatComponent::GetStartMuzzlePoint() const

@@ -8,6 +8,7 @@
 #include "UI/Widgets/AS_PauseWidget.h"
 #include "Controllers/AS_PlayerController.h"
 #include <UI/Widgets/AS_StartGameWidget.h>
+#include "Weapons/AS_BaseWeapon.h"
 #include "UI/Widgets/AS_DamageWidget.h"
 #include "Animation/WidgetAnimation.h"
 
@@ -103,6 +104,16 @@ void AAS_HUD::ShowStartGameWidget(float StartDelayTime)
     if (StartGameWidget)
     {
         StartGameWidget->InitializeWidget(StartDelayTime);
+    }
+}
+
+void AAS_HUD::UpdateInventoryInfo(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
+{
+    if (!HUDWidget) return;
+
+    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
+    {
+        CurrentHUDWidget->UpdateInventoryInfo(WeaponArray, CurrentWeaponIndex);
     }
 }
 
