@@ -15,8 +15,8 @@ class ALPHASTRIKE_API UAS_TableStatsWidget : public UUserWidget
 {
     GENERATED_BODY()
 public:
-    FORCEINLINE void SetPlayerNumber(int32 PlayerNumber);
-    FORCEINLINE void SetMapName(FText MapName);
+    void SetPlayerNumber(int32 PlayerNumber);
+    void SetMapName(FText MapName);
 
 protected:
     void NativeOnInitialized() override;

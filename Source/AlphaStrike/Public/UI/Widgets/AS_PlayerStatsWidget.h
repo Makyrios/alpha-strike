@@ -15,11 +15,11 @@ class ALPHASTRIKE_API UAS_PlayerStatsWidget : public UUserWidget
 {
     GENERATED_BODY()
 public:
-    FORCEINLINE void SetPlayerState(AAS_BasePlayerState* NewPlayerState);
-    FORCEINLINE void SetPlayerName(FText PlayerName);
-    FORCEINLINE void SetKills(int32 Kills);
-    FORCEINLINE void SetDeaths(int32 Deaths);
-    FORCEINLINE void SetPing(int32 Ping);
+    void SetPlayerState(AAS_BasePlayerState* NewPlayerState);
+    void SetPlayerName(FText PlayerName);
+    void SetKills(int32 Kills);
+    void SetDeaths(int32 Deaths);
+    void SetPing(int32 Ping);
 
 protected:
     void NativeOnInitialized() override;
