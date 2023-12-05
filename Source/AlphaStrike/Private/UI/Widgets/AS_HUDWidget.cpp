@@ -65,10 +65,12 @@ void UAS_HUDWidget::UpdateWeaponIcons(const TArray<AAS_BaseWeapon*>& WeaponArray
             if (CurrentWeaponIndex == i)
             {
                 PistolIcon->SetOpacity(1);
+                PistolLine->SetVisibility(ESlateVisibility::Visible);
             }
             else
             {
                 PistolIcon->SetOpacity(0.5);
+                PistolLine->SetVisibility(ESlateVisibility::Hidden);
             }
         }
         else if (WeaponArray[i] && WeaponArray[i]->GetWeaponType() == EWeaponType::EWT_Rifle)
@@ -77,10 +79,12 @@ void UAS_HUDWidget::UpdateWeaponIcons(const TArray<AAS_BaseWeapon*>& WeaponArray
             if (CurrentWeaponIndex == i)
             {
                 RifleIcon->SetOpacity(1);
+                RifleLine->SetVisibility(ESlateVisibility::Visible);
             }
             else
             {
                 RifleIcon->SetOpacity(0.5);
+                RifleLine->SetVisibility(ESlateVisibility::Hidden);
             }
         }
         else if (WeaponArray[i] && WeaponArray[i]->GetWeaponType() == EWeaponType::EWT_SniperRifle)
@@ -89,10 +93,12 @@ void UAS_HUDWidget::UpdateWeaponIcons(const TArray<AAS_BaseWeapon*>& WeaponArray
             if (CurrentWeaponIndex == i)
             {
                 SniperRifleIcon->SetOpacity(1);
+                SniperRifleLine->SetVisibility(ESlateVisibility::Visible);
             }
             else
             {
                 SniperRifleIcon->SetOpacity(0.5);
+                SniperRifleLine->SetVisibility(ESlateVisibility::Hidden);
             }
         }
     }

@@ -48,4 +48,12 @@ public:
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UImage* SniperRifleIcon;
 
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UImage* PistolLine;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UImage* RifleLine;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UImage* SniperRifleLine;
 };
