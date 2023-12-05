@@ -167,7 +167,7 @@ void UAS_CombatComponent::Fire()
 
 void UAS_CombatComponent::StopFire()
 {
-    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return;
+    if (!WeaponInventory.IsValidIndex(EquippedWeaponIndex) || !WeaponInventory[EquippedWeaponIndex]) return;
     WeaponInventory[EquippedWeaponIndex]->StopFire();
 }
 

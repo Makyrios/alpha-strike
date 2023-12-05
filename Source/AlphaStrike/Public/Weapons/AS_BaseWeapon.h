@@ -103,6 +103,9 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
     float HitDecalLifeSpan = 5.f;
 
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
+    float HitDecalFadeOutTime = 0.7f;
+
     UPROPERTY()
     AAS_Character* AS_Owner;
 

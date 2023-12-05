@@ -2,6 +2,7 @@
 
 #include "Weapons/AS_BaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/DecalComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -137,7 +138,7 @@ void AAS_BaseWeapon::Multicast_Reload_Implementation()
             AS_Owner->PlayAnimMontage(ReloadAnimMontage);
         }
     }
-    //AS_Owner->GetMesh()->GetAnimInstance()->Montage_Play(ReloadAnimMontage);
+    // AS_Owner->GetMesh()->GetAnimInstance()->Montage_Play(ReloadAnimMontage);
 }
 
 void AAS_BaseWeapon::SpawnImpactParticles(const FHitResult& HitResult)
@@ -189,8 +190,14 @@ void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
     if (HitDecalMaterial)
     {
         FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
-        UGameplayStatics::SpawnDecalAtLocation(
+
+        auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(
             this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
+
+        if (DecalComponent)
+        {
+            DecalComponent->SetFadeOut(HitDecalLifeSpan, HitDecalFadeOutTime);
+        }
     }
 }
 
