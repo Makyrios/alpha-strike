@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AS_GameInstance.h"
 #include "UI/HUD/AS_MenuHUD.h"
+#include "Sound/SoundCue.h"
 
 void AAS_MenuPlayerController::BeginPlay()
 {
@@ -18,6 +19,11 @@ void AAS_MenuPlayerController::BeginPlay()
     InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
     SetInputMode(InputModeData);
     SetShowMouseCursor(true);
+
+    if (MenuSound && GetWorld())
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), MenuSound);
+    }
 }
 
 void AAS_MenuPlayerController::CreateDeathmatchGame() 

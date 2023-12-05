@@ -139,15 +139,15 @@ private:
     void Multicast_OnDead();
 
     UFUNCTION(Client, Reliable)
-    void Client_DamageCallback(float HealthPercent, float ShieldPercent);
+    void Client_HealthChangedCallback(float HealthPercent, float ShieldPercent, bool bDamage);
 
     UFUNCTION()
     void OnDeadCallback(AActor* DeadActor, AController* InstigatedBy);
 
     UFUNCTION()
-    void OnDamageCallback(AActor* DamagedActor);
+    void OnHealthChangedCallback(AActor* ChangedActor, bool bDamage);
 
-    void HandleDamageCallback(float HealthPercent, float ShieldPercent);
+    void HandleHealthChangedCallback(float HealthPercent, float ShieldPercent, bool bDamage);
     void RotateInPlace(float DeltaTime);
     void UpdateAimOffset(float DeltaTime);
     void SetTurningInPlace(float DeltaTime);

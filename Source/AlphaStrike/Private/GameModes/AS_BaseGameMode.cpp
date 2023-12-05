@@ -72,16 +72,23 @@ AActor* AAS_BaseGameMode::ChoosePlayerStart_Implementation(AController* Player)
 
     TArray<AActor*> PlayerStarts;
     UGameplayStatics::GetAllActorsOfClass(this, AAS_PlayerStart::StaticClass(), PlayerStarts);
+
+    TArray<AAS_PlayerStart*> ValidPlayerStarts;
     for (int i = 0; i < PlayerStarts.Num(); ++i)
     {
         AAS_PlayerStart* CustomPlayerStart = Cast<AAS_PlayerStart>(PlayerStarts[i]);
         if (!(CustomPlayerStart->GetIsOccupied()))
         {
-            CustomPlayerStart->SetIsOccupied(true);
-            return CustomPlayerStart;
+            ValidPlayerStarts.AddUnique(CustomPlayerStart);
         }
     }
-    return nullptr;
+
+    if (ValidPlayerStarts.IsEmpty()) return nullptr;
+
+    const int32 RandIndex = FMath::RandRange(0, ValidPlayerStarts.Num() - 1);
+    ValidPlayerStarts[RandIndex]->SetIsOccupied(true);
+
+    return ValidPlayerStarts[RandIndex];
 }
 
 void AAS_BaseGameMode::SetBotName(AController* BotController, int32 BotIndex)
@@ -111,7 +118,7 @@ void AAS_BaseGameMode::HandleActorDeath(
     if (!DeadActor || !KillerActor) return;
 
     FTimerHandle DelayRespawnTimer;
-    RespawnDelegate.BindUFunction(this, FName("RespawnPawn"), DeadActor, bEnableRandColor);
+    RespawnDelegate.BindUFunction(this, FName("RespawnPawn"), DeadActor, bEnableRandColor, CustomColor);
     GetWorldTimerManager().SetTimer(DelayRespawnTimer, RespawnDelegate, MinRespawnDelay, false);
 
     AddKillsAndDeathsToPlayers(DeadActor, KillerActor);
@@ -199,7 +206,8 @@ void AAS_BaseGameMode::RestartGame()
     UWorld* World = GetWorld();
     if (!World) return;
 
-    UGameplayStatics::OpenLevelBySoftObjectPtr(this, GetWorld()->GetCurrentLevel());
+    const FString MapName = UGameplayStatics::GetCurrentLevelName(World);
+    World->ServerTravel(MapName);
 }
 
 bool AAS_BaseGameMode::IsGameStarted()

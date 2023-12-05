@@ -21,6 +21,12 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
             if (TeamPlayerState)
             {
                 TeamPlayerState->SetTeamColor(TeamsSpawnInfo[TeamPlayerState->GetTeam()].TeamColor);
+                auto PlayerPawn = (*Iterator)->GetPawn<AAS_Character>();
+                if (PlayerPawn)
+                {
+                    PlayerPawn->SetPlayerColor(TeamPlayerState->GetTeamColor());
+                }
+
                 TeamsSpawnInfo[TeamPlayerState->GetTeam()].NumberOfPawns -= 1;
             }
         }

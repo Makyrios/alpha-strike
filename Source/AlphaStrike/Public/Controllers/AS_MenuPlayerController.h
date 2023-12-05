@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "AS_MenuPlayerController.generated.h"
 
+class USoundCue;
+
 UCLASS()
 class ALPHASTRIKE_API AAS_MenuPlayerController : public APlayerController
 {
@@ -19,4 +21,8 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+
+protected:
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Sound")
+    USoundCue* MenuSound;
 };

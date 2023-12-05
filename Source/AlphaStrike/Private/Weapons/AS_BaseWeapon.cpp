@@ -2,6 +2,7 @@
 
 #include "Weapons/AS_BaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/DecalComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -202,8 +203,14 @@ void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
     if (HitDecalMaterial)
     {
         FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
-        UGameplayStatics::SpawnDecalAtLocation(
+
+        auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(
             this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
+
+        if (DecalComponent)
+        {
+            DecalComponent->SetFadeOut(HitDecalLifeSpan, HitDecalFadeOutTime);
+        }
     }
 }
 
@@ -250,17 +257,6 @@ void AAS_BaseWeapon::DoFireHit()
 void AAS_BaseWeapon::DrawDebugFireTrace(const FVector& Start, const FVector& End)
 {
     if (!GetWorld()) return;
-
-    /* DrawDebugLine(  //
-         GetWorld(),   //
-         Start,        //
-         End,          //
-         FColor::Red,  //
-         false,        //
-         2.f,          //
-         0,            //
-         2.f           //
-     );*/
 
     DrawDebugSphere(GetWorld(), End, 6.f, 6, FColor::Red, false, -1.f, 0, 2.f);
 }
