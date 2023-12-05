@@ -31,8 +31,13 @@ public:
     virtual void StopFire();
     void StartReload();
     void FinishReload();
+    void StartChangeWeapon();
+    void FinishChangeWeapon();
 
     void HandleAmmoChange();
+
+    UFUNCTION(Server, Reliable)
+    void Server_ToggleVisibility();
 
 public:
     FORCEINLINE FName GetMuzzleSocketName() const { return MuzzleSocketName; }
@@ -45,6 +50,7 @@ public:
     FORCEINLINE bool CanFire() const { return bCanFire; }
     FORCEINLINE void SetCanFire(bool NewValue) { bCanFire = NewValue; }
     FORCEINLINE UAnimMontage* GetReloadAnimation() const { return ReloadAnimMontage; }
+    FORCEINLINE UAnimMontage* GetChangeWeaponAnimation() const { return ChangeWeaponAnimMontage; }
     FText GetAmmoInfoText();
 
 protected:
@@ -78,6 +84,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UAnimMontage* ReloadAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    UAnimMontage* ChangeWeaponAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     UParticleSystem* ImpactParticles;
@@ -120,11 +129,20 @@ private:
     UFUNCTION(Server, Reliable)
     void Server_ApplyDamage(AActor* DamagedActor, const FHitResult& HitResult);
 
+    UFUNCTION(Server, Reliable)
+    void Server_StartReload();
+
+    UFUNCTION(Server, Reliable)
+    void Server_StartChangeWeapon();
+
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_Fire(const FHitResult& HitResult);
 
     UFUNCTION(NetMulticast, Reliable)
-    void Multicast_Reload();
+    void Multicast_StartReload();
+
+    UFUNCTION(NetMulticast, Reliable)
+    void Multicast_StartChangeWeapon();
 
     /*
      * Other functions

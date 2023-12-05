@@ -89,7 +89,7 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
 
 void AAS_BaseWeapon::StartReload()
 {
-    Multicast_Reload();
+    Server_StartReload();
 }
 
 void AAS_BaseWeapon::FinishReload()
@@ -99,6 +99,13 @@ void AAS_BaseWeapon::FinishReload()
         AmmoComponent->Server_Reload();
     }
 }
+
+void AAS_BaseWeapon::StartChangeWeapon()
+{
+    Server_StartChangeWeapon();
+}
+
+void AAS_BaseWeapon::FinishChangeWeapon() {}
 
 void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
 {
@@ -125,7 +132,7 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
     SpawnBeamParticles(HitResult);
 }
 
-void AAS_BaseWeapon::Multicast_Reload_Implementation()
+void AAS_BaseWeapon::Multicast_StartReload_Implementation()
 {
     if (!ReloadAnimMontage || !AS_Owner) return;
 
@@ -137,7 +144,13 @@ void AAS_BaseWeapon::Multicast_Reload_Implementation()
             AS_Owner->PlayAnimMontage(ReloadAnimMontage);
         }
     }
-    //AS_Owner->GetMesh()->GetAnimInstance()->Montage_Play(ReloadAnimMontage);
+}
+
+void AAS_BaseWeapon::Multicast_StartChangeWeapon_Implementation()
+{
+    if (!ChangeWeaponAnimMontage || !AS_Owner) return;
+
+    AS_Owner->PlayAnimMontage(ChangeWeaponAnimMontage);
 }
 
 void AAS_BaseWeapon::SpawnImpactParticles(const FHitResult& HitResult)
@@ -192,6 +205,16 @@ void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
         UGameplayStatics::SpawnDecalAtLocation(
             this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);
     }
+}
+
+void AAS_BaseWeapon::Server_StartReload_Implementation()
+{
+    Multicast_StartReload();
+}
+
+void AAS_BaseWeapon::Server_StartChangeWeapon_Implementation()
+{
+    Multicast_StartChangeWeapon();
 }
 
 void AAS_BaseWeapon::UpdateHitTarget()
@@ -264,4 +287,12 @@ void AAS_BaseWeapon::HandleAmmoChange()
     if (!AS_Owner) return;
 
     AS_Owner->UpdateHUDAmmoInfo();
+}
+
+void AAS_BaseWeapon::Server_ToggleVisibility_Implementation()
+{
+    if (WeaponMesh)
+    {
+        WeaponMesh->ToggleVisibility();
+    }
 }

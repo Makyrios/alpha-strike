@@ -333,15 +333,33 @@ void AAS_Character::Die()
     }
 }
 
+void AAS_Character::StopAnimMontages()
+{
+    if (GetMesh() && GetMesh()->GetAnimInstance())
+    {
+        GetMesh()->GetAnimInstance()->StopAllMontages(0.3);
+    }
+}
+
 AAS_BaseWeapon* AAS_Character::GetEquippedWeapon() const
 {
     if (!CombatComponent) return nullptr;
     return CombatComponent->GetEquippedWeapon();
 }
 
-void AAS_Character::CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation)
+//void AAS_Character::CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation)
+//{
+//    ClearCrosshair();
+//    DrawCrosshair(StartLocation, EndLocation);
+//}
+
+void AAS_Character::CrosshairActivate()
 {
+    if (!CombatComponent || !CombatComponent->GetEquippedWeapon()) return;
+
     ClearCrosshair();
+    const FVector StartLocation = CombatComponent->GetEquippedWeapon()->GetStartMuzzlePoint();
+    const FVector EndLocation = CombatComponent->GetEquippedWeapon()->GetEndMuzzlePoint();
     DrawCrosshair(StartLocation, EndLocation);
 }
 

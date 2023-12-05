@@ -113,11 +113,16 @@ void AAS_PlayerController::Look(const FInputActionValue& Value)
 
 void AAS_PlayerController::ShowCrosshair(const FInputActionValue& Value)
 {
-    if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
+    if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent() || !PlayerCharacter->GetCombatComponent()->GetEquippedWeapon()) return;
 
-    const FVector CrosshairStart = PlayerCharacter->GetCombatComponent()->GetStartMuzzlePoint();
-    const FVector CrosshairEnd = PlayerCharacter->GetCombatComponent()->GetEndMuzzlePoint();
-    PlayerCharacter->CrosshairActivate(CrosshairStart, CrosshairEnd);
+    if (PlayerCharacter->GetCombatComponent()->GetEquippedWeapon()->CanFire())
+    {
+        PlayerCharacter->CrosshairActivate();
+    }
+    else
+    {
+        PlayerCharacter->CrosshairDeactivate();
+    }
 }
 
 void AAS_PlayerController::Jump()
@@ -252,26 +257,14 @@ void AAS_PlayerController::ScrollWeaponUp()
 {
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
-    if (PlayerCharacter->GetCombatComponent()->GetWeaponInventory().Num() > 1)
-    {
-        StopAnimMontages();
-        PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();
-        PlayerCharacter->UpdateHUDAmmoInfo();
-        PlayerCharacter->UpdateHUDInventoryInfo();
-    }
+    PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();    
 }
 
 void AAS_PlayerController::ScrollWeaponDown()
 {
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
-    if (PlayerCharacter->GetCombatComponent()->GetWeaponInventory().Num() > 1)
-    {
-        StopAnimMontages();
-        PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
-        PlayerCharacter->UpdateHUDAmmoInfo();
-        PlayerCharacter->UpdateHUDInventoryInfo();
-    }
+    PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
 }
 
 void AAS_PlayerController::Pause()
@@ -308,14 +301,6 @@ void AAS_PlayerController::SetInputModeUIOnly()
     FInputModeUIOnly InputModeUI;
     SetInputMode(InputModeUI);
     SetShowMouseCursor(true);
-}
-
-void AAS_PlayerController::StopAnimMontages()
-{
-    if (PlayerCharacter && PlayerCharacter->GetMesh() && PlayerCharacter->GetMesh()->GetAnimInstance())
-    {
-        PlayerCharacter->GetMesh()->GetAnimInstance()->StopAllMontages(0.3);
-    }
 }
 
 void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)

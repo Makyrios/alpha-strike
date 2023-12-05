@@ -34,10 +34,13 @@ public:
 
     void SetPlayerColor(const FLinearColor& Color);
 
-    void CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation);
+    //void CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation);
+    void CrosshairActivate();
     void CrosshairDeactivate();
 
     void Die();
+
+    void StopAnimMontages();
 
 public:
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
