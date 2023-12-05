@@ -14,6 +14,7 @@
 #include "GameStates/AS_TeamDeathmatchGameState.h"
 #include "PlayerStates/AS_TeamDeathmatchPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Sound/SoundCue.h"
 
 void AAS_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -29,6 +30,11 @@ void AAS_PlayerController::BeginPlay()
     FInputModeGameOnly InputModeData;
     SetInputMode(InputModeData);
     SetShowMouseCursor(false);
+
+    if (GameSound && GetWorld() && IsLocalController())
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), GameSound);
+    }
 }
 
 void AAS_PlayerController::OnPossess(APawn* InPawn)

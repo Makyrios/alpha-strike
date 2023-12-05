@@ -12,6 +12,7 @@ class UInputAction;
 class AAS_Character;
 class AAS_HUD;
 class AAS_BaseWeapon;
+class USoundCue;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_PlayerController : public APlayerController
@@ -122,6 +123,9 @@ private:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* ScrollWeaponDownAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Sound")
+    USoundCue* GameSound;
 
     UPROPERTY(EditAnywhere, Category = "AS")
     float JumpDelay = 2.f;

@@ -209,7 +209,7 @@ void AAS_Character::UpdateAimOffset(float DeltaTime)
 
         UpdateIfIsNotStanding();
 
-        if (IsControlled())
+        if (IsPlayerControlled())
         {
             bUseControllerRotationYaw = true;
         }
@@ -235,7 +235,7 @@ void AAS_Character::UpdateAimOffset(float DeltaTime)
 
         SetTurningInPlace(DeltaTime);
 
-        if (IsControlled())
+        if (IsPlayerControlled())
         {
             bUseControllerRotationYaw = true;
         }
