@@ -199,7 +199,8 @@ void AAS_BaseGameMode::RestartGame()
     UWorld* World = GetWorld();
     if (!World) return;
 
-    UGameplayStatics::OpenLevelBySoftObjectPtr(this, GetWorld()->GetCurrentLevel());
+    const FString MapName = UGameplayStatics::GetCurrentLevelName(World);
+    World->ServerTravel(MapName);
 }
 
 bool AAS_BaseGameMode::IsGameStarted()
