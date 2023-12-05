@@ -17,7 +17,7 @@ class ALPHASTRIKE_API UAS_CombatComponent : public UActorComponent
 
 public:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Movement")
-    float MaxAimWalkSpeed = 300.f;
+    float DiffAimWalkSpeed = 200.f;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Combat")
     float AimingFOV = 50.f;

@@ -1,17 +1,13 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
 #include "Components/AS_BuffComponent.h"
+#include "Components/AS_CombatComponent.h"
 #include "Characters/AS_Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values for this component's properties
 UAS_BuffComponent::UAS_BuffComponent()
 {
-    // Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-    // off to improve performance if you don't need them.
-    PrimaryComponentTick.bCanEverTick = true;
-
-    // ...
+    PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UAS_BuffComponent::ApplySpeedBuff(float BuffMultiplier, float BuffTime)
@@ -43,7 +39,6 @@ void UAS_BuffComponent::ApplyJumpBuff(float BuffMultiplier, float BuffTime)
     );
 }
 
-// Called when the game starts
 void UAS_BuffComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -51,19 +46,15 @@ void UAS_BuffComponent::BeginPlay()
     Character = Cast<AAS_Character>(GetOwner());
 }
 
-// Called every frame
-void UAS_BuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-    // ...
-}
-
 void UAS_BuffComponent::ResetSpeedBuff()
 {
-    if (!Character || !Character->GetCharacterMovement()) return;
+    if (!Character || !Character->GetCharacterMovement() || !Character->GetCombatComponent()) return;
 
-    Character->GetCharacterMovement()->MaxWalkSpeed = Character->GetDefaultWalkSpeed();
+    const bool bCharacterAiming = Character->GetCombatComponent()->IsAiming();
+    const float DiffWalkSpeed = Character->GetCombatComponent()->DiffAimWalkSpeed;
+    const float CharacterSpeed = Character->GetDefaultWalkSpeed();
+
+    Character->GetCharacterMovement()->MaxWalkSpeed = (bCharacterAiming) ? CharacterSpeed - DiffWalkSpeed : CharacterSpeed;
     Character->GetCharacterMovement()->MaxWalkSpeedCrouched = Character->GetDefaultCrouchWalkSpeed();
 }
 

@@ -46,6 +46,7 @@ void AAS_BaseWeapon::Fire()
         if (bCanFire)
         {
             bCanFire = false;
+            bCanPlayNoAmmoSound = true;
             AmmoComponent->Server_HandleWeaponFired();
             Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
             GetWorld()->GetTimerManager().SetTimer(
@@ -56,8 +57,10 @@ void AAS_BaseWeapon::Fire()
     {
         StartReload();
     }
-    else if (NoAmmoSound)
+    else if (NoAmmoSound && bCanPlayNoAmmoSound)
     {
+        bCanPlayNoAmmoSound = false;
+
         UGameplayStatics::PlaySoundAtLocation(  //
             GetWorld(),                         //
             NoAmmoSound,                        //
@@ -66,7 +69,10 @@ void AAS_BaseWeapon::Fire()
     }
 }
 
-void AAS_BaseWeapon::StopFire() {}
+void AAS_BaseWeapon::StopFire() 
+{
+    bCanPlayNoAmmoSound = true;
+}
 
 void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, const FHitResult& HitResult)
 {
@@ -90,6 +96,8 @@ void AAS_BaseWeapon::Server_ApplyDamage_Implementation(AActor* DamagedActor, con
 
 void AAS_BaseWeapon::StartReload()
 {
+    if (!AmmoComponent || !AmmoComponent->CanReload()) return;
+
     Server_StartReload();
 }
 
@@ -97,6 +105,7 @@ void AAS_BaseWeapon::FinishReload()
 {
     if (AmmoComponent)
     {
+        bReload = false;
         AmmoComponent->Server_Reload();
     }
 }
@@ -135,13 +144,14 @@ void AAS_BaseWeapon::Multicast_Fire_Implementation(const FHitResult& HitResult)
 
 void AAS_BaseWeapon::Multicast_StartReload_Implementation()
 {
-    if (!ReloadAnimMontage || !AS_Owner) return;
+    if (!ReloadAnimMontage || !AS_Owner || bReload) return;
 
     if (AmmoComponent)
     {
         FAmmoInfo AmmoInfo = AmmoComponent->GetAmmoInfo();
         if (AmmoInfo.CurrentAmmo < AmmoInfo.MaxAmmoInClip)
         {
+            bReload = true;
             AS_Owner->PlayAnimMontage(ReloadAnimMontage);
         }
     }

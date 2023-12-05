@@ -48,6 +48,7 @@ public:
     FORCEINLINE UAS_AmmoComponent* GetAmmoComponent() const { return AmmoComponent; }
     FORCEINLINE float GetFireRange() const { return TraceLength; }
     FORCEINLINE bool CanFire() const { return bCanFire; }
+    FORCEINLINE bool IsReload() const { return bReload; }
     FORCEINLINE void SetCanFire(bool NewValue) { bCanFire = NewValue; }
     FORCEINLINE UAnimMontage* GetReloadAnimation() const { return ReloadAnimMontage; }
     FORCEINLINE UAnimMontage* GetChangeWeaponAnimation() const { return ChangeWeaponAnimMontage; }
@@ -123,6 +124,8 @@ private:
     FVector HitEnd;
 
     bool bCanFire = true;
+    bool bReload = false;
+    bool bCanPlayNoAmmoSound = false;
     FTimerHandle FireDelayTimer;
 
 private:

@@ -6,9 +6,6 @@
 #include "Weapons/AS_BaseWeapon.h"
 #include "AS_RifleWeapon.generated.h"
 
-/**
- *
- */
 UCLASS()
 class ALPHASTRIKE_API AAS_RifleWeapon : public AAS_BaseWeapon
 {
@@ -22,7 +19,6 @@ private:
 protected:
     virtual void Fire() override;
     virtual void StopFire() override;
-
 
 private:
     FTimerHandle AutoFireHandle;

@@ -36,10 +36,6 @@ void UAS_AmmoComponent::BeginPlay()
 void UAS_AmmoComponent::Server_HandleWeaponFired_Implementation()
 {
     --AmmoInfo.CurrentAmmo;
-    if (AmmoInfo.CurrentAmmo == 0)
-    {
-        Server_Reload_Implementation();
-    }
 
     OwnerWeapon = (!OwnerWeapon) ? GetOwner<AAS_BaseWeapon>() : OwnerWeapon;
     if (!OwnerWeapon) return;
@@ -47,15 +43,11 @@ void UAS_AmmoComponent::Server_HandleWeaponFired_Implementation()
     OwnerWeapon->HandleAmmoChange();
 }
 
-
 bool UAS_AmmoComponent::CanShoot() const
 {
-    UWorld* World = GetWorld();
-    if (!World) return false;
+    if (!OwnerWeapon) return false;
 
-    bool bIsReloading = World->GetTimerManager().TimerExists(ReloadTimer) && World->GetTimerManager().IsTimerActive(ReloadTimer);
-
-    return (!(AmmoInfo.bFiniteAmmo) || AmmoInfo.CurrentAmmo != 0) && !bIsReloading;
+    return (!(AmmoInfo.bFiniteAmmo) || AmmoInfo.CurrentAmmo != 0) && !OwnerWeapon->IsReload();
 }
 
 bool UAS_AmmoComponent::CanReload() const
@@ -78,10 +70,6 @@ void UAS_AmmoComponent::Server_Reload_Implementation()
     if (!CanReload() && World) return;
 
     ReloadAmmo();
-    /*if (!(World->GetTimerManager().IsTimerActive(ReloadTimer)))
-    {
-        World->GetTimerManager().SetTimer(ReloadTimer, this, &UAS_AmmoComponent::ReloadAmmo, ReloadTime, false);
-    }*/
 }
 
 void UAS_AmmoComponent::ReloadAmmo()

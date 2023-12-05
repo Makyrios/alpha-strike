@@ -142,7 +142,7 @@ void UAS_CombatComponent::Aim()
     if (!PlayerCharacter) return;
 
     bIsAiming = true;
-    PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = MaxAimWalkSpeed;
+    PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed -= DiffAimWalkSpeed;
     PlayerCharacter->GetFollowCamera()->FieldOfView = AimingFOV;
 
     if (PlayerCharacter->IsLocallyControlled())
@@ -156,7 +156,7 @@ void UAS_CombatComponent::StopAim()
     if (!PlayerCharacter) return;
 
     bIsAiming = false;
-    PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetDefaultWalkSpeed();
+    PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed += DiffAimWalkSpeed;
     PlayerCharacter->GetFollowCamera()->FieldOfView = PlayerCharacter->GetDefaultFOV();
 
     if (PlayerCharacter->IsLocallyControlled())
