@@ -8,7 +8,6 @@ AAS_AICharacter::AAS_AICharacter()
     bUseControllerRotationYaw = false;
     if (GetCharacterMovement())
     {
-        GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 200.0f);
         GetCharacterMovement()->bUseControllerDesiredRotation = true;
     }
 }

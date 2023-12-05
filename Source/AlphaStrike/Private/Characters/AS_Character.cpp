@@ -214,7 +214,11 @@ void AAS_Character::UpdateAimOffset(float DeltaTime)
 
         UpdateIfIsNotStanding();
 
-        bUseControllerRotationYaw = true;
+        if (IsControlled())
+        {
+            bUseControllerRotationYaw = true;
+        }
+
         return;
     }
 
@@ -236,7 +240,10 @@ void AAS_Character::UpdateAimOffset(float DeltaTime)
 
         SetTurningInPlace(DeltaTime);
 
-        bUseControllerRotationYaw = true;
+        if (IsControlled())
+        {
+            bUseControllerRotationYaw = true;
+        }
     }
 }
 
