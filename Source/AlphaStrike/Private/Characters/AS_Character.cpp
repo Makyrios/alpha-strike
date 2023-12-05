@@ -84,16 +84,7 @@ void AAS_Character::BeginPlay()
             HealthComponent->OnDeadDelegate.AddDynamic(this, &AAS_Character::OnDeadCallback);
         }
 
-        HealthComponent->OnDamageDelegate.AddDynamic(this, &AAS_Character::OnDamageCallback);
-    }
-
-    if (IsLocallyControlled())
-    {
-        AAS_TeamDeathmatchPlayerState* TeamPlayerState = GetPlayerState<AAS_TeamDeathmatchPlayerState>();
-        if (TeamPlayerState)
-        {
-            SetPlayerColor(TeamPlayerState->GetTeamColor());
-        }
+        HealthComponent->OnHealthChangedDelegate.AddDynamic(this, &AAS_Character::OnHealthChangedCallback);
     }
 
     DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
@@ -108,7 +99,7 @@ void AAS_Character::PossessedBy(AController* NewController)
 
     Super::PossessedBy(NewController);
 
-    OnDamageCallback(this);
+    OnHealthChangedCallback(this, false);
     UpdateHUDAmmoInfo();
     UpdateHUDInventoryInfo();
 }
@@ -149,26 +140,26 @@ void AAS_Character::Multicast_OnDead_Implementation()
     Die();
 }
 
-void AAS_Character::OnDamageCallback(AActor* DamagedActor)
+void AAS_Character::OnHealthChangedCallback(AActor* ChangedActor, bool bDamage)
 {
     if (!HealthComponent || !HasAuthority()) return;
 
     if (IsLocallyControlled())
     {
-        HandleDamageCallback(HealthComponent->GetHealthPercent(), HealthComponent->GetShieldPercent());
+        HandleHealthChangedCallback(HealthComponent->GetHealthPercent(), HealthComponent->GetShieldPercent(), bDamage);
     }
     else
     {
-        Client_DamageCallback(HealthComponent->GetHealthPercent(), HealthComponent->GetShieldPercent());
+        Client_HealthChangedCallback(HealthComponent->GetHealthPercent(), HealthComponent->GetShieldPercent(), bDamage);
     }
 }
 
-void AAS_Character::Client_DamageCallback_Implementation(float HealthPercent, float ShieldPercent)
+void AAS_Character::Client_HealthChangedCallback_Implementation(float HealthPercent, float ShieldPercent, bool bDamage)
 {
-    HandleDamageCallback(HealthPercent, ShieldPercent);
+    HandleHealthChangedCallback(HealthPercent, ShieldPercent, bDamage);
 }
 
-void AAS_Character::HandleDamageCallback(float HealthPercent, float ShieldPercent)
+void AAS_Character::HandleHealthChangedCallback(float HealthPercent, float ShieldPercent, bool bDamage)
 {
     if (!HealthComponent) return;
 
@@ -177,7 +168,11 @@ void AAS_Character::HandleDamageCallback(float HealthPercent, float ShieldPercen
 
     PlayerController->SetHealthBarPercent(HealthPercent);
     PlayerController->SetShieldBarPercent(ShieldPercent);
-    PlayerController->PlayDamageAnimation();
+
+    if (bDamage)
+    {
+        PlayerController->PlayDamageAnimation();
+    }
 }
 
 void AAS_Character::RotateInPlace(float DeltaTime)

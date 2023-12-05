@@ -52,7 +52,7 @@ void UAS_HealthComponent::ServerSideBeginPlay()
     SetHealth(MaxHealth);
     SetShield(MaxShield);
 
-    OnDamageDelegate.Broadcast(GetOwner());
+    OnHealthChangedDelegate.Broadcast(GetOwner(), false);
     GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UAS_HealthComponent::OnTakeAnyDamageCallback);
 }
 
@@ -104,7 +104,7 @@ void UAS_HealthComponent::HandleInvincible(bool bNewValue, float InvincibilityTi
 
 void UAS_HealthComponent::SetHealth(const float NewHealth)
 {
-    UpdateHealth(NewHealth);
+    UpdateHealth(NewHealth, false);
 }
 
 void UAS_HealthComponent::SubHealth(const float SubHealth)
@@ -120,13 +120,13 @@ void UAS_HealthComponent::SubHealth(const float SubHealth)
         {
             const float Damage = SubHealth - Shield;
             Shield = 0.f;
-            UpdateHealth(Health - Damage);
+            UpdateHealth(Health - Damage, true);
         }
-        OnDamageDelegate.Broadcast(GetOwner());
+        OnHealthChangedDelegate.Broadcast(GetOwner(), true);
     }
     else
     {
-        UpdateHealth(Health - SubHealth);
+        UpdateHealth(Health - SubHealth, true);
     }
 }
 
@@ -144,13 +144,13 @@ void UAS_HealthComponent::SetShield(const float NewShield)
 void UAS_HealthComponent::AddShield(const float AddShield)
 {
     SetShield(Shield + AddShield);
-    OnDamageDelegate.Broadcast(GetOwner());
+    OnHealthChangedDelegate.Broadcast(GetOwner(), false);
 }
 
-void UAS_HealthComponent::UpdateHealth(const float HealthToUpdate)
+void UAS_HealthComponent::UpdateHealth(const float HealthToUpdate, bool bDamage)
 {
     Health = FMath::Clamp(HealthToUpdate, 0.f, MaxHealth);
-    OnDamageDelegate.Broadcast(GetOwner());
+    OnHealthChangedDelegate.Broadcast(GetOwner(), bDamage);
 
     LogShow();
 }

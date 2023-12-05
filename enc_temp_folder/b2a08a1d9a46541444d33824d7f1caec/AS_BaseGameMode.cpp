@@ -72,23 +72,16 @@ AActor* AAS_BaseGameMode::ChoosePlayerStart_Implementation(AController* Player)
 
     TArray<AActor*> PlayerStarts;
     UGameplayStatics::GetAllActorsOfClass(this, AAS_PlayerStart::StaticClass(), PlayerStarts);
-
-    TArray<AAS_PlayerStart*> ValidPlayerStarts;
     for (int i = 0; i < PlayerStarts.Num(); ++i)
     {
         AAS_PlayerStart* CustomPlayerStart = Cast<AAS_PlayerStart>(PlayerStarts[i]);
         if (!(CustomPlayerStart->GetIsOccupied()))
         {
-            ValidPlayerStarts.AddUnique(CustomPlayerStart);
+            CustomPlayerStart->SetIsOccupied(true);
+            return CustomPlayerStart;
         }
     }
-
-    if (ValidPlayerStarts.IsEmpty()) return nullptr;
-
-    const int32 RandIndex = FMath::RandRange(0, ValidPlayerStarts.Num() - 1);
-    ValidPlayerStarts[RandIndex]->SetIsOccupied(true);
-
-    return ValidPlayerStarts[RandIndex];
+    return nullptr;
 }
 
 void AAS_BaseGameMode::SetBotName(AController* BotController, int32 BotIndex)
