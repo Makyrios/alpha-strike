@@ -139,7 +139,7 @@ void UAS_CombatComponent::Server_ChangeWeapon_Implementation(int WeaponIndex)
 
 void UAS_CombatComponent::Aim()
 {
-    if (!PlayerCharacter) return;
+    if (!PlayerCharacter || bIsAiming) return;
 
     bIsAiming = true;
     PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed -= DiffAimWalkSpeed;
@@ -153,7 +153,7 @@ void UAS_CombatComponent::Aim()
 
 void UAS_CombatComponent::StopAim()
 {
-    if (!PlayerCharacter) return;
+    if (!PlayerCharacter || !bIsAiming) return;
 
     bIsAiming = false;
     PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed += DiffAimWalkSpeed;

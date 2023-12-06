@@ -3,10 +3,8 @@
 #include "Pickups/AS_Pickup.h"
 #include "Components/SphereComponent.h"
 
-// Sets default values
 AAS_Pickup::AAS_Pickup()
 {
-    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
@@ -17,7 +15,6 @@ AAS_Pickup::AAS_Pickup()
     Sphere->SetupAttachment(StaticMesh);
 }
 
-// Called when the game starts or when spawned
 void AAS_Pickup::BeginPlay()
 {
     Super::BeginPlay();
@@ -62,6 +59,11 @@ void AAS_Pickup::Tick(float DeltaTime)
     {
         RotateMesh(DeltaTime);
     }
+}
+
+bool AAS_Pickup::CouldBeTaken() const
+{
+    return !GetWorldTimerManager().IsTimerActive(RespawnTimer);
 }
 
 void AAS_Pickup::Spawn()

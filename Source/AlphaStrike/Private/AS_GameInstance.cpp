@@ -22,10 +22,8 @@ void UAS_GameInstance::BeginLoadingScreen(const FString& InMapName)
     Attributes.bAutoCompleteWhenLoadingCompletes = false;
     Attributes.bMoviesAreSkippable = true;
     Attributes.MinimumLoadingScreenDisplayTime = 0.5f;
-    UE_LOG(LogTemp, Warning, TEXT("Movied binded!"));
     if (bUseMovies)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Movied binded!"));
         Attributes.MoviePaths = MoviePaths;
     }
 

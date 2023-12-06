@@ -13,6 +13,17 @@ class ALPHASTRIKE_API AAS_Pickup : public AActor
 {
     GENERATED_BODY()
 
+public:
+    AAS_Pickup();
+
+public:
+    virtual void Tick(float DeltaTime) override;
+
+    bool CouldBeTaken() const;
+
+    void Spawn();
+    void Despawn();
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
     UStaticMeshComponent* StaticMesh;
@@ -27,15 +38,11 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AS|Spawn", meta = (AllowPrivateAccess = "true"))
     bool bSpawnImmediately = true;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AS|Spawn", meta = (AllowPrivateAccess = "true", EditCondition = "bSpawnImmediately"))
+    UPROPERTY(
+        EditAnywhere, BlueprintReadWrite, Category = "AS|Spawn", meta = (AllowPrivateAccess = "true", EditCondition = "bSpawnImmediately"))
     float RespawnTime = 10.f;
 
-public:
-    // Sets default values for this actor's properties
-    AAS_Pickup();
-
 protected:
-    // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
     UFUNCTION()
@@ -43,17 +50,10 @@ protected:
         int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION()
-    virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    virtual void OnSphereEndOverlap(
+        UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     virtual void PickupInteract(TArray<AActor*>& InteractedActors);
-
-public:
-    // Called every frame
-    virtual void Tick(float DeltaTime) override;
-
-    void Spawn();
-    void Despawn();
 
 private:
     void RotateMesh(float DeltaTime);
