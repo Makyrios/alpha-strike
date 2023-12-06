@@ -14,6 +14,14 @@ class ALPHASTRIKE_API UAS_GameInstance : public UGameInstance
     GENERATED_BODY()
 
 public:
+    void Init() override;
+
+    UFUNCTION()
+    void BeginLoadingScreen(const FString& InMapName);
+
+    UFUNCTION()
+    void EndLoadingScreen(UWorld* LoadedWorld);
+
     void SetMasterSoundVolume(float Volume);
     float GetMasterSoundVolume() const;
 
@@ -37,4 +45,13 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Sound")
     USoundClass* MasterSoundClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|LoadingScreen")
+    TSubclassOf<UUserWidget> LoadingScreenClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|LoadingScreen", meta = (DisplayName = "UseMovies"))
+    bool bUseMovies;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|LoadingScreen", meta = (EditCondition = "bUseMovies"))
+    TArray<FString> MoviePaths;
 };

@@ -2,6 +2,48 @@
 
 #include "AS_GameInstance.h"
 #include "Sound/SoundClass.h"
+#include "Runtime/UMG/Public/UMG.h"
+#include "Slate.h"
+#include "MoviePlayer.h"
+
+void UAS_GameInstance::Init() 
+{
+    Super::Init();
+
+    FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UAS_GameInstance::BeginLoadingScreen);
+    FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UAS_GameInstance::EndLoadingScreen);
+}
+
+void UAS_GameInstance::BeginLoadingScreen(const FString& InMapName)
+{
+    if (IsRunningDedicatedServer()) return;
+
+    FLoadingScreenAttributes Attributes;
+    Attributes.bAutoCompleteWhenLoadingCompletes = false;
+    Attributes.bMoviesAreSkippable = true;
+    Attributes.MinimumLoadingScreenDisplayTime = 0.5f;
+    UE_LOG(LogTemp, Warning, TEXT("Movied binded!"));
+    if (bUseMovies)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Movied binded!"));
+        Attributes.MoviePaths = MoviePaths;
+    }
+
+    UUserWidget* LoadingScreen = CreateWidget<UUserWidget>(GetWorld(), LoadingScreenClass);
+    Attributes.WidgetLoadingScreen = LoadingScreen->TakeWidget();
+
+    IGameMoviePlayer* MoviePlayer = GetMoviePlayer();
+    if (MoviePlayer)
+    {
+        MoviePlayer->SetupLoadingScreen(Attributes);
+        MoviePlayer->PlayMovie();
+    }
+}
+
+void UAS_GameInstance::EndLoadingScreen(UWorld* LoadedWorld) 
+{
+
+}
 
 void UAS_GameInstance::SetMasterSoundVolume(float Volume)
 {

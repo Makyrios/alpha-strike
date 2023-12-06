@@ -14,16 +14,16 @@ struct FAmmoInfo
     GENERATED_BODY()
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    bool bFiniteAmmo;
+    bool bFiniteAmmo = true;
 
     UPROPERTY()
-    int32 CurrentAmmo;
+    int32 CurrentAmmo = 0;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bFiniteAmmo"))
-    int32 MaxAmmoInClip;
+    int32 MaxAmmoInClip = 10;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bFiniteAmmo"))
-    int32 AmmoInBag;
+    int32 AmmoInBag = 30;
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -58,7 +58,7 @@ protected:
     FAmmoInfo AmmoInfo;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")
-    float ReloadTime;
+    float ReloadTime = 2.0f;
 
 private:
     FTimerHandle ReloadTimer;
