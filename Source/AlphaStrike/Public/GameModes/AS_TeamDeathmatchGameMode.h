@@ -49,9 +49,6 @@ protected:
     virtual void HandleMatchHasEnded() override;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AS|Gameplay")
-    int32 ScoreGoal;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|GameStart", meta = (DisplayName = "SpawnBots", InlineEditConditionToggle))
     bool bSpawnBots;
 

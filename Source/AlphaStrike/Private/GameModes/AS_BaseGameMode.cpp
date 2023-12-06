@@ -37,7 +37,6 @@ void AAS_BaseGameMode::PostLogin(APlayerController* NewPlayer)
         FString PlayerName = GameInstance->GetPlayerName().ToString();
         PlayerState->SetPlayerName(PlayerName);
     }
-
     CreateStartGameWidget(NewPlayer);
 }
 
@@ -62,6 +61,11 @@ void AAS_BaseGameMode::HandleMatchHasStarted()
         {
             PlayerPawn->SetActorLocation(PlayerStart->GetActorLocation());
             PlayerPawn->SetActorRotation(PlayerStart->GetActorRotation());
+        }
+        if (AAS_PlayerController* CustomPlayerController = Cast<AAS_PlayerController>(*Iterator))
+        {
+            CustomPlayerController->SetHUDWidgetVisibility(ESlateVisibility::Visible);
+            CustomPlayerController->SetScoreGoal(ScoreGoal);
         }
     }
 }

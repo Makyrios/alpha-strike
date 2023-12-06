@@ -45,6 +45,9 @@ protected:
     float DelayBeforeStart;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")
+    int32 ScoreGoal;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")
     float TimeLimit;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")

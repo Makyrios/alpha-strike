@@ -17,6 +17,10 @@ void AAS_HUD::BeginPlay()
     Super::BeginPlay();
 
     HUDWidget = AddWidget<UAS_HUDWidget>(HUDWidgetClass);
+    if (HUDWidget)
+    {
+        HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
 
     TableStatsWidget = AddWidget<UAS_TableStatsWidget>(StatsTableClass);
     if (TableStatsWidget)
@@ -50,6 +54,13 @@ void AAS_HUD::SetupTableWidget()
     if (!TableStatsWidget) return;
     const int32 NumberOfPlayers = UGameplayStatics::GetNumPlayerStates(this);
     TableStatsWidget->SetPlayerNumber(NumberOfPlayers);
+}
+
+void AAS_HUD::SetHUDWidgetVisibility(ESlateVisibility InVisibility)
+{
+    if (!HUDWidget) return;
+
+    HUDWidget->SetVisibility(InVisibility);
 }
 
 void AAS_HUD::ShowStatsTable()
@@ -155,6 +166,13 @@ void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo)
     {
         CurrentHUDWidget->SetAmmoInfoText(NewAmmoInfo);
     }
+}
+
+void AAS_HUD::SetScoreGoal(int32 ScoreGoal)
+{
+    if (!HUDWidget) return;
+
+    HUDWidget->SetScoreGoalText(ScoreGoal);
 }
 
  void AAS_HUD::ShowWonWidget() 

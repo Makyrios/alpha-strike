@@ -21,6 +21,7 @@ public:
 
     void SetTimerText(float RemainingTimeInSeconds);
     void SetAmmoInfoText(FText NewAmmoInfo);
+    void SetScoreGoalText(int32 ScoreGoal);
 
     void UpdateInventoryInfo();
 
@@ -38,6 +39,9 @@ public:
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UTextBlock* AmmoInfoText;
+
+    UPROPERTY(EditAnywhere, meta = (BindWidget))
+    UTextBlock* ScoreGoalText;
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     UImage* PistolIcon;

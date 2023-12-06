@@ -31,10 +31,12 @@ public:
     void PlayDamageAnimation();
 
     void SetAmmoInfo(FText NewAmmoInfo);
+    void SetScoreGoal(int32 ScoreGoal);
 
     void SetTeamsScore();
 
     void CreateStartGameWidget(float StartGameDelay);
+    void SetHUDWidgetVisibility(ESlateVisibility InVisibility);
 
     void UpdateInventoryInfo();
 
@@ -74,6 +76,9 @@ protected:
 private:
     UFUNCTION(Client, Reliable)
     void Client_CreateStartGameWidget(float StartGameDelay);
+
+    UFUNCTION(Client, Reliable)
+    void Client_SetHUDWidgetVisibility(ESlateVisibility InVisibility);
 
     UFUNCTION(Client, Reliable)
     void Client_HandleWin();

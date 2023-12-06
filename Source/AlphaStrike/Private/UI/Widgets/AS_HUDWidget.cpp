@@ -42,6 +42,16 @@ void UAS_HUDWidget::SetAmmoInfoText(FText NewAmmoInfo)
     }
 }
 
+
+void UAS_HUDWidget::SetScoreGoalText(int32 ScoreGoal) 
+{
+    if (ScoreGoalText)
+    {
+        FString ScoreGoalString = FString::FromInt(ScoreGoal);
+        ScoreGoalText->SetText(FText::FromString(ScoreGoalString));
+    }
+}
+
 void UAS_HUDWidget::UpdateInventoryInfo()
 {
     if (!PistolIcon || !RifleIcon || !SniperRifleIcon) return;

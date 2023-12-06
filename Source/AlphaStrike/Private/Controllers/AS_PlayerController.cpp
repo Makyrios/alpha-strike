@@ -245,6 +245,14 @@ void AAS_PlayerController::SetAmmoInfo(FText NewAmmoInfo)
     AS_HUD->SetAmmoInfo(NewAmmoInfo);
 }
 
+void AAS_PlayerController::SetScoreGoal(int32 ScoreGoal) 
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetScoreGoal(ScoreGoal);
+}
+
 void AAS_PlayerController::SetTeamsScore()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
@@ -329,6 +337,26 @@ void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
     if (!AS_HUD) return;
 
     AS_HUD->ShowStartGameWidget(StartGameDelay);
+}
+
+void AAS_PlayerController::SetHUDWidgetVisibility(ESlateVisibility InVisibility) 
+{
+    if (!IsLocalController())
+    {
+        Client_SetHUDWidgetVisibility(InVisibility);
+    }
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetHUDWidgetVisibility(InVisibility);
+}
+
+void AAS_PlayerController::Client_SetHUDWidgetVisibility_Implementation(ESlateVisibility InVisibility) 
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetHUDWidgetVisibility(InVisibility);
 }
 
 void AAS_PlayerController::HandleWin()

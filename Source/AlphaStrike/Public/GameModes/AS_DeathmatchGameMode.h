@@ -45,7 +45,4 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|GameStart", meta = (EditCondition = "bSpawnBots"))
     FPawnSpawnInfo BotsSpawnInfo;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Gameplay")
-    int32 KillsToWin;
 };

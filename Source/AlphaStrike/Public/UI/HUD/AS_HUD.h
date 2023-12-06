@@ -21,10 +21,13 @@ class ALPHASTRIKE_API AAS_HUD : public AHUD
     GENERATED_BODY()
 
 public:
+    void SetHUDWidgetVisibility(ESlateVisibility InVisibility);
+
     void SetHealthBarPercent(float Percent);
     void SetShieldBarPercent(float Percent);
     void SetTimeRemaining(float RemainingTimeInSeconds);
     void SetAmmoInfo(FText NewAmmoInfo);
+    void SetScoreGoal(int32 ScoreGoal);
 
     virtual void SetTeamAScore(int32 NewScore){};
     virtual void SetTeamBScore(int32 NewScore){};

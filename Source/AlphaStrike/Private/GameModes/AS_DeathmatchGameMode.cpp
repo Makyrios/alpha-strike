@@ -56,7 +56,7 @@ bool AAS_DeathmatchGameMode::ReadyToEndMatch_Implementation()
 {
     if (AAS_DeathmatchGameState* CurrentGameState = Cast<AAS_DeathmatchGameState>(GameState))
     {
-        return CurrentGameState->GetMaxPlayerKills() >= KillsToWin || Super::ReadyToEndMatch_Implementation();
+        return CurrentGameState->GetMaxPlayerKills() >= ScoreGoal || Super::ReadyToEndMatch_Implementation();
     }
     return false;
 }
