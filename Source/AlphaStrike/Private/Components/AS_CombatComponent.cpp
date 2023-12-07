@@ -46,7 +46,6 @@ void UAS_CombatComponent::BeginPlay()
     Super::BeginPlay();
 
     if (!GetOwner()) return;
-
     PlayerCharacter = Cast<AAS_Character>(GetOwner());
 
     SpawnWeapon();
@@ -66,7 +65,7 @@ void UAS_CombatComponent::SpawnWeapon()
 
         if (!Owner->GetMesh() || !EquippedWeapon) return;
 
-        FAttachmentTransformRules AttachmentTransformRules(
+        const FAttachmentTransformRules AttachmentTransformRules(
             EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
         EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquippedWeapon->GetMuzzleSocketName());
 
@@ -125,8 +124,10 @@ void UAS_CombatComponent::Server_ChangeWeapon_Implementation(int WeaponIndex)
     EquippedWeaponIndex = WeaponIndex;
 
     if (!WeaponInventory.IsValidIndex(PreviousWeaponIndex) || !WeaponInventory.IsValidIndex(EquippedWeaponIndex)) return;
+
     AAS_BaseWeapon* PreviousWeapon = WeaponInventory[PreviousWeaponIndex];
     AAS_BaseWeapon* CurrentWeapon = WeaponInventory[EquippedWeaponIndex];
+
     if (PreviousWeapon)
     {
         PreviousWeapon->GetWeaponMesh()->SetVisibility(false);

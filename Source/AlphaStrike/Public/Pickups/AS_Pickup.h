@@ -33,11 +33,13 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AS|Pickup", meta = (AllowPrivateAccess = "true"))
     bool bRotateMesh = true;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AS|Pickup", meta = (AllowPrivateAccess = "true", EditCondition = "bRotateMesh"))
     float RotationSpeed = 20.f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AS|Spawn", meta = (AllowPrivateAccess = "true"))
     bool bSpawnImmediately = true;
+
     UPROPERTY(
         EditAnywhere, BlueprintReadWrite, Category = "AS|Spawn", meta = (AllowPrivateAccess = "true", EditCondition = "bSpawnImmediately"))
     float RespawnTime = 10.f;

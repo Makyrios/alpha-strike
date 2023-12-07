@@ -1,9 +1,7 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "UI/Widgets/AS_StartGameWidget.h"
 #include "Components/TextBlock.h"
-
 
 void UAS_StartGameWidget::InitializeWidget(float DelayStartTimer)
 {
@@ -11,7 +9,6 @@ void UAS_StartGameWidget::InitializeWidget(float DelayStartTimer)
     Timer = StartGameDelay;
     bStartTimer = true;
 }
-
 
 void UAS_StartGameWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {

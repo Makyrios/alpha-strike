@@ -66,8 +66,7 @@ void UAS_AmmoComponent::AddAmmoInBag(int AmmoAmount)
 
 void UAS_AmmoComponent::Server_Reload_Implementation()
 {
-    UWorld* World = GetWorld();
-    if (!CanReload() && World) return;
+    if (!CanReload()) return;
 
     ReloadAmmo();
 }
@@ -95,7 +94,7 @@ void UAS_AmmoComponent::ReloadAmmo()
 
 FText UAS_AmmoComponent::GetAmmoInfoAsText()
 {
-    FString AmmoString = FString::FromInt(AmmoInfo.CurrentAmmo) + " / " + FString::FromInt(AmmoInfo.AmmoInBag);
+    const FString AmmoString = FString::FromInt(AmmoInfo.CurrentAmmo) + " / " + FString::FromInt(AmmoInfo.AmmoInBag);
     return FText::FromString(AmmoString);
 }
 

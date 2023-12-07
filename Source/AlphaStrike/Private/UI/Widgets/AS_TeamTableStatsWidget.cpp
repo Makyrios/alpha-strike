@@ -1,6 +1,5 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "UI/Widgets/AS_TeamTableStatsWidget.h"
 #include "Components/VerticalBox.h"
 #include "PlayerStates/AS_TeamDeathmatchPlayerState.h"
@@ -9,13 +8,16 @@
 
 void UAS_TeamTableStatsWidget::AddPlayerStatsToTable(AAS_BasePlayerState* PlayerToAdd)
 {
+    if (!PlayerToAdd || !PlayersTeamA || !PlayersTeamB) return;
+
     UAS_PlayerStatsWidget* NewPlayerStats = CreateWidget<UAS_PlayerStatsWidget>(this, PlayerStatsClass);
     PlayerStatesInTable.Add(PlayerToAdd);
+
     if (NewPlayerStats)
     {
         NewPlayerStats->SetPlayerState(PlayerToAdd);
     }
-    if (AAS_TeamDeathmatchPlayerState* TeamPlayerState = Cast<AAS_TeamDeathmatchPlayerState>(PlayerToAdd)) 
+    if (const AAS_TeamDeathmatchPlayerState* TeamPlayerState = Cast<AAS_TeamDeathmatchPlayerState>(PlayerToAdd))
     {
         if (TeamPlayerState->GetTeam() == ETeams::TEAM_A)
         {

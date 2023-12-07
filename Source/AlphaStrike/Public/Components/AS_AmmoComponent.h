@@ -4,27 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "AS_Types.h"
 #include "AS_AmmoComponent.generated.h"
 
 class AAS_BaseWeapon;
-
-USTRUCT(BlueprintType)
-struct FAmmoInfo
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    bool bFiniteAmmo = true;
-
-    UPROPERTY()
-    int32 CurrentAmmo = 0;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bFiniteAmmo"))
-    int32 MaxAmmoInClip = 10;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bFiniteAmmo"))
-    int32 AmmoInBag = 30;
-};
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ALPHASTRIKE_API UAS_AmmoComponent : public UActorComponent
@@ -46,9 +29,9 @@ public:
 
     void AddAmmoInBag(int AmmoAmount);
 
-    FText GetAmmoInfoAsText();
-
+public:
     FORCEINLINE const FAmmoInfo& GetAmmoInfo() const { return AmmoInfo; }
+    FText GetAmmoInfoAsText();
 
 protected:
     virtual void BeginPlay() override;
@@ -61,14 +44,14 @@ protected:
     float ReloadTime = 2.0f;
 
 private:
-    FTimerHandle ReloadTimer;
-
     UPROPERTY()
     AAS_BaseWeapon* OwnerWeapon;
 
-private:
-    void ReloadAmmo();
+    FTimerHandle ReloadTimer;
 
+private:
     UFUNCTION()
     void OnRep_AmmoInfo();
+
+    void ReloadAmmo();
 };

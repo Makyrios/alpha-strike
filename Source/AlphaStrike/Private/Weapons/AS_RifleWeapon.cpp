@@ -11,7 +11,6 @@ void AAS_RifleWeapon::Fire()
 void AAS_RifleWeapon::StopFire()
 {
     if (!GetWorld()) return;
-
     GetWorld()->GetTimerManager().ClearTimer(AutoFireHandle);
 
     AAS_BaseWeapon::StopFire();

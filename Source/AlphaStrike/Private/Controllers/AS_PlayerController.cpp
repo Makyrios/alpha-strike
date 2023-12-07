@@ -57,15 +57,12 @@ void AAS_PlayerController::SetupInputComponent()
 
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
     {
-        // Clear out existing mapping, and add our mapping
         Subsystem->ClearAllMappings();
         Subsystem->AddMappingContext(DefaultMappingContext, 0);
     }
 
-    // Get the EnhancedInputComponent
     if (UEnhancedInputComponent* UEI = Cast<UEnhancedInputComponent>(InputComponent))
     {
-        // Bind the actions
         UEI->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAS_PlayerController::Look);
         UEI->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAS_PlayerController::Move);
         UEI->BindAction(JumpAction, ETriggerEvent::Started, this, &AAS_PlayerController::Jump);
@@ -257,6 +254,7 @@ void AAS_PlayerController::SetScoreGoal(int32 ScoreGoal)
 void AAS_PlayerController::SetTeamsScore()
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+
     AGameStateBase* GameState = UGameplayStatics::GetGameState(this);
     if (!GameState || !AS_HUD) return;
 
@@ -370,6 +368,7 @@ void AAS_PlayerController::SetHUDWidgetVisibility(ESlateVisibility InVisibility)
     {
         Client_SetHUDWidgetVisibility(InVisibility);
     }
+
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
 

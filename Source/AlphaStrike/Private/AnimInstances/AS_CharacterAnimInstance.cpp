@@ -11,6 +11,8 @@ void UAS_CharacterAnimInstance::NativeInitializeAnimation()
 {
     Super::NativeInitializeAnimation();
 
+    if (!TryGetPawnOwner()) return;
+
     Character = Cast<AAS_Character>(TryGetPawnOwner());
     if (Character)
     {
@@ -25,6 +27,8 @@ void UAS_CharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     // Check character with movement
     if (!Character)
     {
+        if (!TryGetPawnOwner()) return;
+
         Character = Cast<AAS_Character>(TryGetPawnOwner());
         if (!Character) return;
 
@@ -38,12 +42,10 @@ void UAS_CharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     Speed = Velocity.Size();
 
     // Set direction
-    {
-        FRotator ActorRot = Character->GetActorRotation();
-        FRotator VelocityDirection = UKismetMathLibrary::Conv_VectorToRotator(Character->GetVelocity());
-        FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(ActorRot, VelocityDirection);
-        Direction = DeltaRot.Yaw * -1;
-    }
+    const FRotator ActorRot = Character->GetActorRotation();
+    const FRotator VelocityDirection = UKismetMathLibrary::Conv_VectorToRotator(Character->GetVelocity());
+    const FRotator DeltaRotDir = UKismetMathLibrary::NormalizedDeltaRotator(ActorRot, VelocityDirection);
+    Direction = DeltaRotDir.Yaw * -1;
 
     // Set is the character in the air
     bIsInAir = Movement->IsFalling();

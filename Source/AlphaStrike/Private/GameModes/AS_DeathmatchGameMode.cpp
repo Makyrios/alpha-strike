@@ -26,7 +26,8 @@ void AAS_DeathmatchGameMode::SpawnBotsPawns()
     for (int i = 0; i < BotsSpawnInfo.NumberOfPawns; ++i)
     {
         AController* Controller = World->SpawnActor<AController>(BotsSpawnInfo.ControllerClass);
-        AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
+        const AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
+
         if (Controller && PlayerStart)
         {
             TSubclassOf<APawn> RandPawnClass = (FMath::RandBool()) ? BotsSpawnInfo.PawnClass : BotsSpawnInfo.HeavyPawnClass;
@@ -54,7 +55,7 @@ void AAS_DeathmatchGameMode::HandleActorDeath(
 
 bool AAS_DeathmatchGameMode::ReadyToEndMatch_Implementation()
 {
-    if (AAS_DeathmatchGameState* CurrentGameState = Cast<AAS_DeathmatchGameState>(GameState))
+    if (const AAS_DeathmatchGameState* CurrentGameState = Cast<AAS_DeathmatchGameState>(GameState))
     {
         return CurrentGameState->GetMaxPlayerKills() >= ScoreGoal || Super::ReadyToEndMatch_Implementation();
     }
@@ -65,10 +66,10 @@ void AAS_DeathmatchGameMode::HandleMatchHasEnded()
 {
     Super::HandleMatchHasEnded();
 
-    AAS_DeathmatchGameState* CustomGameState = GetGameState<AAS_DeathmatchGameState>();
+    const AAS_DeathmatchGameState* CustomGameState = GetGameState<AAS_DeathmatchGameState>();
     if (!CustomGameState) return;
 
-    AController* WonController = CustomGameState->GetWinningPlayer();
+    const AController* WonController = CustomGameState->GetWinningPlayer();
     if (!WonController) return;
 
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)

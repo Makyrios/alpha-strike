@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
+#include "AS_Types.h"
 #include "AS_PlayerStart.generated.h"
-
-enum class ETeams;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_PlayerStart : public APlayerStart
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
     void SetIsOccupied(bool IsOccupied);
     FORCEINLINE bool GetIsOccupied() { return bIsOccupied; }
@@ -21,10 +20,11 @@ public:
 private:
     UPROPERTY(EditAnywhere, Category = "AS|Spawn")
     float OccupiedTime;
+
     UPROPERTY(EditAnywhere, Category = "AS|Spawn")
     ETeams Team;
 
     bool bIsOccupied;
-    
+
     FTimerHandle OccupiedTimer;
 };

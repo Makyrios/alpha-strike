@@ -16,7 +16,6 @@ class ALPHASTRIKE_API AAS_MenuHUD : public AHUD
     GENERATED_BODY()
 
 public:
-    AAS_MenuHUD();
     void AddMenuWidget();
 
     void HandleMenuAction();

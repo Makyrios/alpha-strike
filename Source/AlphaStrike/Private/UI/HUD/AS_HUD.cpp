@@ -7,7 +7,7 @@
 #include "UI/Widgets/AS_TableStatsWidget.h"
 #include "UI/Widgets/AS_PauseWidget.h"
 #include "Controllers/AS_PlayerController.h"
-#include <UI/Widgets/AS_StartGameWidget.h>
+#include "UI/Widgets/AS_StartGameWidget.h"
 #include "Weapons/AS_BaseWeapon.h"
 #include "UI/Widgets/AS_DamageWidget.h"
 #include "Animation/WidgetAnimation.h"
@@ -45,9 +45,8 @@ void AAS_HUD::Tick(float DeltaTime)
 
 void AAS_HUD::SetupTableWidget()
 {
-    // TODO refactor from tick to bind finction
-
     if (!TableStatsWidget) return;
+
     const int32 NumberOfPlayers = UGameplayStatics::GetNumPlayerStates(this);
     TableStatsWidget->SetPlayerNumber(NumberOfPlayers);
 }
@@ -123,50 +122,35 @@ void AAS_HUD::UpdateInventoryInfo()
 {
     if (!HUDWidget) return;
 
-    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
-    {
-        CurrentHUDWidget->UpdateInventoryInfo();
-    }
+    HUDWidget->UpdateInventoryInfo();
 }
 
 void AAS_HUD::SetHealthBarPercent(float Percent)
 {
     if (!HUDWidget) return;
 
-    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
-    {
-        CurrentHUDWidget->SetHealth(Percent);
-    }
+    HUDWidget->SetHealth(Percent);
 }
 
 void AAS_HUD::SetShieldBarPercent(float Percent)
 {
     if (!HUDWidget) return;
 
-    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
-    {
-        CurrentHUDWidget->SetShield(Percent);
-    }
+    HUDWidget->SetShield(Percent);
 }
 
 void AAS_HUD::SetTimeRemaining(float RemainingTimeInSeconds)
 {
     if (!HUDWidget) return;
 
-    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
-    {
-        CurrentHUDWidget->SetTimerText(RemainingTimeInSeconds);
-    }
+    HUDWidget->SetTimerText(RemainingTimeInSeconds);
 }
 
 void AAS_HUD::SetAmmoInfo(FText NewAmmoInfo)
 {
     if (!HUDWidget) return;
 
-    if (UAS_HUDWidget* CurrentHUDWidget = Cast<UAS_HUDWidget>(HUDWidget))
-    {
-        CurrentHUDWidget->SetAmmoInfoText(NewAmmoInfo);
-    }
+    HUDWidget->SetAmmoInfoText(NewAmmoInfo);
 }
 
 void AAS_HUD::SetScoreGoal(int32 ScoreGoal)
@@ -176,15 +160,15 @@ void AAS_HUD::SetScoreGoal(int32 ScoreGoal)
     HUDWidget->SetScoreGoalText(ScoreGoal);
 }
 
- void AAS_HUD::ShowWonWidget() 
- {
+void AAS_HUD::ShowWonWidget()
+{
     UUserWidget* WonWidget = AddWidget<UUserWidget>(WonWidgetClass);
- }
+}
 
-  void AAS_HUD::ShowLoseWidget()
- {
+void AAS_HUD::ShowLoseWidget()
+{
     UUserWidget* WonWidget = AddWidget<UUserWidget>(LoseWidgetClass);
- }
+}
 
 template <typename T>
 T* AAS_HUD::AddWidget(TSubclassOf<UUserWidget> WidgetToAdd)

@@ -10,6 +10,7 @@ UCLASS()
 class ALPHASTRIKE_API AAS_BasePlayerState : public APlayerState
 {
     GENERATED_BODY()
+
 public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -20,16 +21,9 @@ public:
     FORCEINLINE int32 GetDeaths() const { return Deaths; }
 
 protected:
-    UPROPERTY(ReplicatedUsing = OnRep_Kills, VisibleAnywhere, BlueprintReadOnly, Category = "AS|Stats")
+    UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "AS|Stats")
     int32 Kills = 0;
 
-    UPROPERTY(ReplicatedUsing = OnRep_Deaths, BlueprintReadOnly, Category = "AS|Stats")
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "AS|Stats")
     int32 Deaths = 0;
-
-private:
-    UFUNCTION()
-    void OnRep_Kills();
-
-    UFUNCTION()
-    void OnRep_Deaths();
 };

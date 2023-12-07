@@ -15,6 +15,7 @@ UCLASS()
 class ALPHASTRIKE_API UAS_HUDWidget : public UUserWidget
 {
     GENERATED_BODY()
+
 public:
     void SetHealth(float Percent);
     void SetShield(float Percent);

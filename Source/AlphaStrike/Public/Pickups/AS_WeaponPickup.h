@@ -8,7 +8,6 @@
 
 class AAS_BaseWeapon;
 class AAS_Character;
-class UAS_CombatComponent;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_WeaponPickup : public AAS_Pickup
@@ -18,6 +17,9 @@ class ALPHASTRIKE_API AAS_WeaponPickup : public AAS_Pickup
 public:
     AAS_WeaponPickup();
 
+protected:
+    virtual void PickupInteract(TArray<AActor*>& InteractedActors) override;
+
 private:
     UPROPERTY(EditAnywhere, Category = "AS|Weapon")
     TSubclassOf<AAS_BaseWeapon> WeaponClass;
@@ -25,13 +27,8 @@ private:
     UPROPERTY(EditAnywhere, Category = "AS|Weapon")
     int AmmoRefillAmount = 60;
 
-protected:
-    virtual void PickupInteract(TArray<AActor*>& InteractedActors) override;
-
 private:
     AAS_BaseWeapon* SpawnWeapon(AAS_Character* Character);
-
     void AttachWeaponToCharacter(AAS_Character* Character, AAS_BaseWeapon* Weapon);
-
     void AddAmmoInBag(AAS_BaseWeapon* CombatComponent);
 };

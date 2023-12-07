@@ -42,6 +42,8 @@ void AAS_AIController::OnPossess(APawn* InPawn)
 {
     Super::OnPossess(InPawn);
 
+    if (!InPawn) return;
+
     AS_AICharacter = Cast<AAS_AICharacter>(InPawn);
     if (AS_AICharacter)
     {
@@ -58,7 +60,7 @@ void AAS_AIController::Tick(float DeltaTime)
 
 AActor* AAS_AIController::GetFocusOnActor() const
 {
-    if (!GetBlackboardComponent()) return nullptr;
+    if (!GetBlackboardComponent() || !GetBlackboardComponent()->GetValueAsObject(FocusOnKeyName)) return nullptr;
     return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(FocusOnKeyName));
 }
 

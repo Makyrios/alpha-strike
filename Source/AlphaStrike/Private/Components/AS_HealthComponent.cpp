@@ -5,7 +5,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include <AI/AS_AICharacter.h>
+#include "AI/AS_AICharacter.h"
 #include "UI/HUD/AS_HUD.h"
 #include "Weapons/AS_BaseWeapon.h"
 
@@ -180,12 +180,12 @@ void UAS_HealthComponent::LogShow()
     UE_LOG(AS_HealthComponentLog, Display, TEXT("%s shiled: %f, health: %f"), *GetOwner()->GetName(), Shield, Health);
 }
 
-float UAS_HealthComponent::GetHealthPercent()
+float UAS_HealthComponent::GetHealthPercent() const
 {
     return Health / MaxHealth;
 }
 
-float UAS_HealthComponent::GetShieldPercent()
+float UAS_HealthComponent::GetShieldPercent() const
 {
     return Shield / MaxShield;
 }

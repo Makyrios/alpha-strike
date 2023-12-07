@@ -28,7 +28,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void Fire();
+
     virtual void StopFire();
+
     void StartReload();
     void FinishReload();
     void StartChangeWeapon();
@@ -133,9 +135,6 @@ private:
     FTimerHandle FireDelayTimer;
 
 private:
-    /*
-     * Multiplayer functions
-     */
     UFUNCTION(Server, Reliable)
     void Server_ApplyDamage(AActor* DamagedActor, const FHitResult& HitResult);
 
@@ -154,9 +153,6 @@ private:
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_StartChangeWeapon();
 
-    /*
-     * Other functions
-     */
     void UpdateHitTarget();
     void DoFireHit();
     void DrawDebugFireTrace(const FVector& Start, const FVector& End);

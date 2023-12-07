@@ -21,6 +21,7 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
             if (TeamPlayerState && (*Iterator).Get())
             {
                 TeamPlayerState->SetTeamColor(TeamsSpawnInfo[TeamPlayerState->GetTeam()].TeamColor);
+
                 auto PlayerPawn = (*Iterator)->GetPawn<AAS_Character>();
                 if (PlayerPawn)
                 {
@@ -39,7 +40,7 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
 
 void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
 {
-    FTeamSpawnInfo TeamSpawnInfo = TeamsSpawnInfo[TeamToSpawn];
+    const FTeamSpawnInfo TeamSpawnInfo = TeamsSpawnInfo[TeamToSpawn];
     UWorld* World = GetWorld();
 
     if (!World) return;
@@ -49,7 +50,7 @@ void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
         AController* Controller = World->SpawnActor<AController>(TeamSpawnInfo.ControllerClass);
         GiveTeamToPlayer(Controller, TeamToSpawn);
 
-        AActor* SpawnActor = ChoosePlayerStart_Implementation(Controller);
+        const AActor* SpawnActor = ChoosePlayerStart_Implementation(Controller);
         if (Controller && SpawnActor)
         {
             FActorSpawnParameters SpawnParameters;
@@ -59,6 +60,7 @@ void AAS_TeamDeathmatchGameMode::SpawnBotsPawns(ETeams TeamToSpawn)
 
             AAS_Character* Pawn = World->SpawnActor<AAS_Character>(
                 RandPawnClass, SpawnActor->GetActorLocation(), SpawnActor->GetActorRotation(), SpawnParameters);
+
             if (Pawn)
             {
                 Pawn->SetPlayerColor(TeamSpawnInfo.TeamColor);
@@ -86,7 +88,7 @@ AActor* AAS_TeamDeathmatchGameMode::ChoosePlayerStart_Implementation(AController
     if (!Player) return nullptr;
 
     TArray<AActor*> PlayerStarts;
-    AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+    const AAS_TeamDeathmatchPlayerState* TeamPlayerState = Player->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
     UGameplayStatics::GetAllActorsOfClass(this, AAS_PlayerStart::StaticClass(), PlayerStarts);
 
     if (PlayerStarts.IsEmpty() || !TeamPlayerState) return nullptr;
@@ -112,10 +114,12 @@ AActor* AAS_TeamDeathmatchGameMode::ChoosePlayerStart_Implementation(AController
 void AAS_TeamDeathmatchGameMode::HandleActorDeath(
     AController* DeadActor, AController* KillerActor, bool bEnableRandColor, const FLinearColor& CustomColor)
 {
-    AAS_TeamDeathmatchPlayerState* TeamPlayerState = DeadActor->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
+    if (!DeadActor || !KillerActor) return;
+
+    const AAS_TeamDeathmatchPlayerState* TeamPlayerState = DeadActor->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
     if (!TeamPlayerState || TeamsSpawnInfo.IsEmpty()) return;
 
-    FTeamSpawnInfo TeamSpawnInfo = TeamsSpawnInfo[TeamPlayerState->GetTeam()];
+    const FTeamSpawnInfo TeamSpawnInfo = TeamsSpawnInfo[TeamPlayerState->GetTeam()];
 
     if (AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
     {
@@ -140,7 +144,7 @@ void AAS_TeamDeathmatchGameMode::UpdateTeamsScoreInHUDs()
 
 bool AAS_TeamDeathmatchGameMode::ReadyToEndMatch_Implementation()
 {
-    if (AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
+    if (const AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>())
     {
         return CurrentGameState->GetTeamScore(ETeams::TEAM_A) >= ScoreGoal || CurrentGameState->GetTeamScore(ETeams::TEAM_B) >= ScoreGoal ||
                Super::ReadyToEndMatch_Implementation();
@@ -152,7 +156,7 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasEnded()
 {
     Super::HandleMatchHasEnded();
 
-    AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>();
+    const AAS_TeamDeathmatchGameState* CurrentGameState = GetGameState<AAS_TeamDeathmatchGameState>();
     if (!CurrentGameState) return;
 
     TArray<AController*> WinningPlayers = CurrentGameState->GetWinningTeamPlayers();

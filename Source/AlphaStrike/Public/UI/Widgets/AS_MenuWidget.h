@@ -17,6 +17,7 @@ UCLASS()
 class ALPHASTRIKE_API UAS_MenuWidget : public UUserWidget
 {
     GENERATED_BODY()
+
 public:
     void SetNameText(FText Name);
     FText GetNameText();

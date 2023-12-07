@@ -27,6 +27,7 @@ private:
     void ResetJumpBuff();
 
 private:
+    UPROPERTY()
     AAS_Character* Character;
 
     FTimerHandle SpeedBuffHandle;

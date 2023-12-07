@@ -1,7 +1,7 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
 #include "AI/Tasks/AS_BTTaskNode_StopAim.h"
-#include <AI/AS_AIController.h>
+#include "AI/AS_AIController.h"
 
 EBTNodeResult::Type UBTTaskNode_StopAim::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

@@ -1,16 +1,16 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-#include "AI/Services/AS_FindEnemyService.h"
+#include "AI/Services/AS_BTService_FindEnemy.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AI/Components/AS_AIPerceptionComponent.h"
 #include "AIController.h"
 
-UAS_FindEnemyService::UAS_FindEnemyService()
+UBTService_FindEnemy::UBTService_FindEnemy()
 {
     NodeName = "Find Enemy";
 }
 
-void UAS_FindEnemyService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTService_FindEnemy::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     const auto Blackboard = OwnerComp.GetBlackboardComponent();
     if (Blackboard)

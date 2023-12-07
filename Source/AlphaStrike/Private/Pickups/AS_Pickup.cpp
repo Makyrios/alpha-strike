@@ -45,7 +45,6 @@ void AAS_Pickup::PickupInteract(TArray<AActor*>& InteractedActors)
     GetWorld()->GetTimerManager().SetTimer(RespawnTimer, this, &AAS_Pickup::Spawn, RespawnTime, false);
 }
 
-// Called every frame
 void AAS_Pickup::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);

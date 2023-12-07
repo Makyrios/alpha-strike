@@ -54,6 +54,7 @@ void UAS_MenuWidget::SetNameText(FText Name)
 
 FText UAS_MenuWidget::GetNameText()
 {
+    if (!NameBox) return FText();
     return NameBox->GetText();
 }
 

@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
-#include "AS_FindEnemyService.generated.h"
+#include "AS_BTService_FindEnemy.generated.h"
 
 UCLASS()
-class ALPHASTRIKE_API UAS_FindEnemyService : public UBTService
+class ALPHASTRIKE_API UBTService_FindEnemy : public UBTService
 {
     GENERATED_BODY()
 
 public:
-    UAS_FindEnemyService();
+    UBTService_FindEnemy();
 
 protected:
     virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

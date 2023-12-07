@@ -47,6 +47,7 @@ void AAS_BaseWeapon::Fire()
         {
             bCanFire = false;
             bCanPlayNoAmmoSound = true;
+
             AmmoComponent->Server_HandleWeaponFired();
             Server_ApplyDamage(HitTarget.GetActor(), HitTarget);
             GetWorld()->GetTimerManager().SetTimer(
@@ -212,7 +213,7 @@ void AAS_BaseWeapon::SpawnHitDecals(const FHitResult& HitResult)
 {
     if (HitDecalMaterial)
     {
-        FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
+        const FRotator DecalRotation = UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal);
 
         auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(
             this, HitDecalMaterial, HitDecalSize, HitResult.ImpactPoint, DecalRotation, HitDecalLifeSpan);

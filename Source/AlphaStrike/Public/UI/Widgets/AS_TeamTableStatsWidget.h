@@ -6,11 +6,11 @@
 #include "UI/Widgets/AS_TableStatsWidget.h"
 #include "AS_TeamTableStatsWidget.generated.h"
 
-
 UCLASS()
 class ALPHASTRIKE_API UAS_TeamTableStatsWidget : public UAS_TableStatsWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
+
 protected:
     void AddPlayerStatsToTable(AAS_BasePlayerState* PlayerToAdd) override;
 

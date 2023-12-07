@@ -7,7 +7,7 @@ void UAS_TeamHUDWidget::SetTeamAScore(int32 NewScore)
 {
     if (TeamAScoreText)
     {
-        FString StringScore = FString::FromInt(NewScore);
+        const FString StringScore = FString::FromInt(NewScore);
         TeamAScoreText->SetText(FText::FromString(StringScore));
     }
 }
@@ -15,7 +15,7 @@ void UAS_TeamHUDWidget::SetTeamBScore(int32 NewScore)
 {
     if (TeamBScoreText)
     {
-        FString StringScore = FString::FromInt(NewScore);
+        const FString StringScore = FString::FromInt(NewScore);
         TeamBScoreText->SetText(FText::FromString(StringScore));
     }
 }

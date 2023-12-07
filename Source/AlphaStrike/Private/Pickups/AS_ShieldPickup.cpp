@@ -1,16 +1,16 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
 #include "Pickups/AS_ShieldPickup.h"
-#include <Characters/AS_Character.h>
+#include "Characters/AS_Character.h"
 #include "Components/AS_HealthComponent.h"
 
 void AAS_ShieldPickup::PickupInteract(TArray<AActor*>& InteractedActors)
 {
     Super::PickupInteract(InteractedActors);
 
-    for (AActor* InteractedActor : InteractedActors)
+    for (const AActor* InteractedActor : InteractedActors)
     {
-        if (AAS_Character* Character = Cast<AAS_Character>(InteractedActor))
+        if (const AAS_Character* Character = Cast<AAS_Character>(InteractedActor))
         {
             if (UAS_HealthComponent* HealthComponent = Character->GetHealthComponent())
             {
@@ -18,6 +18,7 @@ void AAS_ShieldPickup::PickupInteract(TArray<AActor*>& InteractedActors)
                 {
                     HealthComponent->AddShield(ShieldAmount);
                     Despawn();
+
                     break;
                 }
             }

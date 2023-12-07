@@ -33,7 +33,7 @@ private:
     UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
     float Speed = 0.f;
 
-    UPROPERTY(BlueprintReadOnly, Category = "AS|Aiming", meta = (AllowPrivateAccess = true))
+    UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
     float Direction = 0.f;
 
     UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
@@ -59,6 +59,12 @@ private:
 
     UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
     bool bIsCrouched = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
+    float AO_Yaw = 0.f;
+
+    UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
+    float AO_Pitch = 0.f;
 
     UPROPERTY(BlueprintReadOnly, Category = "AS|Aiming", meta = (AllowPrivateAccess = true))
     bool bIsAiming = false;
@@ -87,11 +93,4 @@ private:
 
     UPROPERTY()
     AAS_BaseWeapon* EquippedWeapon;
-
-    // Test
-    UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
-    float AO_Yaw = 0.f;
-
-    UPROPERTY(BlueprintReadOnly, Category = "AS|Movement", meta = (AllowPrivateAccess = true))
-    float AO_Pitch = 0.f;
 };

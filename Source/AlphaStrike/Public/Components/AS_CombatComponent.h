@@ -39,7 +39,6 @@ public:
     FORCEINLINE int GetEquippedWeaponIndex() const { return EquippedWeaponIndex; }
 
     AAS_BaseWeapon* GetEquippedWeapon() const;
-
     EWeaponType GetEquippedWeaponType() const;
     FVector GetStartMuzzlePoint() const;
     FVector GetEndMuzzlePoint() const;
@@ -65,17 +64,20 @@ private:
 
     UPROPERTY(ReplicatedUsing = OnRep_WeaponInventory)
     TArray<AAS_BaseWeapon*> WeaponInventory;
+
     UPROPERTY(Replicated)
     bool bIsAiming = false;
 
 private:
     UFUNCTION()
     void OnRep_EquippedWeaponIndex();
+
     UFUNCTION()
     void OnRep_WeaponInventory();
 
     UFUNCTION(Server, Reliable)
     void Server_SetAim(bool bAim);
+
     UFUNCTION(Server, Reliable)
     void Server_ChangeWeapon(int WeaponIndex);
 };

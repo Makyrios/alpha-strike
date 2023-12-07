@@ -10,6 +10,7 @@ UCLASS()
 class ALPHASTRIKE_API AAS_BaseGameState : public AGameState
 {
     GENERATED_BODY()
+
 public:
     AAS_BaseGameState();
     virtual void Tick(float DeltaTime) override;

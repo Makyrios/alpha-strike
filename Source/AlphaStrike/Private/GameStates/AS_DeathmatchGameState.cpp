@@ -1,6 +1,5 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
-
 #include "GameStates/AS_DeathmatchGameState.h"
 #include "PlayerStates/AS_DeathmatchPlayerState.h"
 
@@ -8,7 +7,7 @@ void AAS_DeathmatchGameState::UpdateMaxKillsAndWinningPlayer(AController* Player
 {
     if (!PlayerController) return;
 
-    auto PlayerState = PlayerController->GetPlayerState<AAS_DeathmatchPlayerState>();
+    const auto PlayerState = PlayerController->GetPlayerState<AAS_DeathmatchPlayerState>();
     if (PlayerState)
     {
         if (PlayerState->GetKills() > MaxPlayerKills)

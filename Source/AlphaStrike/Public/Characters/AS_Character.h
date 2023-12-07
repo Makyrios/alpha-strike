@@ -34,7 +34,6 @@ public:
 
     void SetPlayerColor(const FLinearColor& Color);
 
-    //void CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation);
     void CrosshairActivate();
     void CrosshairDeactivate();
 
@@ -62,19 +61,19 @@ public:
     void UpdateHUDInventoryInfo();
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components")
     USpringArmComponent* CameraBoom;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components")
     UCameraComponent* FollowCamera;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components")
     UAS_HealthComponent* HealthComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components")
     UAS_CombatComponent* CombatComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AS|Components")
     UAS_BuffComponent* BuffComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Components")
@@ -83,7 +82,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Sound")
     USoundCue* DeathSound;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Animations", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|Animations")
     UAnimMontage* DeathAnimation;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Crosshair")
@@ -108,6 +107,15 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Movement")
     float DeathDestroyDelay = 5.f;
 
+    UPROPERTY(Replicated)
+    float AO_Yaw = 0.f;
+
+    UPROPERTY(Replicated)
+    float AO_Pitch = 0.f;
+
+    UPROPERTY(Replicated)
+    ETurningInPlace TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+
     UPROPERTY()
     USplineMeshComponent* SplineMeshComponent;
 
@@ -119,16 +127,7 @@ private:
     float DefaultJumpZVelocity = 0.f;
     float DefaultFOV = 0.f;
 
-    UPROPERTY(Replicated)
-    float AO_Yaw = 0.f;
-
-    UPROPERTY(Replicated)
-    float AO_Pitch = 0.f;
-
     float InterpAO_Yaw = 0.f;
-
-    UPROPERTY(Replicated)
-    ETurningInPlace TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 
     FRotator StartAimRotation;
     float TimeSinceLastMovementReplication = 0.0f;
@@ -153,6 +152,5 @@ private:
     void SetTurningInPlace(float DeltaTime);
     void UpdateIfIsNotStanding();
     void CalculateAO_Pitch();
-
     float CalculateSpeed();
 };

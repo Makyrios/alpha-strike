@@ -41,9 +41,10 @@ void AAS_BaseGameMode::PostLogin(APlayerController* NewPlayer)
 
     AAS_BasePlayerState* PlayerState = NewPlayer->GetPlayerState<AAS_BasePlayerState>();
     UAS_GameInstance* GameInstance = Cast<UAS_GameInstance>(GetGameInstance());
+
     if (GameInstance && PlayerState)
     {
-        FString PlayerName = GameInstance->GetPlayerName().ToString();
+        const FString PlayerName = GameInstance->GetPlayerName().ToString();
         PlayerState->SetPlayerName(PlayerName);
     }
     CreateStartGameWidget(NewPlayer);
@@ -51,8 +52,6 @@ void AAS_BaseGameMode::PostLogin(APlayerController* NewPlayer)
 
 void AAS_BaseGameMode::CreateStartGameWidget(APlayerController* NewPlayer)
 {
-    UE_LOG(LogTemp, Warning, TEXT("CreateStartGameWidget"));
-
     if (AAS_PlayerController* CustomPlayerController = Cast<AAS_PlayerController>(NewPlayer))
     {
         if (!IsGameStarted())
@@ -69,7 +68,7 @@ void AAS_BaseGameMode::HandleMatchHasStarted()
 
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
-        AActor* PlayerStart = ChoosePlayerStart_Implementation(Iterator->Get());
+        const AActor* PlayerStart = ChoosePlayerStart_Implementation(Iterator->Get());
         APawn* PlayerPawn = (*Iterator)->GetPawn();
         if (PlayerStart && PlayerPawn)
         {
@@ -115,7 +114,7 @@ void AAS_BaseGameMode::SetBotName(AController* BotController, int32 BotIndex)
 
     if (AAS_BasePlayerState* CustomPlayerState = BotController->GetPlayerState<AAS_BasePlayerState>())
     {
-        FString BotName = FString("Bot ") + FString::FromInt(BotIndex);
+        const FString BotName = FString("Bot ") + FString::FromInt(BotIndex);
         CustomPlayerState->SetPlayerName(BotName);
     }
 }
@@ -147,7 +146,7 @@ void AAS_BaseGameMode::RespawnPawn(AController* Controller, bool bEnableRandColo
 {
     UWorld* World = GetWorld();
     APawn* OldPawn = Controller->GetPawn();
-    AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
+    const AActor* PlayerStart = ChoosePlayerStart_Implementation(Controller);
 
     if (!World || !Controller || !OldPawn || !PlayerStart) return;
 
@@ -181,13 +180,16 @@ void AAS_BaseGameMode::MakeInvincible(APawn* NewPawn)
 {
     if (AAS_Character* SpawnedCharacter = Cast<AAS_Character>(NewPawn))
     {
-        SpawnedCharacter->GetHealthComponent()->SetInvincible(true, InvincibilityTime);
+        if (SpawnedCharacter->GetHealthComponent())
+        {
+            SpawnedCharacter->GetHealthComponent()->SetInvincible(true, InvincibilityTime);
+        }
     }
 }
 
 bool AAS_BaseGameMode::ReadyToEndMatch_Implementation()
 {
-    if (AAS_BaseGameState* CurrentGameState = Cast<AAS_BaseGameState>(GameState))
+    if (const AAS_BaseGameState* CurrentGameState = Cast<AAS_BaseGameState>(GameState))
     {
         return CurrentGameState->ElapsedTime >= TimeLimit;
     }
@@ -202,6 +204,7 @@ void AAS_BaseGameMode::HandleMatchHasEnded()
     if (!World) return;
 
     UGameplayStatics::SetGlobalTimeDilation(this, 0.3);
+
     FTimerHandle OpenLevelTimer;
     FTimerDelegate OpenLevelDelegate;
     OpenLevelDelegate.BindUObject(this, &AAS_BaseGameMode::RestartGame);

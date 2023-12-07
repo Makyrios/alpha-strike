@@ -320,7 +320,7 @@ void AAS_Character::Die()
         }
     }
 
-    if (DeathSound)
+    if (DeathSound && GetWorld())
     {
         UGameplayStatics::PlaySoundAtLocation(  //
             GetWorld(),                         //
@@ -349,17 +349,12 @@ AAS_BaseWeapon* AAS_Character::GetEquippedWeapon() const
     return CombatComponent->GetEquippedWeapon();
 }
 
-//void AAS_Character::CrosshairActivate(const FVector& StartLocation, const FVector& EndLocation)
-//{
-//    ClearCrosshair();
-//    DrawCrosshair(StartLocation, EndLocation);
-//}
-
 void AAS_Character::CrosshairActivate()
 {
     if (!CombatComponent || !CombatComponent->GetEquippedWeapon()) return;
 
     ClearCrosshair();
+
     const FVector StartLocation = CombatComponent->GetEquippedWeapon()->GetStartMuzzlePoint();
     const FVector EndLocation = CombatComponent->GetEquippedWeapon()->GetEndMuzzlePoint();
     DrawCrosshair(StartLocation, EndLocation);

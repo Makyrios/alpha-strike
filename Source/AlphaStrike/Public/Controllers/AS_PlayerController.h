@@ -11,7 +11,6 @@ class UInputMappingContext;
 class UInputAction;
 class AAS_Character;
 class AAS_HUD;
-class AAS_BaseWeapon;
 class USoundCue;
 
 UCLASS()

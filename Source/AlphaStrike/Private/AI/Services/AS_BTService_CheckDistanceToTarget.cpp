@@ -2,8 +2,8 @@
 
 #include "AI/Services/AS_BTService_CheckDistanceToTarget.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include <AI/AS_AICharacter.h>
-#include <AI/AS_AIController.h>
+#include "AI/AS_AICharacter.h"
+#include "AI/AS_AIController.h"
 #include "Components/AS_CombatComponent.h"
 #include "Weapons/AS_BaseWeapon.h"
 
@@ -12,10 +12,10 @@ void UBTService_CheckDistanceToTarget::TickNode(UBehaviorTreeComponent& OwnerCom
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
     const auto Blackboard = OwnerComp.GetBlackboardComponent();
-    if (!Blackboard) return;
+    if (!Blackboard || !Blackboard->GetValueAsObject(TargetKey.SelectedKeyName)) return;
 
     AActor* Target = Cast<AActor>(Blackboard->GetValueAsObject(TargetKey.SelectedKeyName));
-    if (!Target) return;
+    if (!Target || !OwnerComp.GetAIOwner() || !OwnerComp.GetAIOwner()->GetPawn()) return;
 
     if (AAS_AICharacter* AICharacter = Cast<AAS_AICharacter>(OwnerComp.GetAIOwner()->GetPawn()))
     {

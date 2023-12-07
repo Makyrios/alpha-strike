@@ -9,8 +9,6 @@
 #include "AS_GameInstance.h"
 #include "Animation/WidgetAnimation.h"
 
-AAS_MenuHUD::AAS_MenuHUD() {}
-
 void AAS_MenuHUD::AddMenuWidget()
 {
     if (!GetOwningPlayerController() || !MenuWidgetClass || MenuWidget) return;
@@ -95,7 +93,7 @@ void AAS_MenuHUD::OnApplyNameButtonClicked()
 
     if (!MenuWidget || !GameInstance) return;
 
-    FText NewName = MenuWidget->GetNameText();
+    const FText NewName = MenuWidget->GetNameText();
     GameInstance->SetPlayerName(NewName);
 }
 

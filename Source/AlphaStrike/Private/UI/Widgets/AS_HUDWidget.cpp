@@ -46,7 +46,7 @@ void UAS_HUDWidget::SetScoreGoalText(int32 ScoreGoal)
 {
     if (ScoreGoalText)
     {
-        FString ScoreGoalString = FString::FromInt(ScoreGoal);
+        const FString ScoreGoalString = FString::FromInt(ScoreGoal);
         ScoreGoalText->SetText(FText::FromString(ScoreGoalString));
     }
 }
@@ -55,14 +55,14 @@ void UAS_HUDWidget::UpdateInventoryInfo()
 {
     if (!PistolIcon || !RifleIcon || !SniperRifleIcon) return;
 
-    APlayerController* OwningController = GetOwningPlayer();
+    const APlayerController* OwningController = GetOwningPlayer();
     if (!OwningController) return;
 
-    AAS_Character* OwningCharacter = OwningController->GetPawn<AAS_Character>();
+    const AAS_Character* OwningCharacter = OwningController->GetPawn<AAS_Character>();
     if (!OwningCharacter || !OwningCharacter->GetCombatComponent()) return;
 
     const TArray<AAS_BaseWeapon*> WeaponArray = OwningCharacter->GetCombatComponent()->GetWeaponInventory();
-    int CurrentWeaponIndex = OwningCharacter->GetCombatComponent()->GetEquippedWeaponIndex();
+    const int CurrentWeaponIndex = OwningCharacter->GetCombatComponent()->GetEquippedWeaponIndex();
 
     UpdateWeaponIcons(WeaponArray, CurrentWeaponIndex);
 }

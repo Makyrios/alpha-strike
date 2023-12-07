@@ -6,14 +6,10 @@
 #include "GameFramework/HUD.h"
 #include "AS_HUD.generated.h"
 
-class UAS_MenuWidget;
-class AAS_PlayerController;
 class UAS_TableStatsWidget;
 class UAS_HUDWidget;
 class UAS_PauseWidget;
 class UAS_DamageWidget;
-class UProgressBar;
-class AAS_BaseWeapon;
 
 UCLASS()
 class ALPHASTRIKE_API AAS_HUD : public AHUD

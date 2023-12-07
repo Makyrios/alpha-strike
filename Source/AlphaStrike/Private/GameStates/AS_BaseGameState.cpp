@@ -20,7 +20,7 @@ void AAS_BaseGameState::Tick(float DeltaTime)
 
 void AAS_BaseGameState::SetTimeForHUD()
 {
-    AAS_BaseGameMode* CustomGameMode = Cast<AAS_BaseGameMode>(UGameplayStatics::GetGameMode(this));
+    const AAS_BaseGameMode* CustomGameMode = Cast<AAS_BaseGameMode>(UGameplayStatics::GetGameMode(this));
     if (!CustomGameMode) return;
 
     const float TimeLimit = CustomGameMode->GetTimeLimit();

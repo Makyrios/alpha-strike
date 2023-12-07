@@ -10,7 +10,3 @@ void AAS_BasePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME(AAS_BasePlayerState, Kills);
     DOREPLIFETIME(AAS_BasePlayerState, Deaths);
 }
-
-void AAS_BasePlayerState::OnRep_Kills() {}
-
-void AAS_BasePlayerState::OnRep_Deaths() {}

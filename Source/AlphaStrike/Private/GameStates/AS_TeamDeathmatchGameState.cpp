@@ -26,7 +26,7 @@ void AAS_TeamDeathmatchGameState::AddScoreToTeam(AController* ScoredPlayer)
 {
     if (!ScoredPlayer) return;
 
-    if (AAS_TeamDeathmatchPlayerState* PlayerState = ScoredPlayer->GetPlayerState<AAS_TeamDeathmatchPlayerState>())
+    if (const AAS_TeamDeathmatchPlayerState* PlayerState = ScoredPlayer->GetPlayerState<AAS_TeamDeathmatchPlayerState>())
     {
         FTeamInfo* TeamInfo = TeamsInfo.Find(PlayerState->GetTeam());
         TeamInfo->Score += 1;
@@ -35,20 +35,20 @@ void AAS_TeamDeathmatchGameState::AddScoreToTeam(AController* ScoredPlayer)
 
 int32 AAS_TeamDeathmatchGameState::GetTeamScore(ETeams Team) const
 {
-    FTeamInfo const* TeamInfo = TeamsInfo.Find(Team);
+    const FTeamInfo* TeamInfo = TeamsInfo.Find(Team);
     return TeamInfo->Score;
 }
 
-TArray<AController*> AAS_TeamDeathmatchGameState::GetWinningTeamPlayers()
+TArray<AController*> AAS_TeamDeathmatchGameState::GetWinningTeamPlayers() const
 {
     if (GetTeamScore(ETeams::TEAM_A) > GetTeamScore(ETeams::TEAM_B))
     {
-        FTeamInfo* WinningTeamInfo = TeamsInfo.Find(ETeams::TEAM_A);
+        const FTeamInfo* WinningTeamInfo = TeamsInfo.Find(ETeams::TEAM_A);
         return WinningTeamInfo->Members;
     }
     else
     {
-        FTeamInfo* WinningTeamInfo = TeamsInfo.Find(ETeams::TEAM_B);
+        const FTeamInfo* WinningTeamInfo = TeamsInfo.Find(ETeams::TEAM_B);
         return WinningTeamInfo->Members;
     }
 }

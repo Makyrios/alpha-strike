@@ -14,6 +14,7 @@ UCLASS()
 class ALPHASTRIKE_API UAS_TableStatsWidget : public UUserWidget
 {
     GENERATED_BODY()
+
 public:
     void SetPlayerNumber(int32 PlayerNumber);
     void SetMapName(FText MapName);

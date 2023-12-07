@@ -33,6 +33,7 @@ void AAS_WeaponPickup::PickupInteract(TArray<AActor*>& InteractedActors)
             {
                 AddAmmoInBag(ExistingWeapon);
                 Despawn();
+
                 break;
             }
 
@@ -40,12 +41,9 @@ void AAS_WeaponPickup::PickupInteract(TArray<AActor*>& InteractedActors)
             if (!CreatedWeapon) continue;
 
             AttachWeaponToCharacter(Character, CreatedWeapon);
-
             Character->UpdateHUDInventoryInfo();
-
-            UE_LOG(LogTemp, Display, TEXT("Weapon %s added to %s"), *CreatedWeapon->GetActorNameOrLabel(),
-                *InteractedActor->GetActorNameOrLabel());
             Despawn();
+
             break;
         }
     }
@@ -58,6 +56,7 @@ AAS_BaseWeapon* AAS_WeaponPickup::SpawnWeapon(AAS_Character* Character)
     FActorSpawnParameters WeaponSpawnParameters;
     WeaponSpawnParameters.Instigator = Character;
     WeaponSpawnParameters.Owner = Character;
+
     AAS_BaseWeapon* CreatedWeapon = GetWorld()->SpawnActor<AAS_BaseWeapon>(WeaponClass, WeaponSpawnParameters);
 
     if (CreatedWeapon && CreatedWeapon->GetWeaponMesh())
@@ -78,7 +77,7 @@ void AAS_WeaponPickup::AttachWeaponToCharacter(AAS_Character* Character, AAS_Bas
 
     CombatComponent->AddWeaponToInventory(Weapon);
 
-    FAttachmentTransformRules AttachmentTransformRules(
+    const FAttachmentTransformRules AttachmentTransformRules(
         EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 
     Weapon->AttachToComponent(Character->GetMesh(), AttachmentTransformRules, Weapon->GetMuzzleSocketName());
@@ -86,9 +85,8 @@ void AAS_WeaponPickup::AttachWeaponToCharacter(AAS_Character* Character, AAS_Bas
 
 void AAS_WeaponPickup::AddAmmoInBag(AAS_BaseWeapon* Weapon)
 {
-    if (Weapon && Weapon->GetAmmoComponent() && Weapon->GetOwner())
+    if (Weapon && Weapon->GetAmmoComponent())
     {
         Weapon->GetAmmoComponent()->AddAmmoInBag(AmmoRefillAmount);
-        UE_LOG(LogTemp, Display, TEXT("%d ammo added to %s"), AmmoRefillAmount, *Weapon->GetOwner()->GetActorNameOrLabel());
     }
 }

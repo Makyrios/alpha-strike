@@ -8,7 +8,6 @@
 
 class UButton;
 class AAS_HUD;
-class AAS_PlayerController;
 class USlider;
 class UAS_GameInstance;
 

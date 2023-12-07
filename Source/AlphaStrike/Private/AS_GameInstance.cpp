@@ -11,7 +11,6 @@ void UAS_GameInstance::Init()
     Super::Init();
 
     FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UAS_GameInstance::BeginLoadingScreen);
-    FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UAS_GameInstance::EndLoadingScreen);
 }
 
 void UAS_GameInstance::BeginLoadingScreen(const FString& InMapName)
@@ -21,26 +20,18 @@ void UAS_GameInstance::BeginLoadingScreen(const FString& InMapName)
     FLoadingScreenAttributes Attributes;
     Attributes.bAutoCompleteWhenLoadingCompletes = false;
     Attributes.bMoviesAreSkippable = true;
-    Attributes.MinimumLoadingScreenDisplayTime = 0.5f;
-    if (bUseMovies)
-    {
-        Attributes.MoviePaths = MoviePaths;
-    }
+    Attributes.MinimumLoadingScreenDisplayTime = 2.f;
 
     UUserWidget* LoadingScreen = CreateWidget<UUserWidget>(GetWorld(), LoadingScreenClass);
+    if (!LoadingScreen) return;
+
     Attributes.WidgetLoadingScreen = LoadingScreen->TakeWidget();
 
     IGameMoviePlayer* MoviePlayer = GetMoviePlayer();
     if (MoviePlayer)
     {
         MoviePlayer->SetupLoadingScreen(Attributes);
-        MoviePlayer->PlayMovie();
     }
-}
-
-void UAS_GameInstance::EndLoadingScreen(UWorld* LoadedWorld) 
-{
-
 }
 
 void UAS_GameInstance::SetMasterSoundVolume(float Volume)

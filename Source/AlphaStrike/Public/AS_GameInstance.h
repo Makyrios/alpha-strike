@@ -19,14 +19,11 @@ public:
     UFUNCTION()
     void BeginLoadingScreen(const FString& InMapName);
 
-    UFUNCTION()
-    void EndLoadingScreen(UWorld* LoadedWorld);
-
     void SetMasterSoundVolume(float Volume);
     float GetMasterSoundVolume() const;
 
     FORCEINLINE void SetPlayerName(FText NewName) { PlayerName = NewName; }
-    FORCEINLINE FText GetPlayerName() { return PlayerName; }
+    FORCEINLINE FText GetPlayerName() const { return PlayerName; }
 
 public:
     FText PlayerName = FText::FromString(TEXT("Player"));
@@ -48,10 +45,4 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|LoadingScreen")
     TSubclassOf<UUserWidget> LoadingScreenClass;
-
-    UPROPERTY(EditDefaultsOnly, Category = "AS|LoadingScreen", meta = (DisplayName = "UseMovies"))
-    bool bUseMovies;
-
-    UPROPERTY(EditDefaultsOnly, Category = "AS|LoadingScreen", meta = (EditCondition = "bUseMovies"))
-    TArray<FString> MoviePaths;
 };

@@ -6,18 +6,15 @@
 #include "Blueprint/UserWidget.h"
 #include "AS_StartGameWidget.generated.h"
 
-/**
- *
- */
 UCLASS()
 class ALPHASTRIKE_API UAS_StartGameWidget : public UUserWidget
 {
     GENERATED_BODY()
 
-
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     class UCanvasPanel* Canvas;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     class UTextBlock* DisplayText;
 

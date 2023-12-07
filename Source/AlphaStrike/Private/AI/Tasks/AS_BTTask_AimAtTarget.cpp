@@ -1,7 +1,7 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
 #include "AI/Tasks/AS_BTTask_AimAtTarget.h"
-#include <AI/AS_AIController.h>
+#include "AI/AS_AIController.h"
 
 EBTNodeResult::Type UBTTask_AimAtTarget::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

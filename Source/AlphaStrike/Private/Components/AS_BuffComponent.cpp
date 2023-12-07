@@ -43,6 +43,7 @@ void UAS_BuffComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    if (!GetOwner()) return;
     Character = Cast<AAS_Character>(GetOwner());
 }
 

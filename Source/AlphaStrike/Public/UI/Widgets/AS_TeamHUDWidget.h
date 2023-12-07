@@ -10,6 +10,7 @@ UCLASS()
 class ALPHASTRIKE_API UAS_TeamHUDWidget : public UAS_HUDWidget
 {
     GENERATED_BODY()
+
 public:
     void SetTeamAScore(int32 NewScore);
     void SetTeamBScore(int32 NewScore);

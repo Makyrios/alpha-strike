@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "AS_Types.h"
 #include "AS_HealthComponent.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDeadDelegate, class AActor*, DeadActor, class AController*, InstigatedBy);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedDelegate, class AActor*, ChangedActor, bool, bDamage);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ALPHASTRIKE_API UAS_HealthComponent : public UActorComponent
@@ -26,8 +24,8 @@ public:
     FORCEINLINE bool IsFullShield() const { return FMath::IsNearlyEqual(Shield, MaxShield); }
     FORCEINLINE bool HasSomeShield() const { return !FMath::IsNearlyEqual(Shield, 0.f); }
     FORCEINLINE bool IsDead() const { return FMath::IsNearlyEqual(Health, 0.f); }
-    float GetHealthPercent();
-    float GetShieldPercent();
+    float GetHealthPercent() const;
+    float GetShieldPercent() const;
     FORCEINLINE bool IsInvincible() const { return bIsInvincible; }
     void SetInvincible(bool bNewValue, float InvincibilityTime);
 
@@ -72,9 +70,6 @@ private:
     FTimerHandle EndFlickerHandle;
 
 private:
-    /*
-     * Multiplayer functions
-     */
     UFUNCTION(NetMulticast, Reliable)
     void Multicast_InvincibleFlicker(bool bNewValue, float InvincibilityTime);
 
@@ -85,9 +80,7 @@ private:
     void OnRep_Shield();
 
     void ServerSideBeginPlay();
-    /*
-     * Other functions
-     */
+
     UFUNCTION()
     void OnTakeAnyDamageCallback(
         AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);

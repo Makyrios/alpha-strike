@@ -9,7 +9,8 @@
 UCLASS()
 class ALPHASTRIKE_API AAS_DeathmatchGameState : public AAS_BaseGameState
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
+
 public:
     FORCEINLINE int32 GetMaxKills() const { return MaxPlayerKills; }
     FORCEINLINE AController* GetWinningPlayer() const { return WinningPlayer; }
@@ -18,6 +19,8 @@ public:
     void UpdateMaxKillsAndWinningPlayer(AController* PlayerController);
 
 protected:
+    UPROPERTY()
     AController* WinningPlayer;
+
     int32 MaxPlayerKills;
 };

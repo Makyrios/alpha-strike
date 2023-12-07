@@ -6,9 +6,6 @@
 #include "BehaviorTree/Services/BTService_BlackboardBase.h"
 #include "AS_BTService_CheckHealth.generated.h"
 
-/**
- *
- */
 UCLASS()
 class ALPHASTRIKE_API UBTService_CheckHealth : public UBTService_BlackboardBase
 {

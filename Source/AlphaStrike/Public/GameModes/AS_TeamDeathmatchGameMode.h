@@ -4,35 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameModes/AS_BaseGameMode.h"
+#include "AS_Types.h"
 #include "AS_TeamDeathmatchGameMode.generated.h"
-
-enum class ETeams;
-
-USTRUCT(BlueprintType)
-struct FTeamSpawnInfo
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    int32 NumberOfPawns = 4;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TSubclassOf<APawn> PawnClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TSubclassOf<APawn> HeavyPawnClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TSubclassOf<AController> ControllerClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    FLinearColor TeamColor = FLinearColor::Black;
-};
 
 UCLASS()
 class ALPHASTRIKE_API AAS_TeamDeathmatchGameMode : public AAS_BaseGameMode
 {
     GENERATED_BODY()
+
 public:
     virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor, bool bEnableRandColor = true,
         const FLinearColor& CustomColor = FLinearColor::Black) override;

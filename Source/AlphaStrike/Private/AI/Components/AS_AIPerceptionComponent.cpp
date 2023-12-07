@@ -29,11 +29,15 @@ AActor* UAS_AIPerceptionComponent::GetClosestEnemy()
 
     float BestDistance = MAX_FLT;
     AActor* BestPawn = nullptr;
+
     for (const auto PercieveActor : PercieveActors)
     {
+        if (!PercieveActor) return nullptr;
+
         const auto PercievePawn = Cast<APawn>(PercieveActor);
         if (!PercievePawn) return nullptr;
 
+        if (!GetWorld()) return nullptr;
         AS_BaseGameMode = (!AS_BaseGameMode) ? GetWorld()->GetAuthGameMode<AAS_TeamDeathmatchGameMode>() : AS_BaseGameMode;
 
         bool AreFriends = false;

@@ -6,9 +6,6 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "AS_BTTask_AimAtTarget.generated.h"
 
-/**
- *
- */
 UCLASS()
 class ALPHASTRIKE_API UBTTask_AimAtTarget : public UBTTaskNode
 {

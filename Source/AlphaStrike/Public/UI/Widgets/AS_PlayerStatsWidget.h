@@ -34,9 +34,6 @@ private:
     UTextBlock* PlayerNameBox;
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
-    UImage* DeathIndicator;
-
-    UPROPERTY(EditAnywhere, meta = (BindWidget))
     UTextBlock* KillsBox;
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
