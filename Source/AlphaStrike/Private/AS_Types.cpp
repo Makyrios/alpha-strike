@@ -1,4 +1,0 @@
-﻿// AlphaStrike by Team #1. AlphaNova courses🤙
-
-
-#include "AS_Types.h"

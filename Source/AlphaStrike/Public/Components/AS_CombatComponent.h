@@ -19,9 +19,6 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "AS|Movement")
     float DiffAimWalkSpeed = 200.f;
 
-    UPROPERTY(EditDefaultsOnly, Category = "AS|Combat")
-    float AimingFOV = 50.f;
-
 public:
     UAS_CombatComponent();
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

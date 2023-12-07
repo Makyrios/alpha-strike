@@ -21,6 +21,8 @@ class ALPHASTRIKE_API AAS_HUD : public AHUD
     GENERATED_BODY()
 
 public:
+    virtual void PostInitializeComponents() override;
+
     void SetHUDWidgetVisibility(ESlateVisibility InVisibility);
 
     void SetHealthBarPercent(float Percent);
@@ -50,8 +52,6 @@ public:
     void UpdateInventoryInfo();
 
 protected:
-    void BeginPlay() override;
-
     template<typename T>
     T* AddWidget(TSubclassOf<UUserWidget> WidgetToAdd);
 

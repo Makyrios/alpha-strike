@@ -8,7 +8,7 @@
 
 AAS_WeaponPickup::AAS_WeaponPickup()
 {
-    SetReplicates(true);
+    bReplicates = true;
     StaticMesh->SetIsReplicated(true);
 }
 

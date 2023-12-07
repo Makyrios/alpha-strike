@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "AS_Types.h"
 #include "AS_MenuHUD.generated.h"
 
 class UAS_MenuWidget;
@@ -18,6 +19,8 @@ public:
     AAS_MenuHUD();
     void AddMenuWidget();
 
+    void HandleMenuAction();
+
 public:
     FORCEINLINE UAS_MenuWidget* GetMenuWidget() const { return MenuWidget; }
 
@@ -30,6 +33,8 @@ private:
 
     UPROPERTY()
     AAS_MenuPlayerController* AS_PlayerController;
+
+    EMenuAction MenuAction = EMenuAction::EMA_MAX;
 
 private:
     UFUNCTION()

@@ -17,7 +17,7 @@ struct FTeamInfo
     TArray<AController*> Members;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    int32 Score;
+    int32 Score = 0;
 };
 
 UCLASS()

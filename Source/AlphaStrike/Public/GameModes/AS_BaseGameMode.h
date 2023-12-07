@@ -15,6 +15,8 @@ public:
     virtual void HandleActorDeath(AController* DeadActor, AController* KillerActor, bool bEnableRandColor = true,
         const FLinearColor& CustomColor = FLinearColor::Black);
 
+    virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
     FORCEINLINE float GetTimeLimit() const { return TimeLimit; }
     FORCEINLINE float GetDelayBeforeStart() const { return DelayBeforeStart; }
     virtual bool IsGameStarted();
@@ -37,8 +39,6 @@ protected:
     virtual void HandleMatchHasEnded() override;
 
     void CreateStartGameWidget(APlayerController* NewPlayer);
-
-    virtual void BeginPlay() override;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AS|GameStart", meta = (EditCondition = "bDelayedStart"))

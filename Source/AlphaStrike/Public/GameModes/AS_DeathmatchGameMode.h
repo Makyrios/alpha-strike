@@ -4,25 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameModes/AS_BaseGameMode.h"
+#include "AS_Types.h"
 #include "AS_DeathmatchGameMode.generated.h"
-
-USTRUCT(BlueprintType)
-struct FPawnSpawnInfo
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    int32 NumberOfPawns;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
-    TSubclassOf<APawn> PawnClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
-    TSubclassOf<APawn> HeavyPawnClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BlueprintBaseOnly))
-    TSubclassOf<AController> ControllerClass;
-};
 
 UCLASS()
 class ALPHASTRIKE_API AAS_DeathmatchGameMode : public AAS_BaseGameMode

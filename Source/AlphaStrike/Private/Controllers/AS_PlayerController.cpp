@@ -43,9 +43,12 @@ void AAS_PlayerController::OnPossess(APawn* InPawn)
 
     if (!InPawn) return;
 
-    AHUD* hud = GetHUD();
-
     PlayerCharacter = Cast<AAS_Character>(InPawn);
+
+    if (IsLocalController())
+    {
+        UpdateInventoryInfo();
+    }
 }
 
 void AAS_PlayerController::SetupInputComponent()
@@ -245,12 +248,10 @@ void AAS_PlayerController::SetAmmoInfo(FText NewAmmoInfo)
     AS_HUD->SetAmmoInfo(NewAmmoInfo);
 }
 
-void AAS_PlayerController::SetScoreGoal(int32 ScoreGoal) 
+void AAS_PlayerController::SetScoreGoal(int32 ScoreGoal)
 {
-    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
-    if (!AS_HUD) return;
-
-    AS_HUD->SetScoreGoal(ScoreGoal);
+    UpdateScoreGoal(ScoreGoal);
+    Client_SetScoreGoal(ScoreGoal);
 }
 
 void AAS_PlayerController::SetTeamsScore()
@@ -271,7 +272,7 @@ void AAS_PlayerController::ScrollWeaponUp()
 {
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
-    PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();    
+    PlayerCharacter->GetCombatComponent()->ScrollWeaponUp();
 }
 
 void AAS_PlayerController::ScrollWeaponDown()
@@ -279,6 +280,14 @@ void AAS_PlayerController::ScrollWeaponDown()
     if (!PlayerCharacter || !PlayerCharacter->GetCombatComponent()) return;
 
     PlayerCharacter->GetCombatComponent()->ScrollWeaponDown();
+}
+
+void AAS_PlayerController::Client_SetTime_Implementation(const float& Time)
+{
+    AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+    if (!AS_HUD) return;
+
+    AS_HUD->SetTimeRemaining(Time);
 }
 
 void AAS_PlayerController::Pause()
@@ -317,29 +326,45 @@ void AAS_PlayerController::SetInputModeUIOnly()
     SetShowMouseCursor(true);
 }
 
-void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)
+void AAS_PlayerController::Client_SetScoreGoal_Implementation(int32 ScoreGoal)
+{
+    UpdateScoreGoal(ScoreGoal);
+}
+
+void AAS_PlayerController::UpdateScoreGoal(int ScoreGoal)
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
 
-    AS_HUD->ShowStartGameWidget(StartGameDelay);
+    AS_HUD->SetScoreGoal(ScoreGoal);
+}
+
+void AAS_PlayerController::Client_CreateStartGameWidget_Implementation(float StartGameDelay)
+{
+    ShowStartGameWidget(StartGameDelay);
 }
 
 void AAS_PlayerController::CreateStartGameWidget(float StartGameDelay)
 {
-    if (!IsLocalController())
+    if (HasAuthority() && IsLocalController())
+    {
+        ShowStartGameWidget(StartGameDelay);
+    }
+    else
     {
         Client_CreateStartGameWidget(StartGameDelay);
-        return;
     }
+}
 
+void AAS_PlayerController::ShowStartGameWidget(float StartGameDelay) 
+{
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
 
     AS_HUD->ShowStartGameWidget(StartGameDelay);
 }
 
-void AAS_PlayerController::SetHUDWidgetVisibility(ESlateVisibility InVisibility) 
+void AAS_PlayerController::SetHUDWidgetVisibility(ESlateVisibility InVisibility)
 {
     if (!IsLocalController())
     {
@@ -351,7 +376,7 @@ void AAS_PlayerController::SetHUDWidgetVisibility(ESlateVisibility InVisibility)
     AS_HUD->SetHUDWidgetVisibility(InVisibility);
 }
 
-void AAS_PlayerController::Client_SetHUDWidgetVisibility_Implementation(ESlateVisibility InVisibility) 
+void AAS_PlayerController::Client_SetHUDWidgetVisibility_Implementation(ESlateVisibility InVisibility)
 {
     AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
     if (!AS_HUD) return;
@@ -393,6 +418,21 @@ void AAS_PlayerController::HandleLose()
     if (!AS_HUD) return;
 
     AS_HUD->ShowLoseWidget();
+}
+
+void AAS_PlayerController::SetTimeRemaining(float RemainingTimeInSeconds)
+{
+    if (HasAuthority() && IsLocalController())
+    {
+        AS_HUD = (!AS_HUD) ? GetHUD<AAS_HUD>() : AS_HUD;
+        if (!AS_HUD) return;
+
+        AS_HUD->SetTimeRemaining(RemainingTimeInSeconds);
+    }
+    else
+    {
+        Client_SetTime(RemainingTimeInSeconds);
+    }
 }
 
 void AAS_PlayerController::Client_HandleLose_Implementation()

@@ -1,6 +1,7 @@
 ﻿// AlphaStrike by Team #1. AlphaNova courses🤙
 
 #include "UI/Widgets/AS_MenuWidget.h"
+#include "UI/HUD/AS_MenuHUD.h"
 #include "Components/EditableText.h"
 #include "Components/VerticalBox.h"
 #include "Components/Slider.h"
@@ -21,7 +22,21 @@ void UAS_MenuWidget::NativeConstruct()
     }
 }
 
-void UAS_MenuWidget::OnVolumeSliderValueChanged(float Value) 
+void UAS_MenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
+{
+    Super::OnAnimationFinished_Implementation(Animation);
+
+    if (Animation != JoinAnimation) return;
+
+    if (!GetOwningPlayer()) return;
+
+    auto AAS_HUD = GetOwningPlayer()->GetHUD<AAS_MenuHUD>();
+    if (!AAS_HUD) return;
+
+    AAS_HUD->HandleMenuAction();
+}
+
+void UAS_MenuWidget::OnVolumeSliderValueChanged(float Value)
 {
     AS_GameInstance = (!AS_GameInstance) ? GetGameInstance<UAS_GameInstance>() : AS_GameInstance;
     if (!AS_GameInstance) return;
@@ -40,4 +55,10 @@ void UAS_MenuWidget::SetNameText(FText Name)
 FText UAS_MenuWidget::GetNameText()
 {
     return NameBox->GetText();
+}
+
+void UAS_MenuWidget::PlayJoinAnimation()
+{
+    if (!JoinAnimation) return;
+    PlayAnimation(JoinAnimation);
 }

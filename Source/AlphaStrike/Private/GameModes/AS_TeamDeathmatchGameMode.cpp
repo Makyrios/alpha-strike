@@ -18,13 +18,14 @@ void AAS_TeamDeathmatchGameMode::HandleMatchHasStarted()
         for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
         {
             AAS_TeamDeathmatchPlayerState* TeamPlayerState = (*Iterator)->GetPlayerState<AAS_TeamDeathmatchPlayerState>();
-            if (TeamPlayerState)
+            if (TeamPlayerState && (*Iterator).Get())
             {
                 TeamPlayerState->SetTeamColor(TeamsSpawnInfo[TeamPlayerState->GetTeam()].TeamColor);
                 auto PlayerPawn = (*Iterator)->GetPawn<AAS_Character>();
                 if (PlayerPawn)
                 {
                     PlayerPawn->SetPlayerColor(TeamPlayerState->GetTeamColor());
+                    GiveTeamToPlayer((*Iterator).Get(), ETeams::TEAM_A);
                 }
 
                 TeamsSpawnInfo[TeamPlayerState->GetTeam()].NumberOfPawns -= 1;

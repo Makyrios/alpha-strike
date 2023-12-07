@@ -42,8 +42,7 @@ void UAS_HUDWidget::SetAmmoInfoText(FText NewAmmoInfo)
     }
 }
 
-
-void UAS_HUDWidget::SetScoreGoalText(int32 ScoreGoal) 
+void UAS_HUDWidget::SetScoreGoalText(int32 ScoreGoal)
 {
     if (ScoreGoalText)
     {
@@ -56,7 +55,10 @@ void UAS_HUDWidget::UpdateInventoryInfo()
 {
     if (!PistolIcon || !RifleIcon || !SniperRifleIcon) return;
 
-    AAS_Character* OwningCharacter = GetOwningPlayer() ? GetOwningPlayer()->GetPawn<AAS_Character>() : nullptr;
+    APlayerController* OwningController = GetOwningPlayer();
+    if (!OwningController) return;
+
+    AAS_Character* OwningCharacter = OwningController->GetPawn<AAS_Character>();
     if (!OwningCharacter || !OwningCharacter->GetCombatComponent()) return;
 
     const TArray<AAS_BaseWeapon*> WeaponArray = OwningCharacter->GetCombatComponent()->GetWeaponInventory();
@@ -67,6 +69,16 @@ void UAS_HUDWidget::UpdateInventoryInfo()
 
 void UAS_HUDWidget::UpdateWeaponIcons(const TArray<AAS_BaseWeapon*>& WeaponArray, int CurrentWeaponIndex)
 {
+    if (!PistolIcon || !RifleIcon || !SniperRifleIcon || !PistolLine || !RifleLine || !SniperRifleLine) return;
+
+    PistolIcon->SetVisibility(ESlateVisibility::Hidden);
+    RifleIcon->SetVisibility(ESlateVisibility::Hidden);
+    SniperRifleIcon->SetVisibility(ESlateVisibility::Hidden);
+
+    PistolLine->SetVisibility(ESlateVisibility::Hidden);
+    RifleLine->SetVisibility(ESlateVisibility::Hidden);
+    SniperRifleLine->SetVisibility(ESlateVisibility::Hidden);
+
     for (int i = 0; i < WeaponArray.Num(); i++)
     {
         if (WeaponArray[i] && WeaponArray[i]->GetWeaponType() == EWeaponType::EWT_Pistol)

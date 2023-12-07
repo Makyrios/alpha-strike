@@ -47,6 +47,7 @@ public:
     FORCEINLINE FVector GetEndMuzzlePoint() const { return HitTarget.bBlockingHit ? HitTarget.ImpactPoint : HitEnd; }
     FORCEINLINE UAS_AmmoComponent* GetAmmoComponent() const { return AmmoComponent; }
     FORCEINLINE float GetFireRange() const { return TraceLength; }
+    FORCEINLINE float GetAimingFOV() const { return AimingFOV; }
     FORCEINLINE bool CanFire() const { return bCanFire; }
     FORCEINLINE bool IsReload() const { return bReload; }
     FORCEINLINE void SetCanFire(bool NewValue) { bCanFire = NewValue; }
@@ -103,6 +104,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
     USoundCue* NoAmmoSound;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties")
+    float AimingFOV = 50.f;
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|Weapon properties|Decals")
     UMaterial* HitDecalMaterial;

@@ -6,21 +6,10 @@
 #include "Components/EditableText.h"
 #include "Controllers/AS_MenuPlayerController.h"
 #include "Kismet/GameplayStatics.h"
-#include "Saves/AS_PlayerSavedInfo.h"
 #include "AS_GameInstance.h"
+#include "Animation/WidgetAnimation.h"
 
-AAS_MenuHUD::AAS_MenuHUD()
-{
-    USaveGame* Save = UGameplayStatics::LoadGameFromSlot("Player Info", 0);
-    if (UAS_PlayerSavedInfo* PlayerInfo = Cast <UAS_PlayerSavedInfo>(Save)) 
-    {
-        if (MenuWidget)
-        {
-            MenuWidget->SetNameText(PlayerInfo->Name);
-        }
-    }
-    
-}
+AAS_MenuHUD::AAS_MenuHUD() {}
 
 void AAS_MenuHUD::AddMenuWidget()
 {
@@ -40,33 +29,69 @@ void AAS_MenuHUD::AddMenuWidget()
     MenuWidget->ApplyNameButton->OnClicked.AddDynamic(this, &AAS_MenuHUD::OnApplyNameButtonClicked);
 }
 
-void AAS_MenuHUD::OnSingleDeathmatchButtonClicked()
+void AAS_MenuHUD::HandleMenuAction()
 {
     if (!GetPlayerController()) return;
-    GetPlayerController()->CreateDeathmatchGame();
+
+    switch (MenuAction)
+    {
+        case EMenuAction::EMA_Deathmatch:  //
+            GetPlayerController()->CreateDeathmatchGame();
+            break;
+        case EMenuAction::EMA_TeamDeathmatch:  //
+            GetPlayerController()->CreateTeamDeathmatchGame();
+            break;
+        case EMenuAction::EMA_Host:  //
+            GetPlayerController()->CreateDeathmatchHostGame();
+            break;
+        case EMenuAction::EMA_Join:  //
+            if (MenuWidget && MenuWidget->IP_AddressBox)
+            {
+                GetPlayerController()->JoinGame(MenuWidget->IP_AddressBox->GetText());
+            }
+            break;
+    }
 }
 
-void AAS_MenuHUD::OnTeamDeathmatchButtonClicked() 
+void AAS_MenuHUD::OnSingleDeathmatchButtonClicked()
 {
-    if (!GetPlayerController()) return;
-    GetPlayerController()->CreateTeamDeathmatchGame();
+    if (!MenuWidget) return;
+
+    MenuWidget->PlayJoinAnimation();
+    MenuAction = EMenuAction::EMA_Deathmatch;
+    MenuWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+}
+
+void AAS_MenuHUD::OnTeamDeathmatchButtonClicked()
+{
+    if (!MenuWidget) return;
+
+    MenuWidget->PlayJoinAnimation();
+    MenuAction = EMenuAction::EMA_TeamDeathmatch;
+    MenuWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void AAS_MenuHUD::OnHostButtonClicked()
 {
-    if (!GetPlayerController()) return;
-    GetPlayerController()->CreateDeathmatchHostGame();
+    if (!MenuWidget) return;
+
+    MenuWidget->PlayJoinAnimation();
+    MenuAction = EMenuAction::EMA_Host;
+    MenuWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void AAS_MenuHUD::OnJoinButtonClicked()
 {
-    if (!GetPlayerController() || !MenuWidget || !MenuWidget->IP_AddressBox) return;
-    GetPlayerController()->JoinGame(MenuWidget->IP_AddressBox->GetText());
+    if (!MenuWidget) return;
+
+    MenuWidget->PlayJoinAnimation();
+    MenuAction = EMenuAction::EMA_Join;
+    MenuWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
 void AAS_MenuHUD::OnApplyNameButtonClicked()
 {
-    UAS_GameInstance* GameInstance = Cast <UAS_GameInstance>(GetGameInstance());
+    UAS_GameInstance* GameInstance = Cast<UAS_GameInstance>(GetGameInstance());
 
     if (!MenuWidget || !GameInstance) return;
 
@@ -79,5 +104,3 @@ AAS_MenuPlayerController* AAS_MenuHUD::GetPlayerController()
     AS_PlayerController = (!AS_PlayerController) ? Cast<AAS_MenuPlayerController>(GetOwningPlayerController()) : AS_PlayerController;
     return AS_PlayerController;
 }
-
-

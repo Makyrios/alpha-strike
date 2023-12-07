@@ -29,7 +29,7 @@ public:
     FORCEINLINE FText GetPlayerName() { return PlayerName; }
 
 public:
-    FText PlayerName;
+    FText PlayerName = FText::FromString(TEXT("Player"));
 
     UPROPERTY(EditDefaultsOnly, Category = "AS|GameInfo")
     FName TeamDeathmatchMapName = TEXT("BotsMap_1");

@@ -87,6 +87,11 @@ void UAS_CombatComponent::OnRep_EquippedWeaponIndex()
     if (CurrentWeapon)
     {
         CurrentWeapon->StartChangeWeapon();
+
+        if (bIsAiming)
+        {
+            PlayerCharacter->GetFollowCamera()->FieldOfView = CurrentWeapon->GetAimingFOV();
+        }
     }
 
     if (!PlayerCharacter) return;
@@ -129,6 +134,11 @@ void UAS_CombatComponent::Server_ChangeWeapon_Implementation(int WeaponIndex)
     if (CurrentWeapon)
     {
         CurrentWeapon->StartChangeWeapon();
+
+        if (bIsAiming)
+        {
+            PlayerCharacter->GetFollowCamera()->FieldOfView = CurrentWeapon->GetAimingFOV();
+        }
     }
 
     if (!PlayerCharacter) return;
@@ -139,11 +149,11 @@ void UAS_CombatComponent::Server_ChangeWeapon_Implementation(int WeaponIndex)
 
 void UAS_CombatComponent::Aim()
 {
-    if (!PlayerCharacter || bIsAiming) return;
+    if (!PlayerCharacter || bIsAiming || !GetEquippedWeapon()) return;
 
     bIsAiming = true;
     PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed -= DiffAimWalkSpeed;
-    PlayerCharacter->GetFollowCamera()->FieldOfView = AimingFOV;
+    PlayerCharacter->GetFollowCamera()->FieldOfView = GetEquippedWeapon()->GetAimingFOV();
 
     if (PlayerCharacter->IsLocallyControlled())
     {

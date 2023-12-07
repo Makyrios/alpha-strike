@@ -4,6 +4,7 @@
 #include "UI/HUD/AS_HUD.h"
 #include "GameModes/AS_BaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Controllers/AS_PlayerController.h"
 
 AAS_BaseGameState::AAS_BaseGameState()
 {
@@ -19,19 +20,16 @@ void AAS_BaseGameState::Tick(float DeltaTime)
 
 void AAS_BaseGameState::SetTimeForHUD()
 {
-    AAS_BaseGameMode* CustomGameMode = Cast <AAS_BaseGameMode>(UGameplayStatics::GetGameMode(this));
-    if (!CustomGameMode || !(CustomGameMode->IsGameStarted())) return;
+    AAS_BaseGameMode* CustomGameMode = Cast<AAS_BaseGameMode>(UGameplayStatics::GetGameMode(this));
+    if (!CustomGameMode) return;
 
-    float TimeLimit = CustomGameMode->GetTimeLimit();
+    const float TimeLimit = CustomGameMode->GetTimeLimit();
     for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
     {
-        if (AHUD* PlayerHUD = Iterator->Get()->GetHUD())
+        AAS_PlayerController* Controller = Cast<AAS_PlayerController>(*Iterator);
+        if (Controller)
         {
-            AAS_HUD* CustomHUD = Cast<AAS_HUD>(PlayerHUD);
-            if (CustomHUD)
-            {
-                CustomHUD->SetTimeRemaining(TimeLimit - GetServerWorldTimeSeconds() + CustomGameMode->GetDelayBeforeStart());
-            }
+            Controller->SetTimeRemaining(TimeLimit - GetServerWorldTimeSeconds() + CustomGameMode->GetDelayBeforeStart());
         }
     }
 }

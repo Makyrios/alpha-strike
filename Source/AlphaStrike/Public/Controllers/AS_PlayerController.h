@@ -43,6 +43,8 @@ public:
     void HandleWin();
     void HandleLose();
 
+    void SetTimeRemaining(float RemainingTimeInSeconds);
+
 protected:
     void BeginPlay() override;
 
@@ -85,6 +87,12 @@ private:
 
     UFUNCTION(Client, Reliable)
     void Client_HandleLose();
+
+    UFUNCTION(Client, Reliable)
+    void Client_SetScoreGoal(int32 ScoreGoal);
+
+    UFUNCTION(Client, Unreliable)
+    void Client_SetTime(const float& Time);
 
 private:
     UPROPERTY(Replicated)
@@ -140,4 +148,7 @@ private:
 private:
     void SetInputModeGameOnly();
     void SetInputModeUIOnly();
+
+    void UpdateScoreGoal(int ScoreGoal);
+    void ShowStartGameWidget(float StartGameDelay);
 };

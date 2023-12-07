@@ -10,10 +10,19 @@
 #include "GameFramework/PlayerStart.h"
 #include "AS_GameInstance.h"
 #include "AS_PlayerStart.h"
-#include "Saves/AS_PlayerSavedInfo.h"
 #include "UI/Widgets/AS_StartGameWidget.h"
 #include "Controllers/AS_PlayerController.h"
 #include "Components/AS_HealthComponent.h"
+
+void AAS_BaseGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+    Super::InitGame(MapName, Options, ErrorMessage);
+
+    if (bDelayedStart)
+    {
+        GetWorldTimerManager().SetTimer(DelayStartTimer, this, &AAS_BaseGameMode::StartMatch, DelayBeforeStart);
+    }
+}
 
 bool AAS_BaseGameMode::ReadyToStartMatch_Implementation()
 {
@@ -42,10 +51,15 @@ void AAS_BaseGameMode::PostLogin(APlayerController* NewPlayer)
 
 void AAS_BaseGameMode::CreateStartGameWidget(APlayerController* NewPlayer)
 {
+    UE_LOG(LogTemp, Warning, TEXT("CreateStartGameWidget"));
+
     if (AAS_PlayerController* CustomPlayerController = Cast<AAS_PlayerController>(NewPlayer))
     {
-        float CurrentDelayBeforeStart = DelayBeforeStart - GameState->GetServerWorldTimeSeconds();
-        CustomPlayerController->CreateStartGameWidget(CurrentDelayBeforeStart);
+        if (!IsGameStarted())
+        {
+            const float CurrentDelayBeforeStart = DelayBeforeStart - GameState->GetServerWorldTimeSeconds();
+            CustomPlayerController->CreateStartGameWidget(CurrentDelayBeforeStart);
+        }
     }
 }
 
@@ -103,16 +117,6 @@ void AAS_BaseGameMode::SetBotName(AController* BotController, int32 BotIndex)
     {
         FString BotName = FString("Bot ") + FString::FromInt(BotIndex);
         CustomPlayerState->SetPlayerName(BotName);
-    }
-}
-
-void AAS_BaseGameMode::BeginPlay()
-{
-    Super::BeginPlay();
-
-    if (bDelayedStart)
-    {
-        GetWorldTimerManager().SetTimer(DelayStartTimer, this, &AAS_BaseGameMode::StartMatch, DelayBeforeStart);
     }
 }
 
@@ -219,5 +223,5 @@ bool AAS_BaseGameMode::IsGameStarted()
     UWorld* World = GetWorld();
     if (!World) return false;
 
-    return !(GetWorld()->GetTimerManager().IsTimerActive(DelayStartTimer));
+    return !(World->GetTimerManager().IsTimerActive(DelayStartTimer));
 }

@@ -12,15 +12,11 @@
 #include "UI/Widgets/AS_DamageWidget.h"
 #include "Animation/WidgetAnimation.h"
 
-void AAS_HUD::BeginPlay()
+void AAS_HUD::PostInitializeComponents()
 {
-    Super::BeginPlay();
+    Super::PostInitializeComponents();
 
     HUDWidget = AddWidget<UAS_HUDWidget>(HUDWidgetClass);
-    if (HUDWidget)
-    {
-        HUDWidget->SetVisibility(ESlateVisibility::Hidden);
-    }
 
     TableStatsWidget = AddWidget<UAS_TableStatsWidget>(StatsTableClass);
     if (TableStatsWidget)
@@ -111,6 +107,11 @@ void AAS_HUD::ExitToMenu()
 void AAS_HUD::ShowStartGameWidget(float StartDelayTime)
 {
     UAS_StartGameWidget* StartGameWidget = AddWidget<UAS_StartGameWidget>(StartGameWidgetClass);
+
+    if (HUDWidget)
+    {
+        HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
 
     if (StartGameWidget)
     {
